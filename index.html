@@ -49,9 +49,12 @@ body::before{
   position:fixed; inset:0; z-index:9999;
   background:#08080a;
   display:flex; align-items:center; justify-content:center;
-  transition:transform .85s cubic-bezier(.76,0,.24,1);
+  transition:opacity .7s ease, visibility .7s;
 }
-.preloader.done{ transform:translateY(-100%); }
+.preloader.done{ opacity:0; visibility:hidden; }
+/* conteúdo começa abaixo e sobe ao terminar o load */
+#site{ transform:translateY(100%); transition:transform 1s cubic-bezier(.7,0,.2,1); }
+body.loaded #site{ transform:translateY(0); }
 .pre-inner{ display:flex; flex-direction:column; align-items:center; gap:20px; }
 .pre-cup{ height:130px; width:auto; filter:drop-shadow(0 0 34px rgba(216,179,92,.5)); animation:preFloat 2.2s ease-in-out infinite; }
 @keyframes preFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-12px); } }
@@ -485,11 +488,19 @@ nav.menu a.active::after{
       var n=0;
       var t=setInterval(function(){
         n+=Math.floor(Math.random()*9)+4;
-        if(n>=100){ n=100; clearInterval(t); setTimeout(function(){ pre.classList.add('done'); },450); }
+        if(n>=100){ n=100; clearInterval(t); setTimeout(function(){
+          document.body.classList.add('loaded');
+          pre.classList.add('done');
+          var s=document.getElementById('site');
+          if(s) s.addEventListener('transitionend', function(e){ if(e.propertyName==='transform') s.style.transform='none'; });
+        },400); }
         pct.textContent=n+'%'; bar.style.width=n+'%';
       },85);
     })();
   </script>
+
+  <!-- conteúdo do site (sobe quando o load termina) -->
+  <div id="site">
 
   <!-- FUNDO (imagem por jogador, atrás de tudo) -->
   <div class="bg-layer" id="bgLayer">
@@ -577,6 +588,8 @@ nav.menu a.active::after{
   <div class="bottom">
     <div class="fixtures" id="fixtures"></div>
   </div>
+
+  </div><!-- /#site -->
 
 <script>
 /* ============================================================

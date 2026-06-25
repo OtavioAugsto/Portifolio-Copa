@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Craques da Copa — Slider</title>
+<style>
+  /* ===========================================================
+     PALETA / VARIÁVEIS  (mude as cores aqui pra deixar do seu jeito)
+     =========================================================== */
+  :root{
+    --bg:        #0a0e1a;        /* fundo geral escuro     */
+    --bg-2:      #111726;        /* fundo secundário       */
+    --accent:    #00e5a0;        /* cor de destaque (verde água) */
+    --accent-2:  #ffd23f;        /* cor de destaque 2 (dourado)  */
+    --text:      #ffffff;
+    --text-dim:  #9aa3b2;
+    --card:      rgba(255,255,255,.06);
+    --card-bord: rgba(255,255,255,.12);
+    --font:      'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    font-family:var(--font);
+    background:var(--bg);
+    color:var(--text);
+    overflow:hidden;
+  }
+
+  /* ===========================================================
+     BARRA DE PROGRESSO (topo)
+     =========================================================== */
+  .progress-wrap{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; gap:14px;
+    padding:18px 28px;
+  }
+  .progress-bar{
+    flex:1; height:4px; border-radius:99px;
+    background:rgba(255,255,255,.12); overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; width:16.66%;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    border-radius:99px;
+    transition:width .6s cubic-bezier(.7,0,.2,1);
+  }
+  .progress-pct{
+    font-size:13px; font-weight:700; letter-spacing:1px;
+    color:var(--text-dim); min-width:42px; text-align:right;
+  }
+  .brand{
+    font-size:15px; font-weight:800; letter-spacing:3px;
+    text-transform:uppercase;
+  }
+  .brand span{ color:var(--accent); }
+
+  /* ===========================================================
+     SLIDER
+     =========================================================== */
+  .slider{ position:relative; height:100vh; width:100%; }
+
+  .slide{
+    position:absolute; inset:0;
+    display:flex; align-items:center;
+    opacity:0; visibility:hidden;
+    transform:scale(1.06);
+    transition:opacity .7s ease, transform .9s ease, visibility .7s;
+  }
+  .slide.active{ opacity:1; visibility:visible; transform:scale(1); }
+
+  /* fundo de cada slide (gradiente por seleção — troque por foto se quiser) */
+  .slide-bg{
+    position:absolute; inset:0; z-index:0;
+    background-size:cover; background-position:center;
+  }
+  .slide-bg::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(90deg,
+      rgba(10,14,26,.92) 0%,
+      rgba(10,14,26,.75) 45%,
+      rgba(10,14,26,.35) 100%);
+  }
+
+  /* número gigante de fundo */
+  .slide-number{
+    position:absolute; right:4%; bottom:-4%;
+    font-size:42vw; font-weight:900; line-height:.8;
+    color:rgba(255,255,255,.04); z-index:1;
+    pointer-events:none; user-select:none;
+  }
+
+  .slide-content{
+    position:relative; z-index:2;
+    max-width:620px; padding:0 28px 0 7vw;
+  }
+  .slide-flag{
+    font-size:34px; margin-bottom:10px;
+    display:inline-flex; align-items:center; gap:12px;
+  }
+  .slide-flag span{
+    font-size:13px; font-weight:700; letter-spacing:3px;
+    text-transform:uppercase; color:var(--accent);
+  }
+  .slide-name{
+    font-size:clamp(48px,8vw,104px); font-weight:900;
+    line-height:.95; letter-spacing:-2px; text-transform:uppercase;
+  }
+  .slide-name b{
+    display:block;
+    -webkit-text-stroke:1.5px var(--accent-2);
+    color:transparent;
+  }
+  .slide-fullname{
+    margin-top:6px; font-size:15px; font-weight:600;
+    letter-spacing:4px; text-transform:uppercase; color:var(--text-dim);
+  }
+  .slide-desc{
+    margin-top:22px; font-size:16px; line-height:1.7;
+    color:#d6dae2; max-width:480px;
+  }
+  .slide-stats{
+    display:flex; gap:30px; margin-top:26px;
+  }
+  .stat b{ display:block; font-size:28px; font-weight:900; color:var(--accent); }
+  .stat span{ font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); }
+
+  .btn-choose{
+    margin-top:32px; display:inline-flex; align-items:center; gap:14px;
+    background:var(--accent); color:#06251c;
+    border:none; cursor:pointer;
+    padding:16px 30px; border-radius:99px;
+    font-size:14px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
+    transition:transform .25s, box-shadow .25s, background .25s;
+  }
+  .btn-choose:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 30px -8px var(--accent);
+  }
+  .btn-choose .arrow{
+    width:26px; height:26px; border-radius:50%;
+    background:#06251c; color:var(--accent);
+    display:grid; place-items:center; font-size:14px;
+    transition:transform .25s;
+  }
+  .btn-choose:hover .arrow{ transform:translateX(4px); }
+
+  /* ===========================================================
+     CONTROLES DE NAVEGAÇÃO
+     =========================================================== */
+  .nav{
+    position:fixed; bottom:34px; right:34px; z-index:50;
+    display:flex; gap:14px;
+  }
+  .nav button{
+    width:56px; height:56px; border-radius:50%;
+    background:var(--card); border:1px solid var(--card-bord);
+    color:#fff; font-size:20px; cursor:pointer;
+    display:grid; place-items:center;
+    transition:background .25s, transform .25s, border-color .25s;
+  }
+  .nav button:hover{
+    background:var(--accent); color:#06251c;
+    border-color:var(--accent); transform:scale(1.08);
+  }
+
+  /* miniaturas / paginação lateral */
+  .thumbs{
+    position:fixed; left:34px; bottom:34px; z-index:50;
+    display:flex; gap:10px;
+  }
+  .thumb{
+    display:flex; flex-direction:column; gap:6px;
+    background:none; border:none; cursor:pointer; text-align:left;
+    opacity:.45; transition:opacity .25s;
+  }
+  .thumb.active{ opacity:1; }
+  .thumb .t-num{ font-size:12px; font-weight:800; color:var(--accent-2); letter-spacing:1px; }
+  .thumb .t-name{ font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+  .thumb .t-line{ height:3px; width:46px; border-radius:99px; background:rgba(255,255,255,.18); }
+  .thumb.active .t-line{ background:var(--accent); }
+
+  /* ===========================================================
+     RESPONSIVO (mobile)
+     =========================================================== */
+  @media (max-width:720px){
+    .slide-content{ padding:0 22px; }
+    .slide-number{ font-size:60vw; right:-6%; }
+    .slide-desc{ font-size:14px; }
+    .thumbs{ display:none; }
+    .nav{ bottom:24px; right:50%; transform:translateX(50%); }
+    .progress-wrap{ padding:14px 18px; }
+    .brand{ font-size:12px; letter-spacing:2px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- BARRA DE PROGRESSO -->
+  <div class="progress-wrap">
+    <div class="brand">CRAQUES<span>•</span>COPA</div>
+    <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+    <div class="progress-pct" id="pPct">16%</div>
+  </div>
+
+  <!-- SLIDER -->
+  <div class="slider" id="slider">
+    <!-- Os slides são gerados pelo JavaScript abaixo -->
+  </div>
+
+  <!-- MINIATURAS -->
+  <div class="thumbs" id="thumbs"></div>
+
+  <!-- NAVEGAÇÃO -->
+  <div class="nav">
+    <button id="prev" aria-label="Anterior">‹</button>
+    <button id="next" aria-label="Próximo">›</button>
+  </div>
+
+<script>
+/* ===========================================================
+   DADOS DOS JOGADORES  (edite os textos como quiser)
+   - bgFrom / bgTo: cores do gradiente de fundo (cores da seleção)
+   - img: se tiver foto do jogador, coloque o caminho aqui (ex: "fotos/neymar.webp")
+          e descomente a linha indicada no JS de render.
+   =========================================================== */
+const players = [
+  {
+    name:"NEYMAR", last:"JR", full:"Neymar da Silva Santos Júnior",
+    flag:"🇧🇷", country:"Brasil",
+    desc:"Craque mais habilidoso da sua geração no Brasil, Neymar encanta com dribles, fintas e jogadas de pura imaginação. Maior artilheiro da história da Seleção Brasileira, é o símbolo do futebol-arte canarinho.",
+    stats:[["+790","Jogos"],["+430","Gols"],["79","Gols pela Seleção"]],
+    bgFrom:"#009739", bgTo:"#0a0e1a", img:""
+  },
+  {
+    name:"CRISTIANO", last:"RONALDO", full:"Cristiano Ronaldo dos Santos Aveiro",
+    flag:"🇵🇹", country:"Portugal",
+    desc:"Máquina de gols e referência em dedicação e profissionalismo, CR7 é o maior artilheiro da história do futebol. Cinco Bolas de Ouro, campeão por Inglaterra, Espanha e Itália — um fenômeno de longevidade.",
+    stats:[["+900","Gols na carreira"],["5","Bolas de Ouro"],["+130","Gols por Portugal"]],
+    bgFrom:"#c8102e", bgTo:"#0a0e1a", img:""
+  },
+  {
+    name:"LIONEL", last:"MESSI", full:"Lionel Andrés Messi",
+    flag:"🇦🇷", country:"Argentina",
+    desc:"Considerado por muitos o maior de todos os tempos, Messi reúne técnica, visão e gênio criativo. Campeão mundial em 2022, dono de oito Bolas de Ouro e ídolo eterno do Barcelona.",
+    stats:[["8","Bolas de Ouro"],["1","Copa do Mundo"],["+800","Gols na carreira"]],
+    bgFrom:"#75aadb", bgTo:"#0a0e1a", img:""
+  },
+  {
+    name:"KYLIAN", last:"MBAPPÉ", full:"Kylian Mbappé Lottin",
+    flag:"🇫🇷", country:"França",
+    desc:"Velocidade explosiva e finalização letal definem Mbappé, a maior estrela da nova geração. Campeão mundial em 2018 e protagonista absoluto da Seleção Francesa e do ataque mais temido da Europa.",
+    stats:[["1","Copa do Mundo"],["+320","Gols"],["12","Hat-tricks"]],
+    bgFrom:"#0055a4", bgTo:"#0a0e1a", img:""
+  },
+  {
+    name:"LAMINE", last:"YAMAL", full:"Lamine Yamal Nasraoui Ebana",
+    flag:"🇪🇸", country:"Espanha",
+    desc:"A maior joia do futebol mundial. Ainda adolescente, Lamine Yamal já é titular do Barcelona e da Espanha, com quem foi campeão da Eurocopa. Drible, frieza e maturidade muito além da idade.",
+    stats:[["1","Eurocopa"],["#10","Camisa lendária"],["+15M","Valor recorde"]],
+    bgFrom:"#aa151b", bgTo:"#0a0e1a", img:""
+  },
+  {
+    name:"JUDE", last:"BELLINGHAM", full:"Jude Victor William Bellingham",
+    flag:"🏴", country:"Inglaterra",
+    desc:"Meio-campista completo e líder nato, Bellingham combina força, gols e inteligência tática. Peça-chave do Real Madrid e da Inglaterra, é apontado como um dos futuros donos da Bola de Ouro.",
+    stats:[["1","Champions League"],["+90","Gols"],["#5","Camisa Real"]],
+    bgFrom:"#cf142b", bgTo:"#0a0e1a", img:""
+  }
+];
+
+/* ===========================================================
+   RENDERIZAÇÃO DOS SLIDES + MINIATURAS
+   =========================================================== */
+const slider = document.getElementById('slider');
+const thumbsBox = document.getElementById('thumbs');
+
+players.forEach((p, i) => {
+  const num = String(i+1).padStart(2,'0');
+
+  // monta o slide
+  const slide = document.createElement('div');
+  slide.className = 'slide' + (i===0 ? ' active' : '');
+  slide.dataset.index = i;
+
+  // fundo: gradiente por seleção. Pra usar FOTO, troque por:
+  //   background:`url('${p.img}') center/cover`
+  const bgStyle = p.img
+    ? `background-image:url('${p.img}')`
+    : `background:radial-gradient(120% 120% at 70% 30%, ${p.bgFrom}55, transparent 60%), linear-gradient(135deg, ${p.bgFrom}, ${p.bgTo})`;
+
+  slide.innerHTML = `
+    <div class="slide-bg" style="${bgStyle}"></div>
+    <div class="slide-number">${num}</div>
+    <div class="slide-content">
+      <div class="slide-flag">${p.flag} <span>${p.country}</span></div>
+      <h1 class="slide-name">${p.name}<b>${p.last}</b></h1>
+      <div class="slide-fullname">${p.full}</div>
+      <p class="slide-desc">${p.desc}</p>
+      <div class="slide-stats">
+        ${p.stats.map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('')}
+      </div>
+      <button class="btn-choose" onclick="escolher(${i})">
+        Escolher Jogador <span class="arrow">›</span>
+      </button>
+    </div>
+  `;
+  slider.appendChild(slide);
+
+  // monta a miniatura
+  const t = document.createElement('button');
+  t.className = 'thumb' + (i===0 ? ' active' : '');
+  t.dataset.index = i;
+  t.innerHTML = `
+    <span class="t-num">${num}</span>
+    <span class="t-name">${p.name}</span>
+    <span class="t-line"></span>
+  `;
+  t.addEventListener('click', ()=> goTo(i));
+  thumbsBox.appendChild(t);
+});
+
+/* ===========================================================
+   LÓGICA DE NAVEGAÇÃO
+   =========================================================== */
+let current = 0;
+const total = players.length;
+const slides = document.querySelectorAll('.slide');
+const thumbs = document.querySelectorAll('.thumb');
+const pFill = document.getElementById('pFill');
+const pPct  = document.getElementById('pPct');
+
+function update(){
+  slides.forEach((s,i)=> s.classList.toggle('active', i===current));
+  thumbs.forEach((t,i)=> t.classList.toggle('active', i===current));
+  const pct = Math.round(((current+1)/total)*100);
+  pFill.style.width = pct + '%';
+  pPct.textContent = pct + '%';
+}
+function goTo(i){ current = (i+total)%total; update(); }
+function next(){ goTo(current+1); }
+function prev(){ goTo(current-1); }
+
+document.getElementById('next').addEventListener('click', next);
+document.getElementById('prev').addEventListener('click', prev);
+
+// teclado (setas ← →)
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') next();
+  if(e.key==='ArrowLeft')  prev();
+});
+
+// swipe no celular
+let touchX = null;
+slider.addEventListener('touchstart', e=> touchX = e.touches[0].clientX);
+slider.addEventListener('touchend', e=>{
+  if(touchX===null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if(dx < -50) next();
+  if(dx >  50) prev();
+  touchX = null;
+});
+
+// ação do botão "Escolher Jogador"
+function escolher(i){
+  alert('Você escolheu: ' + players[i].name + ' ' + players[i].last + '! ⚽');
+  // aqui você pode trocar por: redirecionar, abrir modal, salvar escolha, etc.
+}
+
+update();
+</script>
+</body>
+</html>

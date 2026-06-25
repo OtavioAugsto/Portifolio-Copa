@@ -288,14 +288,6 @@ nav.menu a.active::after{
   <!-- HEADER -->
   <header>
     <div class="logo" id="logo">CR<span>7</span></div>
-    <nav class="menu">
-      <a href="#" class="active">Home</a>
-      <a href="#">Career</a>
-      <a href="#">Stats</a>
-      <a href="#">Gallery</a>
-      <a href="#">About</a>
-    </nav>
-    <div class="burger"><span></span><span></span><span></span></div>
   </header>
 
   <!-- PALCO -->
@@ -303,13 +295,6 @@ nav.menu a.active::after{
     <!-- ESQUERDA -->
     <section class="left">
       <div class="vertical-name" id="vName"></div>
-      <div class="tagline" id="tagline"></div>
-      <h1 class="first-name" id="firstName"></h1>
-      <div class="script-name" id="scriptName"></div>
-      <div class="quote">
-        <span class="mark">&ldquo;</span>
-        <p id="quote"></p>
-      </div>
       <button class="explore">Explore Journey
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 7h17M12 1l6 6-6 6"/></svg>
       </button>
@@ -508,10 +493,6 @@ function render(){
 
   // esquerda
   $('vName').textContent = p.vname;
-  $('tagline').textContent = p.tagline;
-  $('firstName').textContent = p.first;
-  $('scriptName').textContent = p.script;
-  $('quote').innerHTML = `${p.quoteA}<br><span class="alt">${p.quoteB}</span>`;
   $('nick').textContent = p.nick;
   $('group').textContent = p.group;
 

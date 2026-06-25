@@ -284,7 +284,9 @@ nav.menu a.active::after{
   transform:translateY(55%);
   z-index:2; pointer-events:none;
   width:clamp(150px,12vw,205px);
+  opacity:0; transition:opacity .45s ease;
 }
+.jr-write.show{ opacity:1; }
 .jr-write svg{ width:100%; height:auto; overflow:visible; }
 .jr-text{
   fill:transparent;
@@ -537,6 +539,7 @@ nav.menu a.active::after{
             var bn=document.getElementById('bigName');
             if(bn) bn.classList.add('born');
           },1050);
+          setTimeout(function(){ if(typeof showJR==='function') showJR(); }, 2100);  // JR nasce depois do NEYMAR
           if(s) s.addEventListener('transitionend', function(e){ if(e.propertyName==='transform') s.style.transform='none'; });
           // o lockup (WORLD/taça/CUP/2026) voa pro emblema, batendo no mesmo formato
           var flyer=document.querySelector('.pre-lockup');
@@ -825,6 +828,13 @@ const stage = $('stage');
 /* ============================================================
    RENDER
    ============================================================ */
+function showJR(){
+  var jr=document.getElementById('jrWrite'); if(!jr) return;
+  jr.classList.add('show');
+  var t=jr.querySelector('.jr-text');
+  if(t){ t.style.animation='none'; void t.offsetWidth; t.style.animation=''; }   // recomeça a escrita
+}
+
 function render(){
   const p = players[current];
   const next = players[(current+1)%total];
@@ -875,7 +885,9 @@ function render(){
   const jr = $('jrWrite');
   if(p.draw){
     jr.style.display = '';
+    jr.classList.remove('show');
     jr.innerHTML = jrWriteSVG(p.draw);
+    if(document.body.classList.contains('loaded')) setTimeout(showJR, 1100);  // nasce depois do nome
   }else{
     jr.style.display = 'none';
     jr.innerHTML = '';

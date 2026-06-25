@@ -102,7 +102,7 @@ nav.menu a.active::after{
 .stage{
   position:relative; z-index:5;
   height:100vh;
-  padding:104px 56px 116px;
+  padding:104px 56px 116px 100px;
   display:grid;
   grid-template-columns:1.15fr 1.05fr 0.95fr;
   align-items:center;
@@ -114,10 +114,9 @@ nav.menu a.active::after{
 /* ---- COLUNA ESQUERDA ---- */
 .left{ position:relative; padding-left:46px; align-self:end; padding-bottom:28px; }
 .vertical-name{
-  position:absolute; left:-6px; top:50%; transform:rotate(180deg) translateY(50%);
-  writing-mode:vertical-rl;
-  font-size:12px; letter-spacing:8px; color:var(--gold-soft); font-weight:500;
-  text-transform:uppercase; opacity:.8;
+  writing-mode:vertical-rl; transform:rotate(180deg);
+  font-size:12px; letter-spacing:8px; color:var(--gold-soft); font-weight:600;
+  text-transform:uppercase; opacity:.85;
 }
 .tagline{
   display:flex; align-items:center; gap:16px;
@@ -218,7 +217,7 @@ nav.menu a.active::after{
   95%  { stroke-dashoffset:0;    fill:rgba(23,37,107,0); opacity:0; }
   100% { stroke-dashoffset:1600; fill:rgba(23,37,107,0); opacity:0; }
 }
-@media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } }
+@media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } }
 .group{
   display:flex; align-items:center; gap:14px;
   font-size:12px; letter-spacing:5px; color:var(--dim); text-transform:uppercase; margin-top:2px;
@@ -272,12 +271,27 @@ nav.menu a.active::after{
 }
 
 /* ============================================================
+   BARRA LATERAL (vidro)
+   ============================================================ */
+.sidebar{
+  position:fixed; top:0; left:0; bottom:0; width:74px; z-index:37;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,.14);
+  backdrop-filter:blur(11px); -webkit-backdrop-filter:blur(11px);
+  border-right:1.5px solid rgba(255,255,255,.16);
+  pointer-events:none;
+}
+.sidebar .index-num{
+  position:absolute; left:0; right:0; bottom:24px; text-align:center; font-size:30px;
+}
+
+/* ============================================================
    BARRA INFERIOR (índice + jogos)
    ============================================================ */
 .bottom{
   position:fixed; left:0; right:0; bottom:0; z-index:35;
   display:flex; align-items:center; gap:34px;
-  padding:20px 56px;
+  padding:20px 56px 20px 100px;
   border-top:1px solid var(--line);
   background:linear-gradient(0deg, rgba(8,8,10,.96), transparent);
 }
@@ -360,6 +374,12 @@ nav.menu a.active::after{
     <div class="jr-write" id="jrWrite"></div>
   </div>
 
+  <!-- BARRA LATERAL (vidro + nome vertical + índice) -->
+  <aside class="sidebar">
+    <div class="vertical-name" id="vName"></div>
+    <div class="index-num" id="indexNum">01</div>
+  </aside>
+
   <!-- HEADER -->
   <header>
     <div class="logo" id="logo">CR<span>7</span></div>
@@ -369,7 +389,6 @@ nav.menu a.active::after{
   <main class="stage" id="stage">
     <!-- ESQUERDA -->
     <section class="left">
-      <div class="vertical-name" id="vName"></div>
       <button class="explore">Explore Journey
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 7h17M12 1l6 6-6 6"/></svg>
       </button>
@@ -401,7 +420,6 @@ nav.menu a.active::after{
 
   <!-- BARRA INFERIOR -->
   <div class="bottom">
-    <div class="index-num" id="indexNum">01</div>
     <div class="fixtures" id="fixtures"></div>
   </div>
 

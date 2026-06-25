@@ -114,11 +114,11 @@ nav.menu a.active::after{
 @keyframes fade{ from{ opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
 
 /* ---- COLUNA ESQUERDA ---- */
-.left{ position:relative; padding-left:46px; align-self:end; padding-bottom:28px; }
+.left{ position:relative; padding-left:46px; }
 .vertical-name{
   writing-mode:vertical-rl; transform:rotate(180deg);
-  font-size:12px; letter-spacing:8px; color:var(--gold-soft); font-weight:600;
-  text-transform:uppercase; opacity:.85;
+  font-size:17px; letter-spacing:9px; color:var(--gold-soft); font-weight:600;
+  text-transform:uppercase; opacity:.9;
 }
 .tagline{
   display:flex; align-items:center; gap:16px;
@@ -370,12 +370,13 @@ nav.menu a.active::after{
    CARD DO PRÓXIMO JOGADOR (canto inferior direito)
    ============================================================ */
 .next-card{
-  position:fixed; right:40px; bottom:96px; z-index:38;
-  width:330px; display:flex;
-  background:rgba(20,20,24,.85); backdrop-filter:blur(8px);
+  position:relative; z-index:5;
+  width:320px; max-width:100%; margin:18px 0 4px; display:flex;
+  background:rgba(20,20,24,.7); backdrop-filter:blur(8px);
   border:1px solid var(--card-bord); border-radius:14px; overflow:hidden;
-  box-shadow:0 24px 60px -20px rgba(0,0,0,.8);
+  box-shadow:0 16px 40px -16px rgba(0,0,0,.7);
   transition:transform .3s, border-color .3s;
+  pointer-events:auto;
 }
 .next-card:hover{ transform:translateY(-4px); border-color:color-mix(in srgb, var(--gold) 45%, transparent); }
 .next-photo{
@@ -409,7 +410,7 @@ nav.menu a.active::after{
   .center{ order:-1; height:300px; }
   .player-photo{ height:100%; }
   .motto{ display:none; }
-  .next-card{ left:50%; right:auto; transform:translateX(-50%); bottom:80px; width:min(330px,90vw); }
+  .next-card{ width:min(320px,90vw); margin:14px auto; }
   nav.menu{ display:none; }
   .fixtures{ display:none; }
 }
@@ -453,11 +454,30 @@ nav.menu a.active::after{
   <main class="stage" id="stage">
     <!-- ESQUERDA -->
     <section class="left">
+      <div class="nick" id="nick"></div>
+      <div class="group" id="group"></div>
+
+      <!-- próximo craque (movido pra cá) -->
+      <div class="next-card" id="nextCard">
+        <div class="next-photo" id="nextPhoto">Foto</div>
+        <div class="next-body">
+          <div>
+            <div class="next-label">Próximo Craque</div>
+            <div class="next-quote" id="nextQuote"></div>
+          </div>
+          <div class="next-foot">
+            <div class="next-name" id="nextName"></div>
+            <div class="next-arrows">
+              <button id="prev" aria-label="Anterior">‹</button>
+              <button id="next" aria-label="Próximo">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <button class="explore">Explore Journey
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 7h17M12 1l6 6-6 6"/></svg>
       </button>
-      <div class="nick" id="nick"></div>
-      <div class="group" id="group"></div>
     </section>
 
     <!-- CENTRO (foto) -->
@@ -478,24 +498,6 @@ nav.menu a.active::after{
   <!-- BARRA INFERIOR -->
   <div class="bottom">
     <div class="fixtures" id="fixtures"></div>
-  </div>
-
-  <!-- CARD PRÓXIMO JOGADOR -->
-  <div class="next-card" id="nextCard">
-    <div class="next-photo" id="nextPhoto">Foto</div>
-    <div class="next-body">
-      <div>
-        <div class="next-label">Próximo Craque</div>
-        <div class="next-quote" id="nextQuote"></div>
-      </div>
-      <div class="next-foot">
-        <div class="next-name" id="nextName"></div>
-        <div class="next-arrows">
-          <button id="prev" aria-label="Anterior">‹</button>
-          <button id="next" aria-label="Próximo">›</button>
-        </div>
-      </div>
-    </div>
   </div>
 
 <script>

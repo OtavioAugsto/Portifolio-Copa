@@ -162,14 +162,24 @@ nav.menu a.active::after{
 }
 .quote p .alt{ color:var(--gold); }
 .explore{
-  margin-top:34px; display:inline-flex; align-items:center; gap:24px;
+  position:relative; overflow:hidden;
+  margin-top:34px; display:inline-flex; align-items:center; gap:16px;
   background:transparent; color:#fff; cursor:pointer;
   border:1px solid var(--line); border-radius:999px;
-  padding:18px 34px;
+  padding:16px 30px;
   font-family:'Oswald'; font-size:14px; font-weight:600; letter-spacing:4px; text-transform:uppercase;
-  transition:background .25s, border-color .25s, gap .25s;
+  transition:background .25s, border-color .25s, color .25s;
 }
-.explore:hover{ background:var(--gold); color:var(--ink); border-color:var(--gold); gap:32px; }
+.explore > *{ position:relative; z-index:1; }
+.explore::before{
+  content:""; position:absolute; top:0; bottom:0; left:-60%; width:45%; z-index:0;
+  background:linear-gradient(100deg, transparent, color-mix(in srgb, var(--gold) 60%, transparent), transparent);
+  animation:exoShine 3.2s ease-in-out infinite; pointer-events:none;
+}
+@keyframes exoShine{ 0%{ left:-60%; } 60%,100%{ left:160%; } }
+.explore:hover::before{ animation-play-state:paused; }
+.explore:hover{ background:var(--gold); color:var(--ink); border-color:var(--gold); }
+.exo-flag{ width:24px; height:18px; object-fit:cover; border-radius:3px; box-shadow:0 2px 6px rgba(0,0,0,.5); }
 .nick{
   margin-top:42px;
   font-family:'Kaushan Script'; font-size:30px; color:var(--gold);
@@ -484,7 +494,9 @@ nav.menu a.active::after{
         </div>
       </div>
 
-      <button class="explore">Explorar Jornada
+      <button class="explore">
+        <img class="exo-flag" id="exploreFlag" src="" alt="">
+        <span class="exo-label">Próximo Craque</span>
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 7h17M12 1l6 6-6 6"/></svg>
       </button>
     </section>
@@ -697,6 +709,7 @@ function render(){
   $('vName').textContent = p.vname;
   $('nick').innerHTML = signatureSVG(p.sig || p.nick);
   $('group').textContent = p.group;
+  $('exploreFlag').src = flag(p.code);
 
   // fundo cinematográfico (imagem atrás de tudo)
   const bgLayer = $('bgLayer');

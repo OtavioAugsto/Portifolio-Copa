@@ -286,33 +286,16 @@ nav.menu a.active::after{
   position:absolute; right:var(--jr-right,0%); bottom:var(--jr-bottom,-10%);
   transform:translateY(55%);
   z-index:2; pointer-events:none;
-  width:clamp(150px,12vw,205px);
-  opacity:0;
-  -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0);
-  animation:jrWipe 7s ease-in-out infinite;
-  color:var(--gold);   /* cor da seleção */
+  font-family:'Caveat',cursive; font-weight:700; line-height:1; white-space:nowrap;
+  color:var(--gold);   /* cor da seleção (dourado no Neymar via JS) */
+  text-shadow:0 0 18px color-mix(in srgb, currentColor 55%, transparent);
 }
-.jr-write.show{ opacity:1; }
-@keyframes jrWipe{   /* escreve da esquerda pra direita (loop) */
-  0%{ -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0); }
-  30%{ -webkit-clip-path:inset(0 0 0 0); clip-path:inset(0 0 0 0); }
-  100%{ -webkit-clip-path:inset(0 0 0 0); clip-path:inset(0 0 0 0); }
+.jr-char{
+  display:inline-block; opacity:0;
+  transform:translateY(60%) rotate(8deg);
+  animation:jrChar .55s cubic-bezier(.2,.7,.2,1) forwards;
 }
-.jr-write svg{ width:100%; height:auto; overflow:visible; }
-.jr-text{
-  fill:currentColor; fill-opacity:0;
-  stroke:currentColor; stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round;
-  animation:jrFill 7s ease-in-out infinite;
-  filter:drop-shadow(0 0 5px rgba(255,255,255,.4)) drop-shadow(0 0 16px currentColor);
-}
-@keyframes jrFill{   /* escreve o contorno -> preenche -> segura -> some suave -> reescreve (loop) */
-  0%{ fill-opacity:0; opacity:1; }
-  30%{ fill-opacity:0; }
-  48%{ fill-opacity:1; }
-  86%{ fill-opacity:1; opacity:1; }
-  96%{ opacity:0; }
-  100%{ fill-opacity:0; opacity:0; }
-}
+@keyframes jrChar{ to{ opacity:1; transform:translateY(0) rotate(0); } }
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }
 .group{
   display:flex; align-items:center; gap:14px;
@@ -712,13 +695,14 @@ function signatureSVG(text){
 }
 
 /* "JR." manuscrito que se desenha (efeito de escrita) */
-function jrWriteSVG(text){
-  var fs=150;
-  var w=Math.max(300, Math.round(text.length*fs*0.6));   // largura adapta ao tamanho do nome
-  return `
-  <svg viewBox="0 0 ${w} 180" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <text class="jr-text" x="${w/2}" y="140" text-anchor="middle" font-family="'Caveat', cursive" font-weight="700" font-size="${fs}">${text}</text>
-  </svg>`;
+function jrCharsHTML(text){
+  var html='';
+  for(var i=0;i<text.length;i++){
+    var ch=text.charAt(i);
+    if(ch===' ') ch='&nbsp;';
+    html+='<span class="jr-char" style="animation-delay:'+(i*0.07).toFixed(2)+'s">'+ch+'</span>';
+  }
+  return html;
 }
 
 /* ============================================================
@@ -840,10 +824,10 @@ const stage = $('stage');
    ============================================================ */
 function showJR(){
   var jr=document.getElementById('jrWrite'); if(!jr) return;
-  jr.classList.add('show');
-  jr.style.animation='none'; void jr.offsetWidth; jr.style.animation='';            // reinicia o wipe (loop)
-  var t=jr.querySelector('.jr-text');
-  if(t){ t.style.animation='none'; void t.offsetWidth; t.style.animation=''; }      // reinicia o preenchimento (loop)
+  var p=players[current];
+  if(!p.draw){ jr.style.display='none'; return; }
+  jr.style.display='';
+  jr.innerHTML = jrCharsHTML(p.draw);   // letras entram em sequência (stagger, estilo modelo)
 }
 
 function render(){
@@ -901,8 +885,8 @@ function render(){
   if(p.draw){
     jr.style.display = '';
     jr.style.color = p.goldScript ? '#f0cf78' : '';   // dourado só no Neymar; demais usam a cor da seleção
-    jr.classList.remove('show');
-    jr.innerHTML = jrWriteSVG(p.draw);
+    jr.style.fontSize = Math.min(98, Math.round(420/p.draw.length)) + 'px';
+    jr.innerHTML = '';   // letras aparecem quando showJR rodar
     if(document.body.classList.contains('loaded')) setTimeout(showJR, 1100);  // nasce depois do nome
   }else{
     jr.style.display = 'none';

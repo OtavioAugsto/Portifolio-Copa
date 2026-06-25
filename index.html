@@ -206,12 +206,18 @@ nav.menu a.active::after{
 .jr-text{
   fill:transparent;
   stroke:#17256b; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round;
-  stroke-dasharray:1600; stroke-dashoffset:1600;
-  animation:jrDraw 2s ease forwards, jrFill .7s ease 1.85s forwards;
+  stroke-dasharray:1600;
+  animation:jrLoop 6s ease-in-out infinite;
   filter:drop-shadow(0 0 5px rgba(255,255,255,.7)) drop-shadow(0 0 16px rgba(110,150,255,.6));
 }
-@keyframes jrDraw{ to{ stroke-dashoffset:0; } }
-@keyframes jrFill{ to{ fill:#17256b; } }
+@keyframes jrLoop{
+  0%   { stroke-dashoffset:1600; fill:rgba(23,37,107,0); opacity:1; }
+  26%  { stroke-dashoffset:0;    fill:rgba(23,37,107,0); }
+  40%  { stroke-dashoffset:0;    fill:rgba(23,37,107,1); }
+  82%  { stroke-dashoffset:0;    fill:rgba(23,37,107,1); opacity:1; }
+  95%  { stroke-dashoffset:0;    fill:rgba(23,37,107,0); opacity:0; }
+  100% { stroke-dashoffset:1600; fill:rgba(23,37,107,0); opacity:0; }
+}
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } }
 .group{
   display:flex; align-items:center; gap:14px;

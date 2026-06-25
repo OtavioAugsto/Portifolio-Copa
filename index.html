@@ -279,20 +279,23 @@ nav.menu a.active::after{
   pointer-events:none; color:var(--gold);
 }
 .wc-word{
-  font-family:'Bebas Neue','Anton',sans-serif; font-size:37px; letter-spacing:8px; line-height:.88;
-  background:linear-gradient(180deg,
-    color-mix(in srgb, var(--gold) 55%, #ffffff) 0%,
-    var(--gold) 48%,
-    color-mix(in srgb, var(--gold) 60%, #000000) 100%);
+  font-family:'Bebas Neue','Anton',sans-serif; font-size:26px; letter-spacing:7px; line-height:.9;
+  background:
+    linear-gradient(115deg, transparent 42%, rgba(255,255,255,.9) 50%, transparent 58%),
+    linear-gradient(180deg, color-mix(in srgb, var(--gold) 55%, #ffffff) 0%, var(--gold) 48%, color-mix(in srgb, var(--gold) 60%, #000000) 100%);
+  background-size:250% 100%, 100% 100%;
+  background-position:200% 0, 0 0;
+  background-repeat:no-repeat, no-repeat;
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
+  animation:wcGlint 5s ease-in-out infinite;
   filter:
     drop-shadow(0 2px 4px color-mix(in srgb, var(--gold) 55%, transparent))
     drop-shadow(0 0 6px color-mix(in srgb, var(--gold) 40%, transparent));
 }
 .wc-cup-wrap{ position:relative; display:inline-block; line-height:0; margin:1px 0; }
 .wc-cup-img{
-  height:60px; width:auto; display:block;
+  height:48px; width:auto; display:block;
   filter:drop-shadow(0 5px 12px rgba(0,0,0,.5));
 }
 /* brilho de luz varrendo a taça (recortado na silhueta) */
@@ -306,18 +309,22 @@ nav.menu a.active::after{
 }
 @keyframes cupGlint{ 0%{ background-position:200% 0; } 65%,100%{ background-position:-80% 0; } }
 .wc-year{
-  font-family:'Bebas Neue','Anton',sans-serif; font-size:23px; letter-spacing:8px; line-height:.9;
-  margin:0 0 0 8px;
-  background:linear-gradient(180deg,
-    color-mix(in srgb, var(--gold) 55%, #ffffff) 0%,
-    var(--gold) 48%,
-    color-mix(in srgb, var(--gold) 60%, #000000) 100%);
+  font-family:'Bebas Neue','Anton',sans-serif; font-size:16px; letter-spacing:7px; line-height:.9;
+  margin:0 0 0 7px;
+  background:
+    linear-gradient(115deg, transparent 42%, rgba(255,255,255,.9) 50%, transparent 58%),
+    linear-gradient(180deg, color-mix(in srgb, var(--gold) 55%, #ffffff) 0%, var(--gold) 48%, color-mix(in srgb, var(--gold) 60%, #000000) 100%);
+  background-size:250% 100%, 100% 100%;
+  background-position:200% 0, 0 0;
+  background-repeat:no-repeat, no-repeat;
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
+  animation:wcGlint 5s ease-in-out .3s infinite;
   filter:
     drop-shadow(0 2px 4px color-mix(in srgb, var(--gold) 55%, transparent))
     drop-shadow(0 0 5px color-mix(in srgb, var(--gold) 40%, transparent));
 }
+@keyframes wcGlint{ 0%{ background-position:200% 0, 0 0; } 65%,100%{ background-position:-80% 0, 0 0; } }
 @keyframes wcShine{ 0%{ background-position:200% 0; } 75%,100%{ background-position:-60% 0; } }
 
 /* ============================================================

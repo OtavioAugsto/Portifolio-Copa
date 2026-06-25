@@ -56,14 +56,17 @@ body::before{
 #site{ transform:translateY(100%); transition:transform 1s cubic-bezier(.7,0,.2,1); }
 body.loaded #site{ transform:translateY(0); }
 .pre-inner{ display:flex; flex-direction:column; align-items:center; gap:20px; }
-.pre-cup{ height:130px; width:auto; filter:drop-shadow(0 0 34px rgba(216,179,92,.5)); animation:preFloat 2.2s ease-in-out infinite; }
-@keyframes preFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-12px); } }
-.pre-title{ font-family:'Anton',sans-serif; font-size:34px; letter-spacing:6px; color:#fff; }
-.pre-title span{ color:var(--gold); }
+.pre-cup-wrap{ position:relative; width:max-content; margin:0 auto; }
+.pre-cup{ height:150px; width:auto; display:block; }
+.pre-cup-dim{ filter:brightness(.25) grayscale(.5); }   /* taça apagada (fundo) */
+.pre-cup-fill{
+  position:absolute; left:0; top:0;
+  clip-path:inset(100% 0 0 0); -webkit-clip-path:inset(100% 0 0 0);
+  filter:drop-shadow(0 0 26px rgba(216,179,92,.55));
+  transition:clip-path .15s linear, -webkit-clip-path .15s linear;
+}
 .pre-sub{ font-family:'Bebas Neue','Anton',sans-serif; font-size:23px; letter-spacing:9px; color:#cfd3da; }
 .pre-sub span{ color:var(--gold); }
-.pre-bar{ width:220px; height:3px; background:rgba(255,255,255,.12); border-radius:99px; overflow:hidden; }
-.pre-bar span{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--gold),#ffffff); border-radius:99px; transition:width .12s linear; }
 .pre-pct{
   font-family:'Bebas Neue','Anton',sans-serif; font-size:54px; letter-spacing:4px; line-height:1;
   background:linear-gradient(180deg,
@@ -474,9 +477,11 @@ nav.menu a.active::after{
   <!-- PRELOADER (tela de carregamento) -->
   <div class="preloader" id="preloader">
     <div class="pre-inner">
-      <img class="pre-cup" src="imagens/taca.png" alt="">
+      <div class="pre-cup-wrap">
+        <img class="pre-cup pre-cup-dim" src="imagens/taca.png" alt="">
+        <img class="pre-cup pre-cup-fill" id="preCupFill" src="imagens/taca.png" alt="">
+      </div>
       <div class="pre-sub">WORLD CUP <span>2026</span></div>
-      <div class="pre-bar"><span id="preBarFill"></span></div>
       <div class="pre-pct" id="prePct">0%</div>
     </div>
   </div>
@@ -484,17 +489,19 @@ nav.menu a.active::after{
     (function(){
       var pre=document.getElementById('preloader'),
           pct=document.getElementById('prePct'),
-          bar=document.getElementById('preBarFill');
+          fill=document.getElementById('preCupFill');
       var n=0;
       var t=setInterval(function(){
-        n+=Math.floor(Math.random()*9)+4;
+        n+=Math.floor(Math.random()*7)+3;
         if(n>=100){ n=100; clearInterval(t); setTimeout(function(){
           document.body.classList.add('loaded');
           pre.classList.add('done');
           var s=document.getElementById('site');
           if(s) s.addEventListener('transitionend', function(e){ if(e.propertyName==='transform') s.style.transform='none'; });
         },400); }
-        pct.textContent=n+'%'; bar.style.width=n+'%';
+        pct.textContent=n+'%';
+        fill.style.clipPath='inset('+(100-n)+'% 0 0 0)';
+        fill.style.webkitClipPath='inset('+(100-n)+'% 0 0 0)';
       },85);
     })();
   </script>

@@ -49,14 +49,16 @@ body::before{
   position:fixed; inset:0; z-index:9999;
   background:#08080a;
   display:flex; align-items:center; justify-content:center;
-  transition:opacity .6s ease, visibility .6s;
+  transition:transform .85s cubic-bezier(.76,0,.24,1);
 }
-.preloader.done{ opacity:0; visibility:hidden; }
+.preloader.done{ transform:translateY(-100%); }
 .pre-inner{ display:flex; flex-direction:column; align-items:center; gap:20px; }
 .pre-cup{ height:130px; width:auto; filter:drop-shadow(0 0 34px rgba(216,179,92,.5)); animation:preFloat 2.2s ease-in-out infinite; }
 @keyframes preFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-12px); } }
 .pre-title{ font-family:'Anton',sans-serif; font-size:34px; letter-spacing:6px; color:#fff; }
 .pre-title span{ color:var(--gold); }
+.pre-sub{ font-family:'Bebas Neue','Anton',sans-serif; font-size:17px; letter-spacing:8px; color:#9aa0aa; }
+.pre-sub span{ color:var(--gold); }
 .pre-bar{ width:220px; height:3px; background:rgba(255,255,255,.12); border-radius:99px; overflow:hidden; }
 .pre-bar span{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--gold),#ffffff); border-radius:99px; transition:width .12s linear; }
 .pre-pct{ font-family:'Oswald',sans-serif; font-size:15px; letter-spacing:6px; color:var(--dim); }
@@ -462,6 +464,7 @@ nav.menu a.active::after{
     <div class="pre-inner">
       <img class="pre-cup" src="imagens/taca.png" alt="">
       <div class="pre-title">CRAQUES <span>DA COPA</span></div>
+      <div class="pre-sub">WORLD CUP <span>2026</span></div>
       <div class="pre-bar"><span id="preBarFill"></span></div>
       <div class="pre-pct" id="prePct">0%</div>
     </div>

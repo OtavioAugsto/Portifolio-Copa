@@ -711,9 +711,11 @@ function signatureSVG(text){
 
 /* "JR." manuscrito que se desenha (efeito de escrita) */
 function jrWriteSVG(text){
+  var fs=150;
+  var w=Math.max(300, Math.round(text.length*fs*0.6));   // largura adapta ao tamanho do nome
   return `
-  <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <text class="jr-text" x="150" y="126" text-anchor="middle" font-family="'Caveat', cursive" font-weight="700" font-size="150">${text}</text>
+  <svg viewBox="0 0 ${w} 180" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <text class="jr-text" x="${w/2}" y="140" text-anchor="middle" font-family="'Caveat', cursive" font-weight="700" font-size="${fs}">${text}</text>
   </svg>`;
 }
 
@@ -742,7 +744,7 @@ const players = [
     logo:["CR","7"], tagline:"The Legend",
     first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
     code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
-    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"",
+    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/modelo/bg-cr7.webp", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/modelo/logo-cr7.svg",
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
@@ -774,7 +776,7 @@ const players = [
     logo:["KM","7"], tagline:"The Phenomenon",
     first:"KYLIAN", script:"Mbappé", nick:"Kylian", vname:"Kylian Mbappé",
     code:"fr", country:"França", group:"World Cup 2026 · Group I",
-    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"",
+    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"imagens/modelo/bg-mbappe.webp", bigName:"KYLIAN", draw:"Mbappé", tagline:"A Nova Era. <span>Allez!</span>", logoImg:"imagens/modelo/logo-mbappe.svg",
     quoteA:"Speed is nothing without control.", quoteB:"I want to make history.",
     nextQuoteA:"Dreams don't work", nextQuoteB:"unless you do.",
     bio:["Born in the suburbs.","Faster than the rest.","Future of the game."],
@@ -881,6 +883,7 @@ function render(){
     heroName.style.display = '';
     const bn = $('bigName');
     bn.textContent = p.bigName;
+    bn.style.fontSize = p.bigSize || '';
     bn.classList.remove('born');
     if(document.body.classList.contains('loaded')){ void bn.offsetWidth; bn.classList.add('born'); }
     $('heroTagline').innerHTML = p.tagline || '';

@@ -44,6 +44,20 @@ body::before{
     radial-gradient(40% 40% at 85% 90%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 70%);
   pointer-events:none;
 }
+/* camada de imagem de fundo por jogador */
+.bg-layer{
+  position:fixed; inset:0; z-index:1;
+  background-size:cover; background-position:center right;
+  opacity:0; transition:opacity .6s ease;
+  pointer-events:none;
+}
+.bg-layer.on{ opacity:1; }
+.bg-layer::after{
+  content:""; position:absolute; inset:0;
+  background:
+    linear-gradient(90deg, rgba(8,8,10,.95) 0%, rgba(8,8,10,.7) 32%, rgba(8,8,10,.2) 68%, rgba(8,8,10,.45) 100%),
+    linear-gradient(0deg, rgba(8,8,10,.96) 0%, rgba(8,8,10,.1) 24%, transparent 45%);
+}
 
 /* ============================================================
    HEADER / NAV
@@ -268,6 +282,9 @@ nav.menu a.active::after{
 </head>
 <body>
 
+  <!-- FUNDO (imagem por jogador, atrás de tudo) -->
+  <div class="bg-layer" id="bgLayer"></div>
+
   <!-- HEADER -->
   <header>
     <div class="logo" id="logo">CR<span>7</span></div>
@@ -368,7 +385,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a",
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar.png",
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
@@ -384,7 +401,7 @@ const players = [
     logo:["CR","7"], tagline:"The Legend",
     first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
     code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
-    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff",
+    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"",
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
@@ -400,7 +417,7 @@ const players = [
     logo:["LM","10"], tagline:"The G.O.A.T.",
     first:"LIONEL", script:"Messi", nick:"Leo", vname:"Lionel Messi",
     code:"ar", country:"Argentina", group:"World Cup 2026 · Group J",
-    c1:"#75aadb", c2:"#5a8fc0", ink:"#0c2233",
+    c1:"#75aadb", c2:"#5a8fc0", ink:"#0c2233", bg:"",
     quoteA:"You have to fight to reach your dream.", quoteB:"Sacrifice and work hard for it.",
     nextQuoteA:"Decisions are made with instinct —", nextQuoteB:"never with fear.",
     bio:["Smaller in size.","Bigger than the game.","Champion of the world."],
@@ -416,7 +433,7 @@ const players = [
     logo:["KM","7"], tagline:"The Phenomenon",
     first:"KYLIAN", script:"Mbappé", nick:"Kylian", vname:"Kylian Mbappé",
     code:"fr", country:"França", group:"World Cup 2026 · Group I",
-    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff",
+    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"",
     quoteA:"Speed is nothing without control.", quoteB:"I want to make history.",
     nextQuoteA:"Dreams don't work", nextQuoteB:"unless you do.",
     bio:["Born in the suburbs.","Faster than the rest.","Future of the game."],
@@ -432,7 +449,7 @@ const players = [
     logo:["LY","10"], tagline:"The Prodigy",
     first:"LAMINE", script:"Yamal", nick:"Lamine", vname:"Lamine Yamal",
     code:"es", country:"Espanha", group:"World Cup 2026 · Group H",
-    c1:"#e23636", c2:"#b32626", ink:"#ffffff",
+    c1:"#e23636", c2:"#b32626", ink:"#ffffff", bg:"",
     quoteA:"Football is about enjoying yourself.", quoteB:"Age is just a number.",
     nextQuoteA:"I play without fear —", nextQuoteB:"that's my superpower.",
     bio:["A kid with no fear.","Magic in his feet.","Born to break records."],
@@ -448,7 +465,7 @@ const players = [
     logo:["JB","5"], tagline:"The General",
     first:"JUDE", script:"Bellingham", nick:"Jude", vname:"Jude Bellingham",
     code:"gb-eng", country:"Inglaterra", group:"World Cup 2026 · Group L",
-    c1:"#ffffff", c2:"#c2c7d0", ink:"#14161c",
+    c1:"#ffffff", c2:"#c2c7d0", ink:"#14161c", bg:"",
     quoteA:"Hard work beats talent", quoteB:"when talent doesn't work hard.",
     nextQuoteA:"Born to lead,", nextQuoteB:"built to win.",
     bio:["Calm under pressure.","Leader on the pitch.","Born for the big nights."],
@@ -510,17 +527,32 @@ function render(){
       <div><b>${s[1]}</b><small>${s[2]}</small></div>
     </div>`).join('');
 
-  // foto central
-  const photo = $('photo');
-  const img = dropped[current] || p.photo;
-  if(img){
-    photo.style.backgroundImage = `url('${img}')`;
-    photo.classList.add('has-img');
-    photo.querySelector('.ph').style.display = 'none';
+  // fundo cinematográfico (imagem atrás de tudo)
+  const bgLayer = $('bgLayer');
+  if(p.bg){
+    bgLayer.style.backgroundImage = `url('${p.bg}')`;
+    bgLayer.classList.add('on');
   }else{
-    photo.style.backgroundImage = 'none';
-    photo.classList.remove('has-img');
-    photo.querySelector('.ph').style.display = 'flex';
+    bgLayer.classList.remove('on');
+    bgLayer.style.backgroundImage = 'none';
+  }
+
+  // foto central (escondida quando há imagem de fundo)
+  const photo = $('photo');
+  if(p.bg){
+    photo.style.display = 'none';
+  }else{
+    photo.style.display = '';
+    const img = dropped[current] || p.photo;
+    if(img){
+      photo.style.backgroundImage = `url('${img}')`;
+      photo.classList.add('has-img');
+      photo.querySelector('.ph').style.display = 'none';
+    }else{
+      photo.style.backgroundImage = 'none';
+      photo.classList.remove('has-img');
+      photo.querySelector('.ph').style.display = 'flex';
+    }
   }
 
   // barra inferior

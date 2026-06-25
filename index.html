@@ -287,15 +287,15 @@ nav.menu a.active::after{
   transform:translateY(55%);
   z-index:2; pointer-events:none;
   width:clamp(150px,12vw,205px);
-  opacity:0; transition:opacity .45s ease;
+  opacity:0;
   -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0);
-  animation:jrWipe 1.5s ease forwards;
   color:var(--gold);   /* cor da seleção */
 }
-.jr-write.show{ opacity:1; }
-@keyframes jrWipe{   /* escreve da esquerda pra direita (uma vez) */
-  from{ -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0); }
-  to{ -webkit-clip-path:inset(0 0 0 0); clip-path:inset(0 0 0 0); }
+.jr-write.show{ animation:jrIn 1.7s cubic-bezier(.2,.7,.2,1) forwards; }
+@keyframes jrIn{   /* vem de baixo escrevendo, suave */
+  0%{ opacity:0; transform:translateY(95%); -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0); }
+  20%{ opacity:1; }
+  100%{ opacity:1; transform:translateY(55%); -webkit-clip-path:inset(0 0 0 0); clip-path:inset(0 0 0 0); }
 }
 .jr-write svg{ width:100%; height:auto; overflow:visible; }
 .jr-text{
@@ -840,10 +840,9 @@ const stage = $('stage');
    ============================================================ */
 function showJR(){
   var jr=document.getElementById('jrWrite'); if(!jr) return;
-  jr.classList.add('show');
-  jr.style.animation='none'; void jr.offsetWidth; jr.style.animation='';          // reinicia o wipe
+  jr.classList.remove('show'); void jr.offsetWidth; jr.classList.add('show');       // reinicia a entrada (vem de baixo + escreve)
   var t=jr.querySelector('.jr-text');
-  if(t){ t.style.animation='none'; void t.offsetWidth; t.style.animation=''; }     // reinicia o preenchimento
+  if(t){ t.style.animation='none'; void t.offsetWidth; t.style.animation=''; }      // reinicia o preenchimento
 }
 
 function render(){

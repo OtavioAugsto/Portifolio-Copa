@@ -44,6 +44,23 @@ body::before{
     radial-gradient(40% 40% at 85% 90%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 70%);
   pointer-events:none;
 }
+/* PRELOADER (tela de carregamento) */
+.preloader{
+  position:fixed; inset:0; z-index:9999;
+  background:#08080a;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .6s ease, visibility .6s;
+}
+.preloader.done{ opacity:0; visibility:hidden; }
+.pre-inner{ display:flex; flex-direction:column; align-items:center; gap:20px; }
+.pre-cup{ height:130px; width:auto; filter:drop-shadow(0 0 34px rgba(216,179,92,.5)); animation:preFloat 2.2s ease-in-out infinite; }
+@keyframes preFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-12px); } }
+.pre-title{ font-family:'Anton',sans-serif; font-size:34px; letter-spacing:6px; color:#fff; }
+.pre-title span{ color:var(--gold); }
+.pre-bar{ width:220px; height:3px; background:rgba(255,255,255,.12); border-radius:99px; overflow:hidden; }
+.pre-bar span{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--gold),#ffffff); border-radius:99px; transition:width .12s linear; }
+.pre-pct{ font-family:'Oswald',sans-serif; font-size:15px; letter-spacing:6px; color:var(--dim); }
+
 /* camada de imagem de fundo por jogador */
 .bg-layer{
   position:fixed; inset:0; z-index:1; overflow:hidden;
@@ -439,6 +456,29 @@ nav.menu a.active::after{
 </style>
 </head>
 <body>
+
+  <!-- PRELOADER (tela de carregamento) -->
+  <div class="preloader" id="preloader">
+    <div class="pre-inner">
+      <img class="pre-cup" src="imagens/taca.png" alt="">
+      <div class="pre-title">CRAQUES <span>DA COPA</span></div>
+      <div class="pre-bar"><span id="preBarFill"></span></div>
+      <div class="pre-pct" id="prePct">0%</div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      var pre=document.getElementById('preloader'),
+          pct=document.getElementById('prePct'),
+          bar=document.getElementById('preBarFill');
+      var n=0;
+      var t=setInterval(function(){
+        n+=Math.floor(Math.random()*9)+4;
+        if(n>=100){ n=100; clearInterval(t); setTimeout(function(){ pre.classList.add('done'); },450); }
+        pct.textContent=n+'%'; bar.style.width=n+'%';
+      },85);
+    })();
+  </script>
 
   <!-- FUNDO (imagem por jogador, atrás de tudo) -->
   <div class="bg-layer" id="bgLayer">

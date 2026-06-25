@@ -357,7 +357,9 @@ nav.menu a.active::after{
   padding:10px 20px 12px;
   background:radial-gradient(58% 62% at 50% 46%, rgba(6,6,9,.66), rgba(6,6,9,0) 78%);
   pointer-events:none; color:var(--gold);
+  opacity:0; transition:opacity .45s ease;     /* só aparece quando a taça do loading pousa */
 }
+.wc-badge.show{ opacity:1; }
 .wc-word{
   font-family:'Bebas Neue','Anton',sans-serif; font-size:25px; letter-spacing:8px; line-height:.8;
   text-transform:uppercase; margin-left:8px;
@@ -543,6 +545,9 @@ nav.menu a.active::after{
             flyer.style.transform='translate('+dx+'px,'+dy+'px) scale('+sc+')';
             flyer.style.opacity='0';
             setTimeout(function(){ if(flyer.parentNode) flyer.parentNode.removeChild(flyer); }, 1400);
+            setTimeout(function(){ target.classList.add('show'); }, 1150);  // emblema aparece no pouso
+          } else {
+            var b=document.querySelector('.wc-badge'); if(b) b.classList.add('show');
           }
           pre.classList.add('done');                              // tela de loading some
         },400); }

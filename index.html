@@ -932,7 +932,7 @@ function render(){
     </div>`).join('');
 
   // card próximo jogador
-  const npImg = dropped[(current+1)%total] || next.photo;
+  const npImg = dropped[(current+1)%total] || next.photo || next.bg;
   const np = $('nextPhoto');
   np.style.backgroundImage = npImg ? `url('${npImg}')` : 'none';
   np.textContent = npImg ? '' : 'Foto';

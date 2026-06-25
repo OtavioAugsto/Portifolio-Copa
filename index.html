@@ -8,7 +8,7 @@
 <!-- Fontes -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@300;400;500;600&family=Kaushan+Script&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@300;400;500;600&family=Caveat:wght@700&family=Kaushan+Script&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
@@ -157,6 +157,25 @@ nav.menu a.active::after{
   font-family:'Kaushan Script'; font-size:30px; color:var(--gold);
 }
 .nick svg.sig{ height:82px; width:auto; max-width:100%; display:block; overflow:visible; margin:-8px 0 -12px -4px; filter:drop-shadow(0 0 12px rgba(245,205,115,.6)); }
+
+/* "JR." manuscrito com efeito de escrita */
+.jr-write{
+  position:fixed; z-index:6; pointer-events:none;
+  left:var(--jr-left,42%); top:var(--jr-top,47%);
+  transform:translate(-50%,-50%);
+  width:clamp(170px,16vw,240px);
+}
+.jr-write svg{ width:100%; height:auto; overflow:visible; }
+.jr-text{
+  fill:transparent;
+  stroke:#ffd24a; stroke-width:2; stroke-linejoin:round; stroke-linecap:round;
+  stroke-dasharray:1600; stroke-dashoffset:1600;
+  animation:jrDraw 2s ease forwards, jrFill .7s ease 1.85s forwards;
+  filter:drop-shadow(0 0 12px rgba(255,210,80,.7));
+}
+@keyframes jrDraw{ to{ stroke-dashoffset:0; } }
+@keyframes jrFill{ to{ fill:#ffd24a; } }
+@media (max-width:1100px){ .jr-write{ display:none !important; } }
 .group{
   display:flex; align-items:center; gap:14px;
   font-size:12px; letter-spacing:5px; color:var(--dim); text-transform:uppercase; margin-top:2px;
@@ -287,6 +306,9 @@ nav.menu a.active::after{
   <!-- FUNDO (imagem por jogador, atrás de tudo) -->
   <div class="bg-layer" id="bgLayer"></div>
 
+  <!-- "JR." escrito à mão (SVG animado) -->
+  <div class="jr-write" id="jrWrite"></div>
+
   <!-- HEADER -->
   <header>
     <div class="logo" id="logo">CR<span>7</span></div>
@@ -386,6 +408,14 @@ function signatureSVG(text){
   </svg>`;
 }
 
+/* "JR." manuscrito que se desenha (efeito de escrita) */
+function jrWriteSVG(text){
+  return `
+  <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <text class="jr-text" x="150" y="126" text-anchor="middle" font-family="'Caveat', cursive" font-weight="700" font-size="150">${text}</text>
+  </svg>`;
+}
+
 /* ============================================================
    DADOS DOS JOGADORES  (edite tudo aqui)
    - photo: caminho do PNG (ex "fotos/cr7.png"). Vazio = placeholder/arrastar.
@@ -395,7 +425,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", sig:"Neymar Jr.", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar.png",
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar2.png", draw:"JR.",
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
@@ -541,6 +571,16 @@ function render(){
   }else{
     bgLayer.classList.remove('on');
     bgLayer.style.backgroundImage = 'none';
+  }
+
+  // "JR." manuscrito animado (só quem tem p.draw)
+  const jr = $('jrWrite');
+  if(p.draw){
+    jr.style.display = '';
+    jr.innerHTML = jrWriteSVG(p.draw);
+  }else{
+    jr.style.display = 'none';
+    jr.innerHTML = '';
   }
 
   // foto central (escondida quando há imagem de fundo)

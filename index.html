@@ -83,6 +83,7 @@ header{
 }
 .logo span{ color:var(--gold); }
 .logo-img{ height:44px; width:auto; display:block; filter:drop-shadow(0 3px 8px rgba(0,0,0,.55)); }
+.sidebar .logo{ position:absolute; top:16px; left:0; right:0; display:flex; justify-content:center; }
 nav.menu{ display:flex; gap:42px; }
 nav.menu a{
   color:#cfcfcf; text-decoration:none;
@@ -309,7 +310,7 @@ nav.menu a.active::after{
 @keyframes cupGlint{ 0%{ background-position:200% 0; } 65%,100%{ background-position:-80% 0; } }
 .wc-year{
   font-family:'Bebas Neue','Anton',sans-serif; font-size:15px; letter-spacing:12px; line-height:.9;
-  margin:2px 0 0 12px;
+  margin:6px 0 0 12px;
   background:
     linear-gradient(115deg, transparent 42%, rgba(255,255,255,.9) 50%, transparent 58%),
     linear-gradient(180deg, color-mix(in srgb, var(--gold) 55%, #ffffff) 0%, var(--gold) 48%, color-mix(in srgb, var(--gold) 60%, #000000) 100%);
@@ -432,6 +433,7 @@ nav.menu a.active::after{
 
   <!-- BARRA LATERAL (vidro + nome vertical + índice) -->
   <aside class="sidebar">
+    <div class="logo" id="logo">CR<span>7</span></div>
     <div class="vertical-name" id="vName"></div>
     <div class="index-num" id="indexNum">01</div>
   </aside>
@@ -446,11 +448,6 @@ nav.menu a.active::after{
     <span class="wc-word">CUP</span>
     <span class="wc-year">2026</span>
   </div>
-
-  <!-- HEADER -->
-  <header>
-    <div class="logo" id="logo">CR<span>7</span></div>
-  </header>
 
   <!-- PALCO -->
   <main class="stage" id="stage">
@@ -474,13 +471,6 @@ nav.menu a.active::after{
       <input type="file" id="fileInput" accept="image/png,image/*" hidden>
     </section>
 
-    <!-- DIREITA -->
-    <aside class="right">
-      <div class="about-title">About <span id="aboutName"></span></div>
-      <div class="about-bio" id="bio"></div>
-      <div class="country"><img id="cFlag" src="" alt=""><span id="cName"></span></div>
-      <div class="stats" id="stats"></div>
-    </aside>
   </main>
 
   <div class="motto">Dream it · Believe it · Achieve it</div>
@@ -690,18 +680,6 @@ function render(){
   $('vName').textContent = p.vname;
   $('nick').innerHTML = signatureSVG(p.sig || p.nick);
   $('group').textContent = p.group;
-
-  // direita
-  $('aboutName').textContent = p.nick.toUpperCase();
-  $('bio').innerHTML = p.bio.map(l=>`<p>${l}</p>`).join('');
-  $('cFlag').src = flag(p.code);
-  $('cFlag').alt = p.country;
-  $('cName').textContent = p.country;
-  $('stats').innerHTML = p.stats.map(s=>`
-    <div class="stat">
-      <span class="ic">${ICONS[s[0]]||ICONS.star}</span>
-      <div><b>${s[1]}</b><small>${s[2]}</small></div>
-    </div>`).join('');
 
   // fundo cinematográfico (imagem atrás de tudo)
   const bgLayer = $('bgLayer');

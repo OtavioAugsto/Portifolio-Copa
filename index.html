@@ -271,8 +271,8 @@ nav.menu a.active::after{
   animation:nameIn 1.15s cubic-bezier(.2,.75,.25,1) both, nameSheen 5s ease-in-out 1.4s infinite;
 }
 @keyframes nameIn{
-  from{ opacity:0; transform:translateY(95px); clip-path:inset(100% 0 0 0); -webkit-clip-path:inset(100% 0 0 0); }
-  to{ opacity:1; transform:translateY(0); clip-path:inset(0 0 0 0); -webkit-clip-path:inset(0 0 0 0); }
+  from{ opacity:0; transform:translateY(120px); }
+  to{ opacity:1; transform:translateY(0); }
 }
 @keyframes nameSheen{ 0%{ background-position:200% 0,0 0,0 0; } 55%,100%{ background-position:-70% 0,0 0,0 0; } }
 .jr-write{
@@ -529,10 +529,10 @@ nav.menu a.active::after{
         if(n>=100){ n=100; clearInterval(t); setTimeout(function(){
           var s=document.getElementById('site');
           document.body.classList.add('loaded');                 // conteúdo sobe
-          setTimeout(function(){                                  // NEYMAR "nasce" ao revelar
+          setTimeout(function(){                                  // NEYMAR "nasce" depois do site subir
             var bn=document.getElementById('bigName');
             if(bn){ bn.style.animation='none'; void bn.offsetWidth; bn.style.animation=''; }
-          },300);
+          },1050);
           if(s) s.addEventListener('transitionend', function(e){ if(e.propertyName==='transform') s.style.transform='none'; });
           // o lockup (WORLD/taça/CUP/2026) voa pro emblema, batendo no mesmo formato
           var flyer=document.querySelector('.pre-lockup');

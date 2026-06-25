@@ -494,10 +494,29 @@ nav.menu a.active::after{
       var t=setInterval(function(){
         n+=Math.floor(Math.random()*7)+3;
         if(n>=100){ n=100; clearInterval(t); setTimeout(function(){
-          document.body.classList.add('loaded');
-          pre.classList.add('done');
           var s=document.getElementById('site');
+          document.body.classList.add('loaded');                 // conteúdo sobe
           if(s) s.addEventListener('transitionend', function(e){ if(e.propertyName==='transform') s.style.transform='none'; });
+          // taça voa do centro pro emblema (canto superior direito)
+          var flyer=document.querySelector('.pre-cup-wrap');
+          var target=document.querySelector('.wc-cup-img');
+          if(flyer && target){
+            var f=flyer.getBoundingClientRect(), tr=target.getBoundingClientRect();
+            var sc=tr.height/f.height;
+            var dx=(tr.left+tr.width/2)-(f.left+f.width/2);
+            var dy=(tr.top+tr.height/2)-(f.top+f.height/2);
+            flyer.style.position='fixed';
+            flyer.style.left=f.left+'px'; flyer.style.top=f.top+'px';
+            flyer.style.margin='0'; flyer.style.zIndex='10000';
+            flyer.style.transformOrigin='center center';
+            flyer.style.transition='transform 1.05s cubic-bezier(.6,0,.2,1), opacity .35s ease .9s';
+            document.body.appendChild(flyer);
+            void flyer.offsetWidth;
+            flyer.style.transform='translate('+dx+'px,'+dy+'px) scale('+sc+')';
+            flyer.style.opacity='0';
+            setTimeout(function(){ if(flyer.parentNode) flyer.parentNode.removeChild(flyer); }, 1400);
+          }
+          pre.classList.add('done');                              // tela de loading some
         },400); }
         pct.textContent=n+'%';
         fill.style.clipPath='inset('+(100-n)+'% 0 0 0)';
@@ -529,17 +548,6 @@ nav.menu a.active::after{
     <div class="vertical-name" id="vName"></div>
     <div class="index-num" id="indexNum">01</div>
   </aside>
-
-  <!-- EMBLEMA: WORLD / taça / CUP / 2026 (brilho metálico nas palavras) -->
-  <div class="wc-badge" aria-hidden="true">
-    <span class="wc-word">WORLD</span>
-    <span class="wc-cup-wrap">
-      <img class="wc-cup-img" src="imagens/taca.png" alt="Taça da Copa">
-      <span class="wc-cup-glint"></span>
-    </span>
-    <span class="wc-word">CUP</span>
-    <span class="wc-year">2026</span>
-  </div>
 
   <!-- PALCO -->
   <main class="stage" id="stage">
@@ -597,6 +605,17 @@ nav.menu a.active::after{
   </div>
 
   </div><!-- /#site -->
+
+  <!-- EMBLEMA (fora do #site, fixo — destino da taça do loading) -->
+  <div class="wc-badge" aria-hidden="true">
+    <span class="wc-word">WORLD</span>
+    <span class="wc-cup-wrap">
+      <img class="wc-cup-img" src="imagens/taca.png" alt="Taça da Copa">
+      <span class="wc-cup-glint"></span>
+    </span>
+    <span class="wc-word">CUP</span>
+    <span class="wc-year">2026</span>
+  </div>
 
 <script>
 /* ============================================================

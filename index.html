@@ -730,7 +730,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", sig:"Neymar Jr.", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", tagline:"Rumo ao Hexa. <span>Last Dance.</span>",
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>",
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
@@ -899,6 +899,7 @@ function render(){
   const jr = $('jrWrite');
   if(p.draw){
     jr.style.display = '';
+    jr.style.color = p.goldScript ? '#f0cf78' : '';   // dourado só no Neymar; demais usam a cor da seleção
     jr.classList.remove('show');
     jr.innerHTML = jrWriteSVG(p.draw);
     if(document.body.classList.contains('loaded')) setTimeout(showJR, 1100);  // nasce depois do nome

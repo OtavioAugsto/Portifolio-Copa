@@ -289,29 +289,29 @@ nav.menu a.active::after{
   width:clamp(150px,12vw,205px);
   opacity:0; transition:opacity .45s ease;
   -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0);
-  animation:jrWipe 6s ease-in-out infinite;
+  animation:jrWipe 1.5s ease forwards;
   color:var(--gold);   /* cor da seleção */
 }
 .jr-write.show{ opacity:1; }
-@keyframes jrWipe{   /* "escrevendo" da esquerda pra direita */
-  0%{ -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0); }
-  34%{ -webkit-clip-path:inset(0 0 0 0); clip-path:inset(0 0 0 0); }
-  100%{ -webkit-clip-path:inset(0 0 0 0); clip-path:inset(0 0 0 0); }
+@keyframes jrWipe{   /* escreve da esquerda pra direita (uma vez) */
+  from{ -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0); }
+  to{ -webkit-clip-path:inset(0 0 0 0); clip-path:inset(0 0 0 0); }
 }
 .jr-write svg{ width:100%; height:auto; overflow:visible; }
 .jr-text{
   fill:currentColor; fill-opacity:0;
   stroke:currentColor; stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round;
-  animation:jrFill 6s ease-in-out infinite;
+  animation:jrFill 1.9s ease forwards, jrGlow 5s ease-in-out 2.1s infinite;
   filter:drop-shadow(0 0 5px rgba(255,255,255,.4)) drop-shadow(0 0 16px currentColor);
 }
-@keyframes jrFill{   /* contorno enquanto escreve -> preenchimento (SVG) entra */
-  0%   { fill-opacity:0; opacity:1; }
-  34%  { fill-opacity:0; }
-  52%  { fill-opacity:1; }
-  88%  { fill-opacity:1; opacity:1; }
-  96%  { opacity:0; }
-  100% { fill-opacity:0; opacity:0; }
+@keyframes jrFill{   /* escreve o contorno -> preenche e FICA (sem piscar) */
+  0%{ fill-opacity:0; }
+  58%{ fill-opacity:0; }
+  100%{ fill-opacity:1; }
+}
+@keyframes jrGlow{   /* fluxo de brilho contínuo no ritmo do nome (5s) */
+  0%,100%{ filter:drop-shadow(0 0 4px rgba(255,255,255,.3)) drop-shadow(0 0 9px currentColor); }
+  50%{ filter:drop-shadow(0 0 8px rgba(255,255,255,.55)) drop-shadow(0 0 22px currentColor); }
 }
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }
 .group{

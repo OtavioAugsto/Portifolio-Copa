@@ -8,7 +8,7 @@
 <!-- Fontes -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@300;400;500;600&family=Caveat:wght@700&family=Kaushan+Script&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@300;400;500;600&family=Bebas+Neue&family=Caveat:wght@700&family=Kaushan+Script&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
@@ -279,9 +279,16 @@ nav.menu a.active::after{
   pointer-events:none; color:var(--gold);
 }
 .wc-word{
-  font-family:'Anton',sans-serif; font-size:28px; letter-spacing:2px; line-height:.92;
-  color:var(--gold);
-  text-shadow:0 2px 6px rgba(0,0,0,.6);
+  font-family:'Bebas Neue','Anton',sans-serif; font-size:37px; letter-spacing:8px; line-height:.88;
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--gold) 55%, #ffffff) 0%,
+    var(--gold) 48%,
+    color-mix(in srgb, var(--gold) 60%, #000000) 100%);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  filter:
+    drop-shadow(0 2px 4px color-mix(in srgb, var(--gold) 55%, transparent))
+    drop-shadow(0 0 6px color-mix(in srgb, var(--gold) 40%, transparent));
 }
 .wc-cup-wrap{ position:relative; display:inline-block; line-height:0; margin:1px 0; }
 .wc-cup-img{
@@ -299,10 +306,17 @@ nav.menu a.active::after{
 }
 @keyframes cupGlint{ 0%{ background-position:200% 0; } 65%,100%{ background-position:-80% 0; } }
 .wc-year{
-  font-family:'Oswald',sans-serif; font-weight:700; font-size:15px; letter-spacing:7px;
-  margin:1px 0 0 7px;
-  color:var(--gold);
-  text-shadow:0 2px 5px rgba(0,0,0,.6);
+  font-family:'Bebas Neue','Anton',sans-serif; font-size:23px; letter-spacing:8px; line-height:.9;
+  margin:0 0 0 8px;
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--gold) 55%, #ffffff) 0%,
+    var(--gold) 48%,
+    color-mix(in srgb, var(--gold) 60%, #000000) 100%);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  filter:
+    drop-shadow(0 2px 4px color-mix(in srgb, var(--gold) 55%, transparent))
+    drop-shadow(0 0 5px color-mix(in srgb, var(--gold) 40%, transparent));
 }
 @keyframes wcShine{ 0%{ background-position:200% 0; } 75%,100%{ background-position:-60% 0; } }
 

@@ -117,8 +117,15 @@ nav.menu a.active::after{
 .left{ position:relative; padding-left:46px; align-self:end; padding-bottom:110px; }
 .vertical-name{
   writing-mode:vertical-rl; transform:rotate(180deg);
-  font-size:17px; letter-spacing:9px; color:var(--gold-soft); font-weight:600;
-  text-transform:uppercase; opacity:.9;
+  font-size:17px; letter-spacing:10px; font-weight:700; text-transform:uppercase;
+  background-color:#eef2f6;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='vn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23vn)' opacity='0.5'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #ffffff 0%, #c4cad2 100%);
+  background-size:120px 120px, 100% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 5px rgba(255,255,255,.3));
 }
 .tagline{
   display:flex; align-items:center; gap:16px;
@@ -164,12 +171,10 @@ nav.menu a.active::after{
 }
 .explore:hover{ background:var(--gold); color:var(--ink); border-color:var(--gold); gap:32px; }
 .nick{
-  font-family:'Oswald',sans-serif; font-weight:500;
-  font-size:18px; letter-spacing:20px; width:max-content;
-  text-transform:uppercase; color:var(--gold);
-  opacity:0; animation:nomeFade .6s ease forwards;
+  margin-top:42px;
+  font-family:'Kaushan Script'; font-size:30px; color:var(--gold);
 }
-@keyframes nomeFade{ to{ opacity:1; } }
+.nick svg.sig{ height:82px; width:auto; max-width:100%; display:block; overflow:visible; margin:-8px 0 -12px -4px; filter:drop-shadow(0 0 12px rgba(245,205,115,.6)); }
 
 /* "JR." manuscrito com efeito de escrita */
 /* nome gigante texturizado (branco gelo/tinta) */
@@ -690,7 +695,7 @@ function render(){
 
   // esquerda
   $('vName').textContent = p.vname;
-  $('nick').textContent = p.sig || p.nick;
+  $('nick').innerHTML = signatureSVG(p.sig || p.nick);
   $('group').textContent = p.group;
 
   // fundo cinematográfico (imagem atrás de tudo)

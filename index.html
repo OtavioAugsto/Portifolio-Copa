@@ -172,7 +172,7 @@ nav.menu a.active::after{
 /* "JR." manuscrito com efeito de escrita */
 /* nome gigante texturizado (branco gelo/tinta) */
 .hero-name{
-  position:fixed; z-index:6; left:5.5vw; top:16%;
+  position:fixed; z-index:6; left:8vw; top:16%;
   display:inline-block; pointer-events:none;
 }
 .big-name{
@@ -225,6 +225,10 @@ nav.menu a.active::after{
   font-size:12px; letter-spacing:5px; color:var(--dim); text-transform:uppercase; margin-top:2px;
 }
 .group::before{ content:""; width:46px; height:2px; background:var(--gold-soft); }
+
+/* assinatura dourada no rodapé esquerdo */
+.signature{ position:fixed; left:146px; bottom:104px; z-index:6; pointer-events:none; }
+.signature .nick{ margin-top:0; }
 
 /* ---- COLUNA CENTRAL (foto do jogador) ---- */
 .center{ position:relative; height:100%; display:flex; align-items:flex-end; justify-content:center; }
@@ -411,6 +415,7 @@ nav.menu a.active::after{
   .player-photo{ height:100%; }
   .motto{ display:none; }
   .next-card{ width:min(320px,90vw); margin:14px auto; }
+  .signature{ position:static; left:auto; bottom:auto; margin:10px 0 0 20px; }
   nav.menu{ display:none; }
   .fixtures{ display:none; }
 }
@@ -454,10 +459,7 @@ nav.menu a.active::after{
   <main class="stage" id="stage">
     <!-- ESQUERDA -->
     <section class="left">
-      <div class="nick" id="nick"></div>
-      <div class="group" id="group"></div>
-
-      <!-- próximo craque (movido pra cá) -->
+      <!-- próximo craque -->
       <div class="next-card" id="nextCard">
         <div class="next-photo" id="nextPhoto">Foto</div>
         <div class="next-body">
@@ -492,6 +494,12 @@ nav.menu a.active::after{
     </section>
 
   </main>
+
+  <!-- assinatura dourada (rodapé esquerdo) -->
+  <div class="signature">
+    <div class="nick" id="nick"></div>
+    <div class="group" id="group"></div>
+  </div>
 
   <div class="motto">Dream it · Believe it · Achieve it</div>
 

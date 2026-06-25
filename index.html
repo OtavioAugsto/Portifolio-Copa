@@ -218,7 +218,7 @@ nav.menu a.active::after{
   95%  { stroke-dashoffset:0;    fill:rgba(23,37,107,0); opacity:0; }
   100% { stroke-dashoffset:1600; fill:rgba(23,37,107,0); opacity:0; }
 }
-@media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:60px; right:14px; width:80px; height:94px; } }
+@media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup img{ height:62px; } .wc-word{ font-size:15px; } }
 .group{
   display:flex; align-items:center; gap:14px;
   font-size:12px; letter-spacing:5px; color:var(--dim); text-transform:uppercase; margin-top:2px;
@@ -272,18 +272,29 @@ nav.menu a.active::after{
 }
 /* emblema da Copa (canto superior direito) */
 .wc-badge{
-  position:fixed; top:16px; right:34px; z-index:40;
-  width:108px; height:126px; pointer-events:none;
-  color:var(--gold);
+  position:fixed; top:14px; right:30px; z-index:40;
+  display:flex; flex-direction:column; align-items:center; gap:1px;
+  pointer-events:none; color:var(--gold);
 }
-/* raio (lightning) na taça */
+.wc-word{
+  font-family:'Anton',sans-serif; font-size:22px; letter-spacing:2px; line-height:1;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));
+}
+.wc-cup{ position:relative; display:flex; align-items:center; justify-content:center; }
+.wc-cup img{
+  height:90px; width:auto; display:block; position:relative; z-index:2;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.55));
+}
+.wc-bolts{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:160%; height:135%; z-index:1; pointer-events:none; overflow:visible;
+}
 .wc-bolt{ fill:#fff0a8; filter:drop-shadow(0 0 4px #ffe05a); animation:boltFlicker 2.6s linear infinite; }
 @keyframes boltFlicker{
   0%,100%{ opacity:0; }
   3%{ opacity:1; } 6%{ opacity:.1; } 9%{ opacity:1; } 13%{ opacity:0; }
   60%{ opacity:0; } 63%{ opacity:1; } 66%{ opacity:.2; } 69%{ opacity:1; } 73%{ opacity:0; }
 }
-.wc-badge svg{ width:100%; height:100%; filter:drop-shadow(0 6px 16px rgba(0,0,0,.5)); }
 
 /* ============================================================
    BARRA LATERAL (vidro)
@@ -395,38 +406,19 @@ nav.menu a.active::after{
     <div class="index-num" id="indexNum">01</div>
   </aside>
 
-  <!-- EMBLEMA: WORLD / taça com raio / CUP — recolore por seleção -->
+  <!-- EMBLEMA: WORLD / taça (imagem) com raio / CUP -->
   <div class="wc-badge" aria-hidden="true">
-    <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <!-- WORLD -->
-      <text x="60" y="16" text-anchor="middle" fill="currentColor" font-family="'Anton',sans-serif" font-size="21" letter-spacing="1">WORLD</text>
-
-      <!-- raios (lightning) -->
-      <g class="wc-bolt">
-        <path d="M30,32 l-7,11 l5,0 l-4,12 l11,-15 l-5,0 l4,-8 z"/>
-        <path d="M90,32 l7,11 l-5,0 l4,12 l-11,-15 l5,0 l-4,-8 z"/>
-      </g>
-
-      <!-- taça (globo + copa) -->
-      <g transform="translate(60,24)" fill="currentColor">
-        <circle cx="0" cy="14" r="14"/>
-        <g stroke="rgba(8,8,10,.5)" stroke-width="1.1" fill="none">
-          <ellipse cx="0" cy="14" rx="14" ry="5.5"/>
-          <ellipse cx="0" cy="14" rx="5.5" ry="14"/>
-          <line x1="-14" y1="14" x2="14" y2="14"/>
+    <span class="wc-word">WORLD</span>
+    <span class="wc-cup">
+      <svg class="wc-bolts" viewBox="0 0 120 120" aria-hidden="true">
+        <g class="wc-bolt">
+          <path d="M20,22 l-9,17 l6,0 l-5,19 l15,-24 l-6,0 l5,-12 z"/>
+          <path d="M100,22 l9,17 l-6,0 l5,19 l-15,-24 l6,0 l-5,-12 z"/>
         </g>
-        <path d="M-8,28 h16 l-2.5,6 h-11 z"/>
-        <path d="M-11,34 h22 a11,8 0 0 1 -22,0 z"/>
-        <rect x="-2.5" y="42" width="5" height="9"/>
-        <rect x="-9" y="51" width="18" height="3.4" rx="1.4"/>
-        <rect x="-13" y="54.6" width="26" height="4" rx="1.8"/>
-      </g>
-
-      <!-- CUP -->
-      <text x="60" y="103" text-anchor="middle" fill="currentColor" font-family="'Anton',sans-serif" font-size="21" letter-spacing="1">CUP</text>
-      <!-- 2026 -->
-      <text x="60" y="123" text-anchor="middle" fill="#ffffff" font-family="'Oswald',sans-serif" font-size="11" letter-spacing="4" font-weight="600">2026</text>
-    </svg>
+      </svg>
+      <img src="imagens/taca.png" alt="Taça da Copa">
+    </span>
+    <span class="wc-word">CUP</span>
   </div>
 
   <!-- HEADER -->

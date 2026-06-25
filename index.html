@@ -3,373 +3,565 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Craques da Copa — Slider</title>
+<title>Craques da Copa — Portfólio</title>
+
+<!-- Fontes -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@300;400;500;600&family=Kaushan+Script&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-  /* ===========================================================
-     PALETA / VARIÁVEIS  (mude as cores aqui pra deixar do seu jeito)
-     =========================================================== */
-  :root{
-    --bg:        #0a0e1a;        /* fundo geral escuro     */
-    --bg-2:      #111726;        /* fundo secundário       */
-    --accent:    #00e5a0;        /* cor de destaque (verde água) */
-    --accent-2:  #ffd23f;        /* cor de destaque 2 (dourado)  */
-    --text:      #ffffff;
-    --text-dim:  #9aa3b2;
-    --card:      rgba(255,255,255,.06);
-    --card-bord: rgba(255,255,255,.12);
-    --font:      'Segoe UI', system-ui, -apple-system, sans-serif;
-  }
+/* ============================================================
+   PALETA / VARIÁVEIS  (mude as cores aqui)
+   ============================================================ */
+:root{
+  --bg:        #08080a;
+  --gold:      #d8b35c;
+  --gold-2:    #f3dea9;
+  --gold-soft: #c9a24a;
+  --text:      #ffffff;
+  --dim:       #8c8c93;
+  --line:      rgba(255,255,255,.10);
+  --card:      rgba(255,255,255,.035);
+  --card-bord: rgba(255,255,255,.08);
+}
 
-  *{ margin:0; padding:0; box-sizing:border-box; }
-  html,body{ height:100%; }
-  body{
-    font-family:var(--font);
-    background:var(--bg);
-    color:var(--text);
-    overflow:hidden;
-  }
+*{ margin:0; padding:0; box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Oswald', sans-serif;
+  overflow:hidden;
+  position:relative;
+}
+/* brilho de fundo */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(60% 50% at 60% 45%, rgba(216,179,92,.10), transparent 70%),
+    radial-gradient(40% 40% at 85% 90%, rgba(216,179,92,.06), transparent 70%);
+  pointer-events:none;
+}
 
-  /* ===========================================================
-     BARRA DE PROGRESSO (topo)
-     =========================================================== */
-  .progress-wrap{
-    position:fixed; top:0; left:0; right:0; z-index:50;
-    display:flex; align-items:center; gap:14px;
-    padding:18px 28px;
-  }
-  .progress-bar{
-    flex:1; height:4px; border-radius:99px;
-    background:rgba(255,255,255,.12); overflow:hidden;
-  }
-  .progress-fill{
-    height:100%; width:16.66%;
-    background:linear-gradient(90deg,var(--accent),var(--accent-2));
-    border-radius:99px;
-    transition:width .6s cubic-bezier(.7,0,.2,1);
-  }
-  .progress-pct{
-    font-size:13px; font-weight:700; letter-spacing:1px;
-    color:var(--text-dim); min-width:42px; text-align:right;
-  }
-  .brand{
-    font-size:15px; font-weight:800; letter-spacing:3px;
-    text-transform:uppercase;
-  }
-  .brand span{ color:var(--accent); }
+/* ============================================================
+   HEADER / NAV
+   ============================================================ */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:40;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:26px 56px;
+}
+.logo{
+  font-family:'Anton'; font-size:30px; letter-spacing:1px; color:#fff;
+}
+.logo span{ color:var(--gold); }
+nav.menu{ display:flex; gap:42px; }
+nav.menu a{
+  color:#cfcfcf; text-decoration:none;
+  font-size:14px; font-weight:500; letter-spacing:3px; text-transform:uppercase;
+  position:relative; transition:color .25s;
+}
+nav.menu a.active, nav.menu a:hover{ color:#fff; }
+nav.menu a.active::after{
+  content:""; position:absolute; left:0; bottom:-8px; width:24px; height:2px;
+  background:var(--gold);
+}
+.burger{ display:flex; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
+.burger span{ width:30px; height:2px; background:#fff; display:block; }
 
-  /* ===========================================================
-     SLIDER
-     =========================================================== */
-  .slider{ position:relative; height:100vh; width:100%; }
+/* ============================================================
+   PALCO (grid principal)
+   ============================================================ */
+.stage{
+  position:relative; z-index:5;
+  height:100vh;
+  padding:104px 56px 116px;
+  display:grid;
+  grid-template-columns:1.15fr 1.05fr 0.95fr;
+  align-items:center;
+  gap:20px;
+}
+.fade-in{ animation:fade .7s ease both; }
+@keyframes fade{ from{ opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
 
-  .slide{
-    position:absolute; inset:0;
-    display:flex; align-items:center;
-    opacity:0; visibility:hidden;
-    transform:scale(1.06);
-    transition:opacity .7s ease, transform .9s ease, visibility .7s;
-  }
-  .slide.active{ opacity:1; visibility:visible; transform:scale(1); }
+/* ---- COLUNA ESQUERDA ---- */
+.left{ position:relative; padding-left:46px; }
+.vertical-name{
+  position:absolute; left:-6px; top:50%; transform:rotate(180deg) translateY(50%);
+  writing-mode:vertical-rl;
+  font-size:12px; letter-spacing:8px; color:var(--gold-soft); font-weight:500;
+  text-transform:uppercase; opacity:.8;
+}
+.tagline{
+  display:flex; align-items:center; gap:16px;
+  font-size:15px; letter-spacing:9px; font-weight:500; color:#e9e9e9;
+  text-transform:uppercase; margin-bottom:6px;
+}
+.tagline::after{ content:""; width:70px; height:2px; background:var(--gold); }
+.first-name{
+  font-family:'Anton'; font-size:clamp(60px,8.2vw,128px); line-height:.86;
+  letter-spacing:1px; text-transform:uppercase;
+  background:linear-gradient(180deg,#fff,#cfcfd4);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 14px 40px rgba(0,0,0,.5);
+}
+.script-name{
+  font-family:'Kaushan Script';
+  font-size:clamp(48px,6.4vw,98px); line-height:1;
+  color:var(--gold);
+  margin:2px 0 0 6px;
+  text-shadow:0 10px 30px rgba(216,179,92,.25);
+}
+.quote{
+  position:relative; margin:40px 0 0; padding-left:22px;
+  border-left:2px solid var(--gold);
+  max-width:430px;
+}
+.quote .mark{
+  font-family:'Anton'; color:var(--gold); font-size:40px;
+  position:absolute; left:14px; top:-30px;
+}
+.quote p{
+  font-size:19px; font-weight:600; letter-spacing:1px; line-height:1.5;
+  text-transform:uppercase;
+}
+.quote p .alt{ color:var(--gold); }
+.explore{
+  margin-top:34px; display:inline-flex; align-items:center; gap:24px;
+  background:transparent; color:#fff; cursor:pointer;
+  border:1px solid var(--line);
+  padding:18px 32px;
+  font-family:'Oswald'; font-size:14px; font-weight:600; letter-spacing:4px; text-transform:uppercase;
+  transition:background .25s, border-color .25s, gap .25s;
+}
+.explore:hover{ background:var(--gold); color:#1a1407; border-color:var(--gold); gap:32px; }
+.nick{
+  margin-top:42px;
+  font-family:'Kaushan Script'; font-size:30px; color:var(--gold);
+}
+.group{
+  display:flex; align-items:center; gap:14px;
+  font-size:12px; letter-spacing:5px; color:var(--dim); text-transform:uppercase; margin-top:2px;
+}
+.group::before{ content:""; width:46px; height:2px; background:var(--gold-soft); }
 
-  /* fundo de cada slide (gradiente por seleção — troque por foto se quiser) */
-  .slide-bg{
-    position:absolute; inset:0; z-index:0;
-    background-size:cover; background-position:center;
-  }
-  .slide-bg::after{
-    content:""; position:absolute; inset:0;
-    background:linear-gradient(90deg,
-      rgba(10,14,26,.92) 0%,
-      rgba(10,14,26,.75) 45%,
-      rgba(10,14,26,.35) 100%);
-  }
+/* ---- COLUNA CENTRAL (foto do jogador) ---- */
+.center{ position:relative; height:100%; display:flex; align-items:flex-end; justify-content:center; }
+.player-photo{
+  position:relative; width:100%; height:88%;
+  display:flex; align-items:center; justify-content:center;
+  background-size:contain; background-position:bottom center; background-repeat:no-repeat;
+  border:1.5px dashed rgba(255,255,255,.12); border-radius:14px;
+  color:var(--dim); text-align:center; transition:border-color .25s, background .25s;
+  cursor:pointer;
+}
+.player-photo.has-img{ border-color:transparent; }
+.player-photo.drag{ border-color:var(--gold); background-color:rgba(216,179,92,.06); }
+.player-photo .ph{ display:flex; flex-direction:column; align-items:center; gap:14px; pointer-events:none; }
+.player-photo .ph svg{ width:42px; height:42px; opacity:.5; }
+.player-photo .ph span{ font-size:13px; letter-spacing:1px; max-width:200px; }
 
-  /* número gigante de fundo */
-  .slide-number{
-    position:absolute; right:4%; bottom:-4%;
-    font-size:42vw; font-weight:900; line-height:.8;
-    color:rgba(255,255,255,.04); z-index:1;
-    pointer-events:none; user-select:none;
-  }
+/* ---- COLUNA DIREITA (about + stats) ---- */
+.right{ display:flex; flex-direction:column; gap:18px; }
+.about-title{ font-size:15px; letter-spacing:6px; font-weight:600; text-transform:uppercase; }
+.about-title span{ color:var(--gold); }
+.about-bio p{ font-family:'Barlow'; font-size:15px; color:#c9c9cf; line-height:1.7; font-weight:300; }
+.country{
+  display:flex; align-items:center; gap:12px; margin:6px 0 4px;
+  font-size:15px; letter-spacing:4px; font-weight:600; text-transform:uppercase;
+}
+.country img{ width:34px; border-radius:3px; box-shadow:0 4px 10px rgba(0,0,0,.5); }
 
-  .slide-content{
-    position:relative; z-index:2;
-    max-width:620px; padding:0 28px 0 7vw;
-  }
-  .slide-flag{
-    font-size:34px; margin-bottom:10px;
-    display:inline-flex; align-items:center; gap:12px;
-  }
-  .slide-flag span{
-    font-size:13px; font-weight:700; letter-spacing:3px;
-    text-transform:uppercase; color:var(--accent);
-  }
-  .slide-name{
-    font-size:clamp(48px,8vw,104px); font-weight:900;
-    line-height:.95; letter-spacing:-2px; text-transform:uppercase;
-  }
-  .slide-name b{
-    display:block;
-    -webkit-text-stroke:1.5px var(--accent-2);
-    color:transparent;
-  }
-  .slide-fullname{
-    margin-top:6px; font-size:15px; font-weight:600;
-    letter-spacing:4px; text-transform:uppercase; color:var(--text-dim);
-  }
-  .slide-desc{
-    margin-top:22px; font-size:16px; line-height:1.7;
-    color:#d6dae2; max-width:480px;
-  }
-  .slide-stats{
-    display:flex; gap:30px; margin-top:26px;
-  }
-  .stat b{ display:block; font-size:28px; font-weight:900; color:var(--accent); }
-  .stat span{ font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); }
+.stats{ display:flex; flex-direction:column; gap:12px; }
+.stat{
+  display:flex; align-items:center; gap:18px;
+  background:var(--card); border:1px solid var(--card-bord); border-radius:12px;
+  padding:16px 20px; transition:transform .25s, border-color .25s, background .25s;
+}
+.stat:hover{ transform:translateX(-6px); border-color:rgba(216,179,92,.4); background:rgba(216,179,92,.05); }
+.stat .ic{ color:var(--gold); display:grid; place-items:center; }
+.stat .ic svg{ width:30px; height:30px; }
+.stat b{ font-family:'Anton'; font-size:28px; line-height:1; letter-spacing:.5px; }
+.stat small{ display:block; font-size:11px; letter-spacing:2px; color:var(--dim); margin-top:4px; text-transform:uppercase; }
 
-  .btn-choose{
-    margin-top:32px; display:inline-flex; align-items:center; gap:14px;
-    background:var(--accent); color:#06251c;
-    border:none; cursor:pointer;
-    padding:16px 30px; border-radius:99px;
-    font-size:14px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
-    transition:transform .25s, box-shadow .25s, background .25s;
-  }
-  .btn-choose:hover{
-    transform:translateY(-3px);
-    box-shadow:0 12px 30px -8px var(--accent);
-  }
-  .btn-choose .arrow{
-    width:26px; height:26px; border-radius:50%;
-    background:#06251c; color:var(--accent);
-    display:grid; place-items:center; font-size:14px;
-    transition:transform .25s;
-  }
-  .btn-choose:hover .arrow{ transform:translateX(4px); }
+/* ---- MOTO VERTICAL (direita) ---- */
+.motto{
+  position:fixed; right:18px; top:50%; transform:translateY(-50%) rotate(180deg);
+  writing-mode:vertical-rl; z-index:30;
+  font-size:11px; letter-spacing:6px; color:var(--dim); text-transform:uppercase;
+}
 
-  /* ===========================================================
-     CONTROLES DE NAVEGAÇÃO
-     =========================================================== */
-  .nav{
-    position:fixed; bottom:34px; right:34px; z-index:50;
-    display:flex; gap:14px;
-  }
-  .nav button{
-    width:56px; height:56px; border-radius:50%;
-    background:var(--card); border:1px solid var(--card-bord);
-    color:#fff; font-size:20px; cursor:pointer;
-    display:grid; place-items:center;
-    transition:background .25s, transform .25s, border-color .25s;
-  }
-  .nav button:hover{
-    background:var(--accent); color:#06251c;
-    border-color:var(--accent); transform:scale(1.08);
-  }
+/* ============================================================
+   BARRA INFERIOR (índice + jogos)
+   ============================================================ */
+.bottom{
+  position:fixed; left:0; right:0; bottom:0; z-index:35;
+  display:flex; align-items:center; gap:34px;
+  padding:20px 56px;
+  border-top:1px solid var(--line);
+  background:linear-gradient(0deg, rgba(8,8,10,.96), transparent);
+}
+.index-num{ font-family:'Anton'; font-size:34px; color:var(--dim); }
+.fixtures{ display:flex; gap:14px; flex-wrap:wrap; }
+.fixture{
+  display:flex; align-items:center; gap:12px;
+  padding:6px 16px; border-right:1px solid var(--line);
+}
+.fixture:last-child{ border-right:none; }
+.fixture img{ width:30px; height:22px; object-fit:cover; border-radius:3px; }
+.fx-team b{ font-size:14px; font-weight:600; letter-spacing:1px; display:block; text-transform:uppercase; }
+.fx-team small{ font-size:10px; letter-spacing:1px; color:var(--dim); }
+.fx-score{ font-family:'Anton'; font-size:18px; display:flex; align-items:center; gap:8px; }
+.fx-score .ft{ font-family:'Oswald'; font-size:9px; background:var(--line); padding:2px 6px; border-radius:4px; letter-spacing:1px; color:#bbb; }
+.fx-score.up{ color:var(--gold); }
 
-  /* miniaturas / paginação lateral */
-  .thumbs{
-    position:fixed; left:34px; bottom:34px; z-index:50;
-    display:flex; gap:10px;
-  }
-  .thumb{
-    display:flex; flex-direction:column; gap:6px;
-    background:none; border:none; cursor:pointer; text-align:left;
-    opacity:.45; transition:opacity .25s;
-  }
-  .thumb.active{ opacity:1; }
-  .thumb .t-num{ font-size:12px; font-weight:800; color:var(--accent-2); letter-spacing:1px; }
-  .thumb .t-name{ font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
-  .thumb .t-line{ height:3px; width:46px; border-radius:99px; background:rgba(255,255,255,.18); }
-  .thumb.active .t-line{ background:var(--accent); }
+/* ============================================================
+   CARD DO PRÓXIMO JOGADOR (canto inferior direito)
+   ============================================================ */
+.next-card{
+  position:fixed; right:40px; bottom:96px; z-index:38;
+  width:330px; display:flex;
+  background:rgba(20,20,24,.85); backdrop-filter:blur(8px);
+  border:1px solid var(--card-bord); border-radius:14px; overflow:hidden;
+  box-shadow:0 24px 60px -20px rgba(0,0,0,.8);
+  transition:transform .3s, border-color .3s;
+}
+.next-card:hover{ transform:translateY(-4px); border-color:rgba(216,179,92,.45); }
+.next-photo{
+  width:108px; flex-shrink:0;
+  background:#161619 var(--np-img) center/cover no-repeat;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--dim); font-size:11px; letter-spacing:1px;
+  border-right:1px solid var(--card-bord);
+}
+.next-body{ flex:1; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; }
+.next-label{ font-size:9px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:6px; }
+.next-quote{ font-size:12.5px; font-weight:600; line-height:1.45; text-transform:uppercase; }
+.next-quote .alt{ color:var(--gold); }
+.next-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+.next-name{ font-family:'Kaushan Script'; font-size:17px; color:var(--gold); }
+.next-arrows{ display:flex; gap:8px; }
+.next-arrows button{
+  width:34px; height:34px; border-radius:50%;
+  background:var(--card); border:1px solid var(--card-bord); color:#fff;
+  cursor:pointer; font-size:16px; display:grid; place-items:center;
+  transition:background .25s, color .25s, border-color .25s;
+}
+.next-arrows button:hover{ background:var(--gold); color:#1a1407; border-color:var(--gold); }
 
-  /* ===========================================================
-     RESPONSIVO (mobile)
-     =========================================================== */
-  @media (max-width:720px){
-    .slide-content{ padding:0 22px; }
-    .slide-number{ font-size:60vw; right:-6%; }
-    .slide-desc{ font-size:14px; }
-    .thumbs{ display:none; }
-    .nav{ bottom:24px; right:50%; transform:translateX(50%); }
-    .progress-wrap{ padding:14px 18px; }
-    .brand{ font-size:12px; letter-spacing:2px; }
-  }
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width:1100px){
+  .stage{ grid-template-columns:1fr; align-content:start; gap:30px; overflow-y:auto; padding:96px 28px 200px; height:auto; min-height:100vh; }
+  body{ overflow:auto; }
+  .center{ order:-1; height:300px; }
+  .player-photo{ height:100%; }
+  .motto{ display:none; }
+  .next-card{ left:50%; right:auto; transform:translateX(-50%); bottom:80px; width:min(330px,90vw); }
+  nav.menu{ display:none; }
+  .fixtures{ display:none; }
+}
 </style>
 </head>
 <body>
 
-  <!-- BARRA DE PROGRESSO -->
-  <div class="progress-wrap">
-    <div class="brand">CRAQUES<span>•</span>COPA</div>
-    <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
-    <div class="progress-pct" id="pPct">16%</div>
+  <!-- HEADER -->
+  <header>
+    <div class="logo" id="logo">CR<span>7</span></div>
+    <nav class="menu">
+      <a href="#" class="active">Home</a>
+      <a href="#">Career</a>
+      <a href="#">Stats</a>
+      <a href="#">Gallery</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="burger"><span></span><span></span><span></span></div>
+  </header>
+
+  <!-- PALCO -->
+  <main class="stage" id="stage">
+    <!-- ESQUERDA -->
+    <section class="left">
+      <div class="vertical-name" id="vName"></div>
+      <div class="tagline" id="tagline"></div>
+      <h1 class="first-name" id="firstName"></h1>
+      <div class="script-name" id="scriptName"></div>
+      <div class="quote">
+        <span class="mark">&ldquo;</span>
+        <p id="quote"></p>
+      </div>
+      <button class="explore">Explore Journey
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 7h17M12 1l6 6-6 6"/></svg>
+      </button>
+      <div class="nick" id="nick"></div>
+      <div class="group" id="group"></div>
+    </section>
+
+    <!-- CENTRO (foto) -->
+    <section class="center">
+      <div class="player-photo" id="photo">
+        <div class="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Arraste o recorte (PNG) do jogador<br>ou clique para escolher</span>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="image/png,image/*" hidden>
+    </section>
+
+    <!-- DIREITA -->
+    <aside class="right">
+      <div class="about-title">About <span id="aboutName"></span></div>
+      <div class="about-bio" id="bio"></div>
+      <div class="country"><img id="cFlag" src="" alt=""><span id="cName"></span></div>
+      <div class="stats" id="stats"></div>
+    </aside>
+  </main>
+
+  <div class="motto">Dream it · Believe it · Achieve it</div>
+
+  <!-- BARRA INFERIOR -->
+  <div class="bottom">
+    <div class="index-num" id="indexNum">01</div>
+    <div class="fixtures" id="fixtures"></div>
   </div>
 
-  <!-- SLIDER -->
-  <div class="slider" id="slider">
-    <!-- Os slides são gerados pelo JavaScript abaixo -->
-  </div>
-
-  <!-- MINIATURAS -->
-  <div class="thumbs" id="thumbs"></div>
-
-  <!-- NAVEGAÇÃO -->
-  <div class="nav">
-    <button id="prev" aria-label="Anterior">‹</button>
-    <button id="next" aria-label="Próximo">›</button>
+  <!-- CARD PRÓXIMO JOGADOR -->
+  <div class="next-card" id="nextCard">
+    <div class="next-photo" id="nextPhoto">Foto</div>
+    <div class="next-body">
+      <div>
+        <div class="next-label">Próximo Craque</div>
+        <div class="next-quote" id="nextQuote"></div>
+      </div>
+      <div class="next-foot">
+        <div class="next-name" id="nextName"></div>
+        <div class="next-arrows">
+          <button id="prev" aria-label="Anterior">‹</button>
+          <button id="next" aria-label="Próximo">›</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 <script>
-/* ===========================================================
-   DADOS DOS JOGADORES  (edite os textos como quiser)
-   - bgFrom / bgTo: cores do gradiente de fundo (cores da seleção)
-   - img: se tiver foto do jogador, coloque o caminho aqui (ex: "fotos/neymar.webp")
-          e descomente a linha indicada no JS de render.
-   =========================================================== */
+/* ============================================================
+   ÍCONES (SVG)
+   ============================================================ */
+const ICONS = {
+  ball:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7.5l4 2.9-1.5 4.6h-5L8 10.4z"/></svg>`,
+  boot:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7v6h11l5 2a2 2 0 0 0 2-2c0-2.2-2.2-3.2-5-4l-3-2H3z"/><path d="M3 13h11"/></svg>`,
+  trophy:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 4h10v4a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3"/><path d="M17 6h3v1a3 3 0 0 1-3 3"/><path d="M9.5 14h5l1 5H8.5z"/></svg>`,
+  medal:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="15" r="5"/><path d="M9 3l3 6 3-6"/></svg>`,
+  star:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l2.6 6.1 6.4.5-4.9 4.1 1.6 6.3L12 16.9 6.3 20.1l1.6-6.3L3 9.6l6.4-.5z"/></svg>`,
+  cup:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 4h8v6a4 4 0 0 1-8 0V4z"/><path d="M10 14h4l1 6H9z"/><path d="M7 20h10"/></svg>`
+};
+
+/* ============================================================
+   DADOS DOS JOGADORES  (edite tudo aqui)
+   - photo: caminho do PNG (ex "fotos/cr7.png"). Vazio = placeholder/arrastar.
+   ============================================================ */
 const players = [
   {
-    name:"NEYMAR", last:"JR", full:"Neymar da Silva Santos Júnior",
-    flag:"🇧🇷", country:"Brasil",
-    desc:"Craque mais habilidoso da sua geração no Brasil, Neymar encanta com dribles, fintas e jogadas de pura imaginação. Maior artilheiro da história da Seleção Brasileira, é o símbolo do futebol-arte canarinho.",
-    stats:[["+790","Jogos"],["+430","Gols"],["79","Gols pela Seleção"]],
-    bgFrom:"#009739", bgTo:"#0a0e1a", img:""
+    logo:["NJ","R"], tagline:"The Magician",
+    first:"NEYMAR", script:"Júnior", nick:"Neymar", vname:"Neymar Júnior",
+    code:"br", country:"Brasil", group:"World Cup 2026 · Group D",
+    quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
+    nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
+    bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
+    photo:"",
+    stats:[["ball","430+","Career Goals"],["boot","780+","Matches"],["trophy","30+","Trophies"],["star","79","Goals for Brazil"]],
+    fixtures:[
+      {opp:"Serbia", code:"rs", date:"16 JUN", venue:"DALLAS", res:"2 - 0", ft:true},
+      {opp:"Cameroon", code:"cm", date:"22 JUN", venue:"MIAMI", res:"3 - 1", ft:true},
+      {opp:"Switzerland", code:"ch", date:"27 JUN", venue:"L.A.", res:"20:00", ft:false}
+    ]
   },
   {
-    name:"CRISTIANO", last:"RONALDO", full:"Cristiano Ronaldo dos Santos Aveiro",
-    flag:"🇵🇹", country:"Portugal",
-    desc:"Máquina de gols e referência em dedicação e profissionalismo, CR7 é o maior artilheiro da história do futebol. Cinco Bolas de Ouro, campeão por Inglaterra, Espanha e Itália — um fenômeno de longevidade.",
-    stats:[["+900","Gols na carreira"],["5","Bolas de Ouro"],["+130","Gols por Portugal"]],
-    bgFrom:"#c8102e", bgTo:"#0a0e1a", img:""
+    logo:["CR","7"], tagline:"The Legend",
+    first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
+    code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
+    quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
+    nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
+    bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
+    photo:"",
+    stats:[["ball","850+","Career Goals"],["boot","1220+","Matches"],["trophy","34","Trophies"],["medal","5","Ballon d'Or"]],
+    fixtures:[
+      {opp:"DR Congo", code:"cd", date:"17 JUN", venue:"HOUSTON", res:"1 - 1", ft:true},
+      {opp:"Uzbekistan", code:"uz", date:"23 JUN", venue:"HOUSTON", res:"5 - 0", ft:true},
+      {opp:"Colombia", code:"co", date:"27 JUN", venue:"MIAMI", res:"19:30", ft:false}
+    ]
   },
   {
-    name:"LIONEL", last:"MESSI", full:"Lionel Andrés Messi",
-    flag:"🇦🇷", country:"Argentina",
-    desc:"Considerado por muitos o maior de todos os tempos, Messi reúne técnica, visão e gênio criativo. Campeão mundial em 2022, dono de oito Bolas de Ouro e ídolo eterno do Barcelona.",
-    stats:[["8","Bolas de Ouro"],["1","Copa do Mundo"],["+800","Gols na carreira"]],
-    bgFrom:"#75aadb", bgTo:"#0a0e1a", img:""
+    logo:["LM","10"], tagline:"The G.O.A.T.",
+    first:"LIONEL", script:"Messi", nick:"Leo", vname:"Lionel Messi",
+    code:"ar", country:"Argentina", group:"World Cup 2026 · Group C",
+    quoteA:"You have to fight to reach your dream.", quoteB:"Sacrifice and work hard for it.",
+    nextQuoteA:"Decisions are made with instinct —", nextQuoteB:"never with fear.",
+    bio:["Smaller in size.","Bigger than the game.","Champion of the world."],
+    photo:"",
+    stats:[["medal","8","Ballon d'Or"],["ball","850+","Career Goals"],["cup","1","World Cup"],["trophy","45+","Trophies"]],
+    fixtures:[
+      {opp:"Mexico", code:"mx", date:"15 JUN", venue:"N.Y.", res:"2 - 1", ft:true},
+      {opp:"Poland", code:"pl", date:"21 JUN", venue:"BOSTON", res:"3 - 0", ft:true},
+      {opp:"Croatia", code:"hr", date:"26 JUN", venue:"DALLAS", res:"18:00", ft:false}
+    ]
   },
   {
-    name:"KYLIAN", last:"MBAPPÉ", full:"Kylian Mbappé Lottin",
-    flag:"🇫🇷", country:"França",
-    desc:"Velocidade explosiva e finalização letal definem Mbappé, a maior estrela da nova geração. Campeão mundial em 2018 e protagonista absoluto da Seleção Francesa e do ataque mais temido da Europa.",
-    stats:[["1","Copa do Mundo"],["+320","Gols"],["12","Hat-tricks"]],
-    bgFrom:"#0055a4", bgTo:"#0a0e1a", img:""
+    logo:["KM","7"], tagline:"The Phenomenon",
+    first:"KYLIAN", script:"Mbappé", nick:"Kylian", vname:"Kylian Mbappé",
+    code:"fr", country:"França", group:"World Cup 2026 · Group F",
+    quoteA:"Speed is nothing without control.", quoteB:"I want to make history.",
+    nextQuoteA:"Dreams don't work", nextQuoteB:"unless you do.",
+    bio:["Born in the suburbs.","Faster than the rest.","Future of the game."],
+    photo:"",
+    stats:[["ball","320+","Career Goals"],["boot","430+","Matches"],["cup","1","World Cup"],["trophy","18+","Trophies"]],
+    fixtures:[
+      {opp:"Canada", code:"ca", date:"18 JUN", venue:"TORONTO", res:"4 - 1", ft:true},
+      {opp:"Japan", code:"jp", date:"24 JUN", venue:"SEATTLE", res:"2 - 2", ft:true},
+      {opp:"Senegal", code:"sn", date:"28 JUN", venue:"L.A.", res:"21:00", ft:false}
+    ]
   },
   {
-    name:"LAMINE", last:"YAMAL", full:"Lamine Yamal Nasraoui Ebana",
-    flag:"🇪🇸", country:"Espanha",
-    desc:"A maior joia do futebol mundial. Ainda adolescente, Lamine Yamal já é titular do Barcelona e da Espanha, com quem foi campeão da Eurocopa. Drible, frieza e maturidade muito além da idade.",
-    stats:[["1","Eurocopa"],["#10","Camisa lendária"],["+15M","Valor recorde"]],
-    bgFrom:"#aa151b", bgTo:"#0a0e1a", img:""
+    logo:["LY","10"], tagline:"The Prodigy",
+    first:"LAMINE", script:"Yamal", nick:"Lamine", vname:"Lamine Yamal",
+    code:"es", country:"Espanha", group:"World Cup 2026 · Group E",
+    quoteA:"Football is about enjoying yourself.", quoteB:"Age is just a number.",
+    nextQuoteA:"I play without fear —", nextQuoteB:"that's my superpower.",
+    bio:["A kid with no fear.","Magic in his feet.","Born to break records."],
+    photo:"",
+    stats:[["trophy","1","Euro Title"],["ball","30+","Goals"],["boot","120+","Matches"],["medal","1","Golden Boy"]],
+    fixtures:[
+      {opp:"Morocco", code:"ma", date:"16 JUN", venue:"MIAMI", res:"3 - 1", ft:true},
+      {opp:"Norway", code:"no", date:"22 JUN", venue:"N.Y.", res:"2 - 0", ft:true},
+      {opp:"Uruguay", code:"uy", date:"27 JUN", venue:"HOUSTON", res:"20:30", ft:false}
+    ]
   },
   {
-    name:"JUDE", last:"BELLINGHAM", full:"Jude Victor William Bellingham",
-    flag:"🏴", country:"Inglaterra",
-    desc:"Meio-campista completo e líder nato, Bellingham combina força, gols e inteligência tática. Peça-chave do Real Madrid e da Inglaterra, é apontado como um dos futuros donos da Bola de Ouro.",
-    stats:[["1","Champions League"],["+90","Gols"],["#5","Camisa Real"]],
-    bgFrom:"#cf142b", bgTo:"#0a0e1a", img:""
+    logo:["JB","5"], tagline:"The General",
+    first:"JUDE", script:"Bellingham", nick:"Jude", vname:"Jude Bellingham",
+    code:"gb-eng", country:"Inglaterra", group:"World Cup 2026 · Group B",
+    quoteA:"Hard work beats talent", quoteB:"when talent doesn't work hard.",
+    nextQuoteA:"Born to lead,", nextQuoteB:"built to win.",
+    bio:["Calm under pressure.","Leader on the pitch.","Born for the big nights."],
+    photo:"",
+    stats:[["trophy","1","Champions League"],["ball","90+","Career Goals"],["boot","270+","Matches"],["star","5","Iconic Number"]],
+    fixtures:[
+      {opp:"USA", code:"us", date:"15 JUN", venue:"PHILLY", res:"2 - 0", ft:true},
+      {opp:"Ecuador", code:"ec", date:"21 JUN", venue:"ATLANTA", res:"1 - 0", ft:true},
+      {opp:"Ghana", code:"gh", date:"26 JUN", venue:"BOSTON", res:"19:00", ft:false}
+    ]
   }
 ];
 
-/* ===========================================================
-   RENDERIZAÇÃO DOS SLIDES + MINIATURAS
-   =========================================================== */
-const slider = document.getElementById('slider');
-const thumbsBox = document.getElementById('thumbs');
-
-players.forEach((p, i) => {
-  const num = String(i+1).padStart(2,'0');
-
-  // monta o slide
-  const slide = document.createElement('div');
-  slide.className = 'slide' + (i===0 ? ' active' : '');
-  slide.dataset.index = i;
-
-  // fundo: gradiente por seleção. Pra usar FOTO, troque por:
-  //   background:`url('${p.img}') center/cover`
-  const bgStyle = p.img
-    ? `background-image:url('${p.img}')`
-    : `background:radial-gradient(120% 120% at 70% 30%, ${p.bgFrom}55, transparent 60%), linear-gradient(135deg, ${p.bgFrom}, ${p.bgTo})`;
-
-  slide.innerHTML = `
-    <div class="slide-bg" style="${bgStyle}"></div>
-    <div class="slide-number">${num}</div>
-    <div class="slide-content">
-      <div class="slide-flag">${p.flag} <span>${p.country}</span></div>
-      <h1 class="slide-name">${p.name}<b>${p.last}</b></h1>
-      <div class="slide-fullname">${p.full}</div>
-      <p class="slide-desc">${p.desc}</p>
-      <div class="slide-stats">
-        ${p.stats.map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('')}
-      </div>
-      <button class="btn-choose" onclick="escolher(${i})">
-        Escolher Jogador <span class="arrow">›</span>
-      </button>
-    </div>
-  `;
-  slider.appendChild(slide);
-
-  // monta a miniatura
-  const t = document.createElement('button');
-  t.className = 'thumb' + (i===0 ? ' active' : '');
-  t.dataset.index = i;
-  t.innerHTML = `
-    <span class="t-num">${num}</span>
-    <span class="t-name">${p.name}</span>
-    <span class="t-line"></span>
-  `;
-  t.addEventListener('click', ()=> goTo(i));
-  thumbsBox.appendChild(t);
-});
-
-/* ===========================================================
-   LÓGICA DE NAVEGAÇÃO
-   =========================================================== */
-let current = 0;
+/* ============================================================
+   ESTADO + REFERÊNCIAS
+   ============================================================ */
+let current = 1;                  // começa no CR7 (índice 1), como no design
 const total = players.length;
-const slides = document.querySelectorAll('.slide');
-const thumbs = document.querySelectorAll('.thumb');
-const pFill = document.getElementById('pFill');
-const pPct  = document.getElementById('pPct');
+const dropped = {};               // fotos arrastadas em runtime, por índice
+const flag = c => `https://flagcdn.com/${c}.svg`;
 
-function update(){
-  slides.forEach((s,i)=> s.classList.toggle('active', i===current));
-  thumbs.forEach((t,i)=> t.classList.toggle('active', i===current));
-  const pct = Math.round(((current+1)/total)*100);
-  pFill.style.width = pct + '%';
-  pPct.textContent = pct + '%';
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render(){
+  const p = players[current];
+  const next = players[(current+1)%total];
+
+  // header / logo
+  $('logo').innerHTML = `${p.logo[0]}<span>${p.logo[1]}</span>`;
+
+  // esquerda
+  $('vName').textContent = p.vname;
+  $('tagline').textContent = p.tagline;
+  $('firstName').textContent = p.first;
+  $('scriptName').textContent = p.script;
+  $('quote').innerHTML = `${p.quoteA}<br><span class="alt">${p.quoteB}</span>`;
+  $('nick').textContent = p.nick;
+  $('group').textContent = p.group;
+
+  // direita
+  $('aboutName').textContent = p.nick.toUpperCase();
+  $('bio').innerHTML = p.bio.map(l=>`<p>${l}</p>`).join('');
+  $('cFlag').src = flag(p.code);
+  $('cFlag').alt = p.country;
+  $('cName').textContent = p.country;
+  $('stats').innerHTML = p.stats.map(s=>`
+    <div class="stat">
+      <span class="ic">${ICONS[s[0]]||ICONS.star}</span>
+      <div><b>${s[1]}</b><small>${s[2]}</small></div>
+    </div>`).join('');
+
+  // foto central
+  const photo = $('photo');
+  const img = dropped[current] || p.photo;
+  if(img){
+    photo.style.backgroundImage = `url('${img}')`;
+    photo.classList.add('has-img');
+    photo.querySelector('.ph').style.display = 'none';
+  }else{
+    photo.style.backgroundImage = 'none';
+    photo.classList.remove('has-img');
+    photo.querySelector('.ph').style.display = 'flex';
+  }
+
+  // barra inferior
+  $('indexNum').textContent = String(current+1).padStart(2,'0');
+  $('fixtures').innerHTML = p.fixtures.map(f=>`
+    <div class="fixture">
+      <img src="${flag(f.code)}" alt="${f.opp}">
+      <div class="fx-team"><b>${f.opp}</b><small>${f.date} · ${f.venue}</small></div>
+      <div class="fx-score ${f.ft?'':'up'}">${f.res}${f.ft?'<span class="ft">FT</span>':''}</div>
+    </div>`).join('');
+
+  // card próximo jogador
+  const npImg = dropped[(current+1)%total] || next.photo;
+  const np = $('nextPhoto');
+  np.style.backgroundImage = npImg ? `url('${npImg}')` : 'none';
+  np.textContent = npImg ? '' : 'Foto';
+  $('nextQuote').innerHTML = `${next.nextQuoteA}<br><span class="alt">${next.nextQuoteB}</span>`;
+  $('nextName').textContent = next.nick;
+
+  // animação
+  stage.classList.remove('fade-in'); void stage.offsetWidth; stage.classList.add('fade-in');
 }
-function goTo(i){ current = (i+total)%total; update(); }
-function next(){ goTo(current+1); }
-function prev(){ goTo(current-1); }
 
-document.getElementById('next').addEventListener('click', next);
-document.getElementById('prev').addEventListener('click', prev);
-
-// teclado (setas ← →)
+/* ============================================================
+   NAVEGAÇÃO
+   ============================================================ */
+function go(i){ current = (i+total)%total; render(); }
+$('next').addEventListener('click', ()=>go(current+1));
+$('prev').addEventListener('click', ()=>go(current-1));
+$('nextCard').addEventListener('click', e=>{ if(!e.target.closest('.next-arrows')) go(current+1); });
 document.addEventListener('keydown', e=>{
-  if(e.key==='ArrowRight') next();
-  if(e.key==='ArrowLeft')  prev();
+  if(e.key==='ArrowRight') go(current+1);
+  if(e.key==='ArrowLeft')  go(current-1);
 });
 
-// swipe no celular
-let touchX = null;
-slider.addEventListener('touchstart', e=> touchX = e.touches[0].clientX);
-slider.addEventListener('touchend', e=>{
-  if(touchX===null) return;
-  const dx = e.changedTouches[0].clientX - touchX;
-  if(dx < -50) next();
-  if(dx >  50) prev();
-  touchX = null;
-});
+/* ============================================================
+   ARRASTAR / SOLTAR FOTO (PNG) NA ÁREA CENTRAL
+   ============================================================ */
+const photo = $('photo');
+const fileInput = $('fileInput');
 
-// ação do botão "Escolher Jogador"
-function escolher(i){
-  alert('Você escolheu: ' + players[i].name + ' ' + players[i].last + '! ⚽');
-  // aqui você pode trocar por: redirecionar, abrir modal, salvar escolha, etc.
+function loadFile(file){
+  if(!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = e => { dropped[current] = e.target.result; render(); };
+  reader.readAsDataURL(file);
 }
+photo.addEventListener('click', ()=> fileInput.click());
+fileInput.addEventListener('change', e=> loadFile(e.target.files[0]));
+['dragenter','dragover'].forEach(ev=>photo.addEventListener(ev, e=>{ e.preventDefault(); photo.classList.add('drag'); }));
+['dragleave','drop'].forEach(ev=>photo.addEventListener(ev, e=>{ e.preventDefault(); photo.classList.remove('drag'); }));
+photo.addEventListener('drop', e=> loadFile(e.dataTransfer.files[0]));
 
-update();
+render();
 </script>
 </body>
 </html>

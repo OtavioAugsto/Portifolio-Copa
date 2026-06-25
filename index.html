@@ -285,11 +285,11 @@ nav.menu a.active::after{
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
   animation:wcShine 7s ease-in-out infinite;
-  filter:drop-shadow(0 2px 8px rgba(0,0,0,.9));
+  filter:drop-shadow(1px 1px 0 rgba(0,0,0,.55)) drop-shadow(-1px -1px 0 rgba(255,255,255,.45)) drop-shadow(0 3px 8px rgba(0,0,0,.85));
 }
 .wc-cup-img{
   height:60px; width:auto; display:block; margin:1px 0;
-  filter:drop-shadow(0 5px 12px rgba(0,0,0,.5));
+  filter:url(#embossTaca) drop-shadow(0 5px 12px rgba(0,0,0,.5));
 }
 .wc-year{
   font-family:'Oswald',sans-serif; font-weight:700; font-size:15px; letter-spacing:7px;
@@ -299,6 +299,7 @@ nav.menu a.active::after{
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
   animation:wcShine 7s ease-in-out .35s infinite;
+  filter:drop-shadow(1px 1px 0 rgba(0,0,0,.5)) drop-shadow(-1px -1px 0 rgba(255,255,255,.35));
 }
 @keyframes wcShine{ 0%{ background-position:200% 0; } 75%,100%{ background-position:-60% 0; } }
 
@@ -419,6 +420,16 @@ nav.menu a.active::after{
     <span class="wc-word">CUP</span>
     <span class="wc-year">2026</span>
   </div>
+
+  <!-- filtro de emboss (relevo) para a taça -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="embossTaca" x="-12%" y="-12%" width="124%" height="124%">
+      <feConvolveMatrix in="SourceGraphic" order="3" preserveAlpha="true" divisor="1" bias="0.5"
+        kernelMatrix="-1 0 0  0 0 0  0 0 1" result="emb"/>
+      <feComposite in="emb" in2="SourceAlpha" operator="in" result="embClip"/>
+      <feBlend in="SourceGraphic" in2="embClip" mode="overlay"/>
+    </filter>
+  </svg>
 
   <!-- HEADER -->
   <header>

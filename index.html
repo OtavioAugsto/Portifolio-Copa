@@ -46,18 +46,28 @@ body::before{
 }
 /* camada de imagem de fundo por jogador */
 .bg-layer{
-  position:fixed; inset:0; z-index:1;
-  background-size:cover; background-position:center right;
-  opacity:0; transition:opacity .6s ease;
-  pointer-events:none;
-  filter:brightness(1.18) contrast(1.03) saturate(0.88);
+  position:fixed; inset:0; z-index:1; overflow:hidden;
+  opacity:0; transition:opacity .6s ease; pointer-events:none;
 }
 .bg-layer.on{ opacity:1; }
-.bg-layer::after{
-  content:""; position:absolute; inset:0;
+/* bloco com a proporção da arte (1307x735), cobrindo a tela e centralizado.
+   --bg-zoom < 1 = afasta a imagem (mostra mais, com leve margem escura) */
+.bg-stage{
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%) scale(var(--bg-zoom, 0.95));
+  width:max(100vw, calc(100vh * 1307 / 735));
+  height:max(100vh, calc(100vw * 735 / 1307));
+}
+.bg-img{
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  filter:brightness(1.18) contrast(1.03) saturate(0.86);
+}
+.bg-shade{
+  position:absolute; inset:0;
   background:
-    linear-gradient(90deg, rgba(8,8,10,.66) 0%, rgba(8,8,10,.24) 30%, rgba(8,8,10,0) 60%, rgba(8,8,10,.06) 100%),
-    linear-gradient(0deg, rgba(8,8,10,.82) 0%, rgba(8,8,10,.03) 20%, transparent 38%);
+    linear-gradient(90deg, rgba(8,8,10,.6) 0%, rgba(8,8,10,.2) 32%, rgba(8,8,10,0) 60%, rgba(8,8,10,.05) 100%),
+    linear-gradient(0deg, rgba(8,8,10,.8) 0%, rgba(8,8,10,.02) 20%, transparent 38%);
 }
 
 /* ============================================================
@@ -160,10 +170,10 @@ nav.menu a.active::after{
 
 /* "JR." manuscrito com efeito de escrita */
 .jr-write{
-  position:fixed; z-index:6; pointer-events:none;
-  left:var(--jr-left,49.5%); top:var(--jr-top,40%);
+  position:absolute; z-index:3; pointer-events:none;
+  left:var(--jr-left,45.5%); top:var(--jr-top,48%);
   transform:translate(-50%,-50%);
-  width:clamp(170px,16vw,240px);
+  width:clamp(170px,15vw,230px);
 }
 .jr-write svg{ width:100%; height:auto; overflow:visible; }
 .jr-text{
@@ -304,10 +314,14 @@ nav.menu a.active::after{
 <body>
 
   <!-- FUNDO (imagem por jogador, atrás de tudo) -->
-  <div class="bg-layer" id="bgLayer"></div>
-
-  <!-- "JR." escrito à mão (SVG animado) -->
-  <div class="jr-write" id="jrWrite"></div>
+  <div class="bg-layer" id="bgLayer">
+    <div class="bg-stage">
+      <div class="bg-img" id="bgImg"></div>
+      <div class="bg-shade"></div>
+      <!-- "JR." escrito à mão (SVG animado), grudado na arte -->
+      <div class="jr-write" id="jrWrite"></div>
+    </div>
+  </div>
 
   <!-- HEADER -->
   <header>
@@ -566,11 +580,11 @@ function render(){
   // fundo cinematográfico (imagem atrás de tudo)
   const bgLayer = $('bgLayer');
   if(p.bg){
-    bgLayer.style.backgroundImage = `url('${p.bg}')`;
+    $('bgImg').style.backgroundImage = `url('${p.bg}')`;
     bgLayer.classList.add('on');
   }else{
     bgLayer.classList.remove('on');
-    bgLayer.style.backgroundImage = 'none';
+    $('bgImg').style.backgroundImage = 'none';
   }
 
   // "JR." manuscrito animado (só quem tem p.draw)

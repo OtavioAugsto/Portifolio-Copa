@@ -242,6 +242,14 @@ nav.menu a.active::after{
   position:fixed; z-index:6; left:8vw; top:16%;
   display:inline-block; pointer-events:none;
 }
+.hero-name-row{ position:relative; display:inline-block; }
+.hero-tagline{
+  margin:16px 0 0 8px;
+  font-family:'Oswald',sans-serif; font-size:19px; font-weight:500;
+  letter-spacing:5px; text-transform:uppercase; color:#cfd3da;
+  text-shadow:0 2px 8px rgba(0,0,0,.6);
+}
+.hero-tagline span{ color:var(--gold); }
 .big-name{
   display:block;
   font-family:'Anton'; font-size:clamp(82px,13.2vw,212px); line-height:.82;
@@ -273,18 +281,18 @@ nav.menu a.active::after{
 .jr-write svg{ width:100%; height:auto; overflow:visible; }
 .jr-text{
   fill:transparent;
-  stroke:#17256b; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round;
+  stroke:#ffd24a; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round;
   stroke-dasharray:1600;
   animation:jrLoop 6s ease-in-out infinite;
-  filter:drop-shadow(0 0 5px rgba(255,255,255,.7)) drop-shadow(0 0 16px rgba(110,150,255,.6));
+  filter:drop-shadow(0 0 5px rgba(255,240,180,.6)) drop-shadow(0 0 16px rgba(255,200,80,.55));
 }
 @keyframes jrLoop{
-  0%   { stroke-dashoffset:1600; fill:rgba(23,37,107,0); opacity:1; }
-  26%  { stroke-dashoffset:0;    fill:rgba(23,37,107,0); }
-  40%  { stroke-dashoffset:0;    fill:rgba(23,37,107,1); }
-  82%  { stroke-dashoffset:0;    fill:rgba(23,37,107,1); opacity:1; }
-  95%  { stroke-dashoffset:0;    fill:rgba(23,37,107,0); opacity:0; }
-  100% { stroke-dashoffset:1600; fill:rgba(23,37,107,0); opacity:0; }
+  0%   { stroke-dashoffset:1600; fill:rgba(255,210,74,0); opacity:1; }
+  26%  { stroke-dashoffset:0;    fill:rgba(255,210,74,0); }
+  40%  { stroke-dashoffset:0;    fill:rgba(255,210,74,1); }
+  82%  { stroke-dashoffset:0;    fill:rgba(255,210,74,1); opacity:1; }
+  95%  { stroke-dashoffset:0;    fill:rgba(255,210,74,0); opacity:0; }
+  100% { stroke-dashoffset:1600; fill:rgba(255,210,74,0); opacity:0; }
 }
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }
 .group{
@@ -558,8 +566,11 @@ nav.menu a.active::after{
 
   <!-- NOME GIGANTE texturizado + "Jr." manuscrito -->
   <div class="hero-name" id="heroName">
-    <span class="big-name" id="bigName"></span>
-    <div class="jr-write" id="jrWrite"></div>
+    <div class="hero-name-row">
+      <span class="big-name" id="bigName"></span>
+      <div class="jr-write" id="jrWrite"></div>
+    </div>
+    <div class="hero-tagline" id="heroTagline"></div>
   </div>
 
   <!-- BARRA LATERAL (vidro + nome vertical + índice) -->
@@ -690,7 +701,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", sig:"Neymar Jr.", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg",
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", tagline:"Rumo ao Hexa. <span>Last Dance.</span>",
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
@@ -710,7 +721,7 @@ const players = [
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
-    photo:"",
+    photo:"imagens/ref2.jpg",
     stats:[["ball","850+","Career Goals"],["boot","1220+","Matches"],["trophy","34","Trophies"],["medal","5","Ballon d'Or"]],
     fixtures:[
       {opp:"DR Congo", code:"cd", date:"17 JUN", venue:"GROUP K", res:"1 - 1", ft:true},
@@ -838,6 +849,7 @@ function render(){
     const bn = $('bigName');
     bn.textContent = p.bigName;
     bn.style.animation = 'none'; void bn.offsetWidth; bn.style.animation = '';
+    $('heroTagline').innerHTML = p.tagline || '';
   }else{
     heroName.style.display = 'none';
   }

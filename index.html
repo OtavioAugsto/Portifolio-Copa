@@ -176,19 +176,22 @@ nav.menu a.active::after{
 }
 .big-name{
   display:block;
-  font-family:'Anton'; font-size:clamp(80px,13vw,205px); line-height:.82;
-  letter-spacing:2px; text-transform:uppercase;
-  background-color:#eef1f4;
+  font-family:'Anton'; font-size:clamp(82px,13.2vw,212px); line-height:.82;
+  letter-spacing:1px; text-transform:uppercase;
+  background-color:#eef2f6;
   background-image:
-    linear-gradient(115deg, transparent 42%, rgba(255,255,255,.9) 50%, transparent 58%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E"),
-    linear-gradient(180deg,#ffffff 0%, #c4cad2 100%);
-  background-size:250% 100%, 220px 220px, 100% 100%;
+    linear-gradient(115deg, transparent 40%, rgba(255,255,255,.96) 50%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #ffffff 0%, #eaf1f8 40%, #b6c4d6 100%);
+  background-size:250% 100%, 200px 200px, 100% 100%;
   background-position:200% 0, 0 0, 0 0;
   background-repeat:no-repeat, repeat, no-repeat;
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 16px 34px rgba(0,0,0,.6));
+  filter:
+    drop-shadow(0 1px 0 rgba(255,255,255,.45))
+    drop-shadow(0 3px 1px rgba(0,0,0,.35))
+    drop-shadow(0 20px 38px rgba(0,0,0,.62));
   animation:nameIn .9s cubic-bezier(.2,.7,.2,1) both, nameSheen 5s ease-in-out 1s infinite;
 }
 @keyframes nameIn{ from{ opacity:0; transform:translateX(-44px) skewX(-5deg); } to{ opacity:1; transform:none; } }
@@ -202,13 +205,13 @@ nav.menu a.active::after{
 .jr-write svg{ width:100%; height:auto; overflow:visible; }
 .jr-text{
   fill:transparent;
-  stroke:#ffd24a; stroke-width:2; stroke-linejoin:round; stroke-linecap:round;
+  stroke:#17256b; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round;
   stroke-dasharray:1600; stroke-dashoffset:1600;
   animation:jrDraw 2s ease forwards, jrFill .7s ease 1.85s forwards;
-  filter:drop-shadow(0 0 12px rgba(255,210,80,.7));
+  filter:drop-shadow(0 0 5px rgba(255,255,255,.7)) drop-shadow(0 0 16px rgba(110,150,255,.6));
 }
 @keyframes jrDraw{ to{ stroke-dashoffset:0; } }
-@keyframes jrFill{ to{ fill:#ffd24a; } }
+@keyframes jrFill{ to{ fill:#17256b; } }
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } }
 .group{
   display:flex; align-items:center; gap:14px;

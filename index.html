@@ -171,7 +171,7 @@ nav.menu a.active::after{
 /* "JR." manuscrito com efeito de escrita */
 /* nome gigante texturizado (branco gelo/tinta) */
 .hero-name{
-  position:fixed; z-index:6; left:46px; top:17%;
+  position:fixed; z-index:6; left:5.5vw; top:16%;
   display:inline-block; pointer-events:none;
 }
 .big-name{
@@ -180,16 +180,22 @@ nav.menu a.active::after{
   letter-spacing:2px; text-transform:uppercase;
   background-color:#eef1f4;
   background-image:
+    linear-gradient(115deg, transparent 42%, rgba(255,255,255,.9) 50%, transparent 58%),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E"),
     linear-gradient(180deg,#ffffff 0%, #c4cad2 100%);
-  background-size:220px 220px, 100% 100%;
+  background-size:250% 100%, 220px 220px, 100% 100%;
+  background-position:200% 0, 0 0, 0 0;
+  background-repeat:no-repeat, repeat, no-repeat;
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 14px 30px rgba(0,0,0,.55));
+  filter:drop-shadow(0 16px 34px rgba(0,0,0,.6));
+  animation:nameIn .9s cubic-bezier(.2,.7,.2,1) both, nameSheen 5s ease-in-out 1s infinite;
 }
+@keyframes nameIn{ from{ opacity:0; transform:translateX(-44px) skewX(-5deg); } to{ opacity:1; transform:none; } }
+@keyframes nameSheen{ 0%{ background-position:200% 0,0 0,0 0; } 55%,100%{ background-position:-70% 0,0 0,0 0; } }
 .jr-write{
-  position:absolute; right:var(--jr-right,-4%); bottom:var(--jr-bottom,2%);
-  transform:translateY(40%);
+  position:absolute; right:var(--jr-right,0%); bottom:var(--jr-bottom,-10%);
+  transform:translateY(55%);
   z-index:2; pointer-events:none;
   width:clamp(150px,12vw,205px);
 }
@@ -613,7 +619,9 @@ function render(){
   const heroName = $('heroName');
   if(p.bigName){
     heroName.style.display = '';
-    $('bigName').textContent = p.bigName;
+    const bn = $('bigName');
+    bn.textContent = p.bigName;
+    bn.style.animation = 'none'; void bn.offsetWidth; bn.style.animation = '';
   }else{
     heroName.style.display = 'none';
   }

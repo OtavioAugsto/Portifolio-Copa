@@ -218,7 +218,7 @@ nav.menu a.active::after{
   95%  { stroke-dashoffset:0;    fill:rgba(23,37,107,0); opacity:0; }
   100% { stroke-dashoffset:1600; fill:rgba(23,37,107,0); opacity:0; }
 }
-@media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup img{ height:62px; } .wc-word{ font-size:15px; } }
+@media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }
 .group{
   display:flex; align-items:center; gap:14px;
   font-size:12px; letter-spacing:5px; color:var(--dim); text-transform:uppercase; margin-top:2px;
@@ -273,28 +273,32 @@ nav.menu a.active::after{
 /* emblema da Copa (canto superior direito) */
 .wc-badge{
   position:fixed; top:14px; right:30px; z-index:40;
-  display:flex; flex-direction:column; align-items:center; gap:1px;
+  display:flex; flex-direction:column; align-items:center; gap:2px;
   pointer-events:none; color:var(--gold);
 }
 .wc-word{
-  font-family:'Anton',sans-serif; font-size:22px; letter-spacing:2px; line-height:1;
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));
+  font-family:'Anton',sans-serif; font-size:28px; letter-spacing:2px; line-height:.92;
+  background:linear-gradient(100deg, currentColor 0 38%, #ffffff 50%, currentColor 62% 100%);
+  background-size:250% 100%; background-position:200% 0;
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  animation:wcShine 4.5s ease-in-out infinite;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.55));
 }
-.wc-cup{ position:relative; display:flex; align-items:center; justify-content:center; }
-.wc-cup img{
-  height:90px; width:auto; display:block; position:relative; z-index:2;
-  filter:drop-shadow(0 6px 14px rgba(0,0,0,.55));
+.wc-cup-img{
+  height:60px; width:auto; display:block; margin:1px 0;
+  filter:drop-shadow(0 5px 12px rgba(0,0,0,.5));
 }
-.wc-bolts{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:160%; height:135%; z-index:1; pointer-events:none; overflow:visible;
+.wc-year{
+  font-family:'Oswald',sans-serif; font-weight:700; font-size:15px; letter-spacing:7px;
+  margin:1px 0 0 7px;
+  background:linear-gradient(100deg, currentColor 0 38%, #ffffff 50%, currentColor 62% 100%);
+  background-size:250% 100%; background-position:200% 0;
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  animation:wcShine 4.5s ease-in-out .35s infinite;
 }
-.wc-bolt{ fill:#fff0a8; filter:drop-shadow(0 0 4px #ffe05a); animation:boltFlicker 2.6s linear infinite; }
-@keyframes boltFlicker{
-  0%,100%{ opacity:0; }
-  3%{ opacity:1; } 6%{ opacity:.1; } 9%{ opacity:1; } 13%{ opacity:0; }
-  60%{ opacity:0; } 63%{ opacity:1; } 66%{ opacity:.2; } 69%{ opacity:1; } 73%{ opacity:0; }
-}
+@keyframes wcShine{ 0%{ background-position:200% 0; } 60%,100%{ background-position:-60% 0; } }
 
 /* ============================================================
    BARRA LATERAL (vidro)
@@ -406,19 +410,12 @@ nav.menu a.active::after{
     <div class="index-num" id="indexNum">01</div>
   </aside>
 
-  <!-- EMBLEMA: WORLD / taça (imagem) com raio / CUP -->
+  <!-- EMBLEMA: WORLD / taça / CUP / 2026 (brilho metálico nas palavras) -->
   <div class="wc-badge" aria-hidden="true">
     <span class="wc-word">WORLD</span>
-    <span class="wc-cup">
-      <svg class="wc-bolts" viewBox="0 0 120 120" aria-hidden="true">
-        <g class="wc-bolt">
-          <path d="M20,22 l-9,17 l6,0 l-5,19 l15,-24 l-6,0 l5,-12 z"/>
-          <path d="M100,22 l9,17 l-6,0 l5,19 l-15,-24 l6,0 l-5,-12 z"/>
-        </g>
-      </svg>
-      <img src="imagens/taca.png" alt="Taça da Copa">
-    </span>
+    <img class="wc-cup-img" src="imagens/taca.png" alt="Taça da Copa">
     <span class="wc-word">CUP</span>
+    <span class="wc-year">2026</span>
   </div>
 
   <!-- HEADER -->

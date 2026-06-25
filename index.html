@@ -50,14 +50,14 @@ body::before{
   background-size:cover; background-position:center right;
   opacity:0; transition:opacity .6s ease;
   pointer-events:none;
-  filter:brightness(1.2) contrast(1.06) saturate(1.14);
+  filter:brightness(1.38) contrast(1.08) saturate(1.2);
 }
 .bg-layer.on{ opacity:1; }
 .bg-layer::after{
   content:""; position:absolute; inset:0;
   background:
-    linear-gradient(90deg, rgba(8,8,10,.8) 0%, rgba(8,8,10,.38) 30%, rgba(8,8,10,.03) 62%, rgba(8,8,10,.14) 100%),
-    linear-gradient(0deg, rgba(8,8,10,.9) 0%, rgba(8,8,10,.06) 22%, transparent 42%);
+    linear-gradient(90deg, rgba(8,8,10,.66) 0%, rgba(8,8,10,.24) 30%, rgba(8,8,10,0) 60%, rgba(8,8,10,.06) 100%),
+    linear-gradient(0deg, rgba(8,8,10,.82) 0%, rgba(8,8,10,.03) 20%, transparent 38%);
 }
 
 /* ============================================================
@@ -156,7 +156,7 @@ nav.menu a.active::after{
   margin-top:42px;
   font-family:'Kaushan Script'; font-size:30px; color:var(--gold);
 }
-.nick svg.sig{ height:78px; width:auto; max-width:100%; display:block; overflow:visible; margin:-8px 0 -12px -4px; }
+.nick svg.sig{ height:82px; width:auto; max-width:100%; display:block; overflow:visible; margin:-8px 0 -12px -4px; filter:drop-shadow(0 0 12px rgba(245,205,115,.6)); }
 .group{
   display:flex; align-items:center; gap:14px;
   font-size:12px; letter-spacing:5px; color:var(--dim); text-transform:uppercase; margin-top:2px;
@@ -371,15 +371,15 @@ function signatureSVG(text){
   <svg class="sig" viewBox="0 0 470 110" preserveAspectRatio="xMinYMid meet" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="sigGold" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox" spreadMethod="reflect">
-        <stop offset="0" stop-color="#8a6a22"/>
-        <stop offset="0.42" stop-color="#f3dea9"/>
-        <stop offset="0.5" stop-color="#fffbe9"/>
-        <stop offset="0.58" stop-color="#f3dea9"/>
-        <stop offset="1" stop-color="#8a6a22"/>
-        <animateTransform attributeName="gradientTransform" type="translate" from="-1 0" to="1 0" dur="3.5s" repeatCount="indefinite"/>
+        <stop offset="0" stop-color="#b3892f"/>
+        <stop offset="0.4" stop-color="#ffe9b0"/>
+        <stop offset="0.5" stop-color="#ffffff"/>
+        <stop offset="0.6" stop-color="#ffe9b0"/>
+        <stop offset="1" stop-color="#b3892f"/>
+        <animateTransform attributeName="gradientTransform" type="translate" from="-1 0" to="1 0" dur="2.6s" repeatCount="indefinite"/>
       </linearGradient>
-      <filter id="sigGlow" x="-30%" y="-30%" width="160%" height="160%">
-        <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#f0cf78" flood-opacity="0.8"/>
+      <filter id="sigGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#ffd97a" flood-opacity="0.95"/>
       </filter>
     </defs>
     <text x="4" y="76" font-family="'Kaushan Script', cursive" font-size="66" fill="url(#sigGold)" filter="url(#sigGlow)">${text}</text>

@@ -268,8 +268,12 @@ nav.menu a.active::after{
     drop-shadow(0 1px 0 rgba(255,255,255,.45))
     drop-shadow(0 3px 1px rgba(0,0,0,.35))
     drop-shadow(0 20px 38px rgba(0,0,0,.62));
-  animation:nameIn 1.15s cubic-bezier(.2,.75,.25,1) both, nameSheen 5s ease-in-out 1.4s infinite;
+  opacity:0; transform:translateY(70px);
+  clip-path:inset(100% 0 0 0); -webkit-clip-path:inset(100% 0 0 0);
+  transition:opacity .9s ease, transform 1.1s cubic-bezier(.2,.75,.25,1), clip-path 1.1s cubic-bezier(.2,.75,.25,1), -webkit-clip-path 1.1s cubic-bezier(.2,.75,.25,1);
+  animation:nameSheen 5s ease-in-out 1.6s infinite;
 }
+.big-name.born{ opacity:1; transform:translateY(0); clip-path:inset(0 0 0 0); -webkit-clip-path:inset(0 0 0 0); }
 @keyframes nameIn{
   from{ opacity:0; transform:translateY(120px); }
   to{ opacity:1; transform:translateY(0); }
@@ -529,9 +533,9 @@ nav.menu a.active::after{
         if(n>=100){ n=100; clearInterval(t); setTimeout(function(){
           var s=document.getElementById('site');
           document.body.classList.add('loaded');                 // conteúdo sobe
-          setTimeout(function(){                                  // NEYMAR "nasce" depois do site subir
+          setTimeout(function(){                                  // NEYMAR nasce depois do site subir
             var bn=document.getElementById('bigName');
-            if(bn){ bn.style.animation='none'; void bn.offsetWidth; bn.style.animation=''; }
+            if(bn) bn.classList.add('born');
           },1050);
           if(s) s.addEventListener('transitionend', function(e){ if(e.propertyName==='transform') s.style.transform='none'; });
           // o lockup (WORLD/taça/CUP/2026) voa pro emblema, batendo no mesmo formato
@@ -860,7 +864,8 @@ function render(){
     heroName.style.display = '';
     const bn = $('bigName');
     bn.textContent = p.bigName;
-    bn.style.animation = 'none'; void bn.offsetWidth; bn.style.animation = '';
+    bn.classList.remove('born');
+    if(document.body.classList.contains('loaded')){ void bn.offsetWidth; bn.classList.add('born'); }
     $('heroTagline').innerHTML = p.tagline || '';
   }else{
     heroName.style.display = 'none';

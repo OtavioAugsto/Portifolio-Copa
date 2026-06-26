@@ -307,11 +307,11 @@ nav.menu a.active::after{
   color:var(--gold);   /* cor da seleção (dourado no Neymar via JS) */
   text-shadow:0 0 18px color-mix(in srgb, currentColor 55%, transparent);
 }
-/* glow suave continuo, comeca depois de terminar de escrever */
-.jr-write.go{ animation:jrGlow 3.6s ease-in-out var(--jr-total,1s) infinite; }
+/* glow suave + leve respiro/blink (estilo logo CR7), comeca depois de escrever */
+.jr-write.go{ animation:jrGlow 3.4s ease-in-out var(--jr-total,1s) infinite; }
 @keyframes jrGlow{
-  0%,100%{ text-shadow:0 0 10px color-mix(in srgb, currentColor 38%, transparent); }
-  50%{ text-shadow:0 0 26px color-mix(in srgb, currentColor 88%, transparent); }
+  0%,100%{ opacity:.82; text-shadow:0 0 10px color-mix(in srgb, currentColor 38%, transparent); }
+  50%{ opacity:1; text-shadow:0 0 30px color-mix(in srgb, currentColor 92%, transparent); }
 }
 /* ponta de caneta brilhante que corre na frente enquanto escreve */
 .jr-write::after{
@@ -327,15 +327,28 @@ nav.menu a.active::after{
   90%{ opacity:1; left:100%; }
   100%{ opacity:0; left:100%; }
 }
-/* cada letra desenhada da esquerda pra direita (traco) */
+/* cada letra nasce em sequencia (sobe + aparece) - escrita sem cortar glifos */
 .jr-char{
-  display:inline-block; opacity:1;
-  clip-path:inset(0 100% 0 0); -webkit-clip-path:inset(0 100% 0 0);
+  display:inline-block; opacity:0;
+  transform:translateY(.24em) rotate(-5deg);
+  transform-origin:left bottom;
 }
-.jr-write.go .jr-char{ animation:jrDraw .42s ease forwards; }
-@keyframes jrDraw{
-  from{ clip-path:inset(0 100% 0 0); -webkit-clip-path:inset(0 100% 0 0); }
-  to{ clip-path:inset(0 -10% 0 0); -webkit-clip-path:inset(0 -10% 0 0); }
+.jr-write.go .jr-char{ animation:jrWriteIn .5s cubic-bezier(.2,.7,.2,1) forwards; }
+@keyframes jrWriteIn{ to{ opacity:1; transform:translateY(0) rotate(0); } }
+/* dourado metalico forte (ouro) com brilho passando - so no Neymar via .jr-gold */
+.jr-write.jr-gold{
+  background-image:
+    linear-gradient(110deg, transparent 38%, rgba(255,255,255,.92) 50%, transparent 62%),
+    linear-gradient(180deg,#fff6cf 0%,#ffe07a 20%,#f0b51f 48%,#fff2b6 68%,#c8860c 100%);
+  background-size:260% 100%, 100% 100%;
+  background-position:210% 0, 0 0;
+  background-repeat:no-repeat, no-repeat;
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.jr-write.jr-gold.go{ animation:jrGlow 3.4s ease-in-out var(--jr-total,1s) infinite, jrSheen 4.8s ease-in-out var(--jr-total,1s) infinite; }
+@keyframes jrSheen{
+  0%{ background-position:210% 0, 0 0; }
+  55%,100%{ background-position:-60% 0, 0 0; }
 }
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }
 .group{
@@ -971,7 +984,8 @@ function render(){
   const jr = $('jrWrite');
   if(p.draw){
     jr.style.display = '';
-    jr.style.color = p.goldScript ? '#f0cf78' : '';   // dourado só no Neymar; demais usam a cor da seleção
+    jr.classList.toggle('jr-gold', !!p.goldScript);   // ouro metálico só no Neymar
+    jr.style.color = p.goldScript ? '#f1c44e' : '';   // base p/ glow e ponta de caneta; demais usam a cor da seleção
     jr.style.fontSize = Math.min(98, Math.round(420/p.draw.length)) + 'px';
     jr.innerHTML = '';   // letras aparecem quando showJR rodar
     if(document.body.classList.contains('loaded')) setTimeout(showJR, 1100);  // nasce depois do nome

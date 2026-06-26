@@ -713,6 +713,14 @@ function logoRecolorSVG(src, rgb){   // preto->cor, branco->transparente
     <image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet" filter="url(#logoRecolor)"/>
   </svg>`;
 }
+function logoTintSVG(src, rgb){   // logo preta em fundo transparente -> tinge na cor (preserva alpha)
+  return `<svg class="logo-img logo-cr" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs><filter id="logoTint" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0 0 0 0 ${rgb[0]}  0 0 0 0 ${rgb[1]}  0 0 0 0 ${rgb[2]}  0 0 0 1 0"/>
+    </filter></defs>
+    <image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet" filter="url(#logoTint)"/>
+  </svg>`;
+}
 function logoTwoToneSVG(src, l, r, split){   // metade esquerda cor l, direita cor r
   return `<svg class="logo-img logo-cr" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
@@ -777,7 +785,7 @@ const players = [
     logo:["LM","10"], tagline:"The G.O.A.T.",
     first:"LIONEL", script:"Messi", nick:"Leo", vname:"Lionel Messi",
     code:"ar", country:"Argentina", group:"World Cup 2026 · Group J",
-    c1:"#75aadb", c2:"#5a8fc0", ink:"#0c2233", bg:"",
+    c1:"#75aadb", c2:"#5a8fc0", ink:"#0c2233", bg:"imagens/messi.jpg", bigName:"LIONEL", draw:"Messi", tagline:"O GOAT. <span>Vamos Argentina!</span>", logoImg:"imagens/logo-messi.webp", logoTint:[0.459,0.667,0.859],
     quoteA:"You have to fight to reach your dream.", quoteB:"Sacrifice and work hard for it.",
     nextQuoteA:"Decisions are made with instinct —", nextQuoteB:"never with fear.",
     bio:["Smaller in size.","Bigger than the game.","Champion of the world."],
@@ -873,7 +881,9 @@ function render(){
   root.setProperty('--ink', p.ink);
 
   // header / logo
-  if(p.logoImg && p.logoRGB && p.logoRGB2){
+  if(p.logoImg && p.logoTint){
+    $('logo').innerHTML = logoTintSVG(p.logoImg, p.logoTint);
+  }else if(p.logoImg && p.logoRGB && p.logoRGB2){
     $('logo').innerHTML = logoTwoToneSVG(p.logoImg, p.logoRGB, p.logoRGB2, p.logoSplit||57);
   }else if(p.logoImg && p.logoRGB){
     $('logo').innerHTML = logoRecolorSVG(p.logoImg, p.logoRGB);

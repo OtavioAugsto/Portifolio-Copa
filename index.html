@@ -798,7 +798,7 @@ const players = [
     logo:["CR","7"], tagline:"The Legend",
     first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
     code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
-    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17], logoRGB2:[1,1,1], logoSplit:57,
+    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17], logoRGB2:[1,1,1], logoSplit:57, softName:true, jrPos:"translate(110px,55%)",
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
@@ -968,6 +968,8 @@ function render(){
     const bn = $('bigName');
     bn.textContent = p.bigName;
     bn.style.fontSize = p.bigSize || '';
+    // sombra mais leve em quem tem fundo claro (ex: Cristiano) p/ tirar a mancha preta
+    bn.style.filter = p.softName ? 'drop-shadow(0 1px 0 rgba(255,255,255,.4)) drop-shadow(0 2px 7px rgba(0,0,0,.3))' : '';
     bn.classList.remove('born');
     if(document.body.classList.contains('loaded')){ void bn.offsetWidth; bn.classList.add('born'); }
     $('heroTagline').innerHTML = p.tagline || '';
@@ -980,6 +982,7 @@ function render(){
   if(p.draw){
     jr.style.display = '';
     jr.style.color = p.goldScript ? '#f1c44e' : '';   // base do glow (ouro no Neymar; demais usam a cor da seleção)
+    jr.style.transform = p.jrPos || '';   // posição custom por jogador (ex: Cristiano mais à direita)
     jr.innerHTML = '';   // o SVG é montado quando showJR rodar
     if(document.body.classList.contains('loaded')) setTimeout(showJR, 1100);  // nasce depois do nome
   }else{

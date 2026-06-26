@@ -713,6 +713,18 @@ function logoRecolorSVG(src, rgb){   // preto->cor, branco->transparente
     <image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet" filter="url(#logoRecolor)"/>
   </svg>`;
 }
+function logoTwoToneSVG(src, l, r, split){   // metade esquerda cor l, direita cor r
+  return `<svg class="logo-img logo-cr" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <filter id="lcL" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 ${l[0]} 0 0 0 0 ${l[1]} 0 0 0 0 ${l[2]} -0.299 -0.587 -0.114 0 1"/></filter>
+      <filter id="lcR" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 ${r[0]} 0 0 0 0 ${r[1]} 0 0 0 0 ${r[2]} -0.299 -0.587 -0.114 0 1"/></filter>
+      <clipPath id="clL"><rect x="0" y="0" width="${split}" height="100"/></clipPath>
+      <clipPath id="clR"><rect x="${split}" y="0" width="${100-split}" height="100"/></clipPath>
+    </defs>
+    <image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet" filter="url(#lcL)" clip-path="url(#clL)"/>
+    <image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet" filter="url(#lcR)" clip-path="url(#clR)"/>
+  </svg>`;
+}
 
 function jrCharsHTML(text){
   var html='';
@@ -749,7 +761,7 @@ const players = [
     logo:["CR","7"], tagline:"The Legend",
     first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
     code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
-    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17],
+    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17], logoRGB2:[1,1,1], logoSplit:57,
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
@@ -861,7 +873,9 @@ function render(){
   root.setProperty('--ink', p.ink);
 
   // header / logo
-  if(p.logoImg && p.logoRGB){
+  if(p.logoImg && p.logoRGB && p.logoRGB2){
+    $('logo').innerHTML = logoTwoToneSVG(p.logoImg, p.logoRGB, p.logoRGB2, p.logoSplit||57);
+  }else if(p.logoImg && p.logoRGB){
     $('logo').innerHTML = logoRecolorSVG(p.logoImg, p.logoRGB);
   }else if(p.logoImg){
     $('logo').innerHTML = `<img class="logo-img" src="${p.logoImg}" alt="${p.nick}">`;

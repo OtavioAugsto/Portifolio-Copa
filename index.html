@@ -764,11 +764,26 @@ function logoTwoToneSVG(src, l, r, split){   // metade esquerda cor l, direita c
   </svg>`;
 }
 
-function jrSvgHTML(text, fontPx, gold, font, pathObj){
+function jrSvgHTML(text, fontPx, gold, font, pathObj, imgObj){
   var grad = gold ? '<defs><linearGradient id="jrGoldGrad" x1="0" y1="0" x2="0" y2="1">'
       + '<stop offset="0" stop-color="#ffdb4d"/><stop offset="0.28" stop-color="#fbc01a"/>'
       + '<stop offset="0.55" stop-color="#e09a00"/><stop offset="0.74" stop-color="#ffc933"/>'
       + '<stop offset="1" stop-color="#a86a00"/></linearGradient></defs>' : '';
+
+  // ── modo IMAGEM: tira o fundo preto por luminância e tinge (assinatura de teste) ──
+  if(imgObj && imgObj.src){
+    var vbi = (imgObj.vb || '0 0 736 736').split(' ');
+    var Hi = Math.round(fontPx * (imgObj.scale || 2.3));
+    var Wi = Math.round(Hi * (+vbi[2]) / (+vbi[3]));
+    var col = gold ? [0.945,0.769,0.306] : [1,1,1];
+    return '<svg class="jr-svg" width="'+Wi+'" height="'+Hi+'" viewBox="'+imgObj.vb+'" xmlns="http://www.w3.org/2000/svg">'
+      + '<defs><filter id="jrKey" color-interpolation-filters="sRGB" x="-20%" y="-20%" width="140%" height="140%">'
+      + '<feColorMatrix type="matrix" values="0 0 0 0 '+col[0]+' 0 0 0 0 '+col[1]+' 0 0 0 0 '+col[2]+' .34 .34 .34 0 0"/>'
+      + '<feComponentTransfer><feFuncA type="linear" slope="5" intercept="-0.55"/></feComponentTransfer>'
+      + '</filter></defs>'
+      + '<image href="'+imgObj.src+'" x="0" y="0" width="'+vbi[2]+'" height="'+vbi[3]+'" preserveAspectRatio="xMidYMid meet" filter="url(#jrKey)"/>'
+      + '</svg>';
+  }
 
   // ── modo ASSINATURA: traço único (SVG path) desenhado por caneta, como o site modelo ──
   if(pathObj && pathObj.d){
@@ -810,7 +825,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", sig:"Neymar Jr.", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", drawPath:{vb:"0 0 300 200", sw:6, scale:2.0, d:"M55,70 C90,40 140,38 158,58 M145,50 C150,95 150,130 134,158 C122,178 92,182 80,164 C72,152 84,142 98,150 M175,152 C172,128 173,114 178,100 C182,92 193,90 202,99 M216,146 C222,144 225,149 221,153 C217,157 211,154 213,148"},
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", drawImg:{src:"imagens/jr-test.jpg", vb:"240 200 290 350", scale:2.6}, drawPath:{vb:"0 0 300 200", sw:6, scale:2.0, d:"M55,70 C90,40 140,38 158,58 M145,50 C150,95 150,130 134,158 C122,178 92,182 80,164 C72,152 84,142 98,150 M175,152 C172,128 173,114 178,100 C182,92 193,90 202,99 M216,146 C222,144 225,149 221,153 C217,157 211,154 213,148"},
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
@@ -937,7 +952,7 @@ function showJR(){
   if(!p.draw){ jr.style.display='none'; return; }
   jr.style.display='';
   var fontPx = Math.min(82, Math.round(360 / p.draw.length));   // fonte do JR (um pouco maior)
-  jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript, p.jrFont, p.drawPath);   // SVG: traço desenhado por caneta
+  jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript, p.jrFont, p.drawPath, p.drawImg);   // SVG: traço/assinatura
   drawJR();   // a assinatura tem loop próprio (jrSigLoop); não precisa re-disparar pelo nome
 }
 

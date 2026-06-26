@@ -753,8 +753,9 @@ function logoTwoToneSVG(src, l, r, split){   // metade esquerda cor l, direita c
   </svg>`;
 }
 
-function jrSvgHTML(text, fontPx, gold){
-  var W = Math.round(text.length * fontPx * 0.62 + fontPx * 0.5);
+function jrSvgHTML(text, fontPx, gold, font){
+  var fam = font || 'Caveat, cursive';
+  var W = Math.round(text.length * fontPx * 0.7 + fontPx * 0.6);
   var H = Math.round(fontPx * 1.5);
   var y = Math.round(fontPx * 1.05);
   var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -767,7 +768,7 @@ function jrSvgHTML(text, fontPx, gold){
   var sw = (fontPx * 0.018 + 0.6).toFixed(2);
   return '<svg class="jr-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
     + grad
-    + '<text class="jr-ink" x="'+Math.round(fontPx*0.15)+'" y="'+y+'" font-family="Caveat, cursive" '
+    + '<text class="jr-ink" x="'+Math.round(fontPx*0.15)+'" y="'+y+'" font-family="'+fam+'" '
     + 'font-weight="700" font-size="'+fontPx+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" '
     + 'stroke-linejoin="round" stroke-linecap="round" pathLength="1">'+safe+'</text>'
     + '</svg>';
@@ -798,7 +799,7 @@ const players = [
     logo:["CR","7"], tagline:"The Legend",
     first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
     code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
-    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17], logoRGB2:[1,1,1], logoSplit:57, softName:true, jrPos:"translate(95px,55%)", jrColor:"#ff5a5a",
+    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17], logoRGB2:[1,1,1], logoSplit:57, softName:true, jrPos:"translate(60px,55%)", jrFont:"'Kaushan Script', cursive",
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
@@ -909,7 +910,7 @@ function showJR(){
   if(!p.draw){ jr.style.display='none'; return; }
   jr.style.display='';
   var fontPx = Math.min(82, Math.round(360 / p.draw.length));   // fonte do JR (um pouco maior)
-  jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript);   // SVG: traço desenhado por caneta
+  jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript, p.jrFont);   // SVG: traço desenhado por caneta
   drawJR();
   attachJRSync();
 }

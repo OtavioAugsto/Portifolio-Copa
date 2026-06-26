@@ -313,6 +313,10 @@ nav.menu a.active::after{
   0%,100%{ opacity:.88; filter:drop-shadow(0 0 2px color-mix(in srgb, currentColor 20%, transparent)); }
   50%{ opacity:1; filter:drop-shadow(0 0 6px color-mix(in srgb, currentColor 42%, transparent)); }
 }
+/* assinatura: traço único desenhado por caneta (só stroke, igual o site modelo) */
+.jr-sig{ stroke-dasharray:1; stroke-dashoffset:1; }
+.jr-write.go .jr-sig{ animation:jrSig 2.2s cubic-bezier(.6,.02,.25,1) forwards; }
+@keyframes jrSig{ to{ stroke-dashoffset:0; } }
 /* o traço é DESENHADO por caneta (stroke-dashoffset), suave; preenche depois */
 .jr-ink{ stroke-dasharray:1; stroke-dashoffset:1; fill-opacity:0; }
 .jr-write.go .jr-ink{ animation:jrDraw 2s cubic-bezier(.6,.02,.25,1) forwards; }
@@ -753,16 +757,32 @@ function logoTwoToneSVG(src, l, r, split){   // metade esquerda cor l, direita c
   </svg>`;
 }
 
-function jrSvgHTML(text, fontPx, gold, font){
+function jrSvgHTML(text, fontPx, gold, font, pathObj){
+  var grad = gold ? '<defs><linearGradient id="jrGoldGrad" x1="0" y1="0" x2="0" y2="1">'
+      + '<stop offset="0" stop-color="#ffdb4d"/><stop offset="0.28" stop-color="#fbc01a"/>'
+      + '<stop offset="0.55" stop-color="#e09a00"/><stop offset="0.74" stop-color="#ffc933"/>'
+      + '<stop offset="1" stop-color="#a86a00"/></linearGradient></defs>' : '';
+
+  // ── modo ASSINATURA: traço único (SVG path) desenhado por caneta, como o site modelo ──
+  if(pathObj && pathObj.d){
+    var vb = (pathObj.vb || '0 0 300 175').split(' ');
+    var vbW = +vb[2], vbH = +vb[3];
+    var Hs = Math.round(fontPx * (pathObj.scale || 1.7));
+    var Ws = Math.round(Hs * vbW / vbH);
+    var sigStroke = gold ? 'url(#jrGoldGrad)' : 'currentColor';
+    return '<svg class="jr-svg" width="'+Ws+'" height="'+Hs+'" viewBox="'+pathObj.vb+'" xmlns="http://www.w3.org/2000/svg">'
+      + grad
+      + '<path class="jr-sig" d="'+pathObj.d+'" fill="none" stroke="'+sigStroke+'" stroke-width="'+(pathObj.sw||7)+'" '
+      + 'stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>'
+      + '</svg>';
+  }
+
+  // ── modo TEXTO: contorno da fonte desenhado por caneta ──
   var fam = font || 'Caveat, cursive';
   var W = Math.round(text.length * fontPx * 0.7 + fontPx * 0.6);
   var H = Math.round(fontPx * 1.5);
   var y = Math.round(fontPx * 1.05);
   var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  var grad = gold ? '<defs><linearGradient id="jrGoldGrad" x1="0" y1="0" x2="0" y2="1">'
-      + '<stop offset="0" stop-color="#ffdb4d"/><stop offset="0.28" stop-color="#fbc01a"/>'
-      + '<stop offset="0.55" stop-color="#e09a00"/><stop offset="0.74" stop-color="#ffc933"/>'
-      + '<stop offset="1" stop-color="#a86a00"/></linearGradient></defs>' : '';
   var fill   = gold ? 'url(#jrGoldGrad)' : 'currentColor';
   var stroke = gold ? '#ffcc33' : 'currentColor';
   var sw = (fontPx * 0.018 + 0.6).toFixed(2);
@@ -783,7 +803,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", sig:"Neymar Jr.", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>",
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", drawPath:{vb:"0 0 300 175", sw:7, scale:1.9, d:"M40,55 C75,33 120,33 150,46 M118,40 C123,82 119,118 98,135 C83,146 60,143 56,123 M170,138 C167,100 167,72 170,46 C200,36 226,44 224,70 C222,92 196,92 176,85 C198,98 218,122 246,140 M262,130 C268,129 272,134 268,139 C264,143 258,140 260,134"},
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
@@ -910,7 +930,7 @@ function showJR(){
   if(!p.draw){ jr.style.display='none'; return; }
   jr.style.display='';
   var fontPx = Math.min(82, Math.round(360 / p.draw.length));   // fonte do JR (um pouco maior)
-  jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript, p.jrFont);   // SVG: traço desenhado por caneta
+  jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript, p.jrFont, p.drawPath);   // SVG: traço desenhado por caneta
   drawJR();
   attachJRSync();
 }

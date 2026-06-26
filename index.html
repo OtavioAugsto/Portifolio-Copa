@@ -289,6 +289,7 @@ nav.menu a.active::after{
   font-family:'Caveat',cursive; font-weight:700; line-height:1; white-space:nowrap;
   color:var(--gold);   /* cor da seleção (dourado no Neymar via JS) */
   text-shadow:0 0 18px color-mix(in srgb, currentColor 55%, transparent);
+  animation:jrPulse 3.4s ease-in-out 1.2s infinite;   /* apaga e acende depois de desenhar */
 }
 .jr-char{
   display:inline-block; opacity:0;
@@ -296,6 +297,10 @@ nav.menu a.active::after{
   animation:jrChar .55s cubic-bezier(.2,.7,.2,1) forwards;
 }
 @keyframes jrChar{ to{ opacity:1; transform:translateY(0) rotate(0); } }
+@keyframes jrPulse{   /* apagando e acendendo (glow + leve opacidade) */
+  0%,100%{ opacity:.72; text-shadow:0 0 8px color-mix(in srgb, currentColor 35%, transparent); }
+  50%{ opacity:1; text-shadow:0 0 26px color-mix(in srgb, currentColor 85%, transparent); }
+}
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }
 .group{
   display:flex; align-items:center; gap:14px;
@@ -828,6 +833,7 @@ function showJR(){
   if(!p.draw){ jr.style.display='none'; return; }
   jr.style.display='';
   jr.innerHTML = jrCharsHTML(p.draw);   // letras entram em sequência (stagger, estilo modelo)
+  jr.style.animation='none'; void jr.offsetWidth; jr.style.animation='';   // reinicia o pulso apaga/acende
 }
 
 function render(){

@@ -133,6 +133,7 @@ header{
 }
 .logo span{ color:var(--gold); }
 .logo-img{ height:44px; width:auto; display:block; filter:drop-shadow(0 3px 8px rgba(0,0,0,.55)); }
+.logo-img.knockout{ filter:invert(1) brightness(1.6); mix-blend-mode:screen; }   /* tira o fundo branco (preto->branco) */
 .sidebar .logo{ position:absolute; top:16px; left:0; right:0; display:flex; justify-content:center; }
 nav.menu{ display:flex; gap:42px; }
 nav.menu a{
@@ -735,7 +736,7 @@ const players = [
     logo:["CR","7"], tagline:"The Legend",
     first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
     code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
-    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp",
+    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoKnockout:true,
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
@@ -848,7 +849,7 @@ function render(){
 
   // header / logo
   if(p.logoImg){
-    $('logo').innerHTML = `<img class="logo-img" src="${p.logoImg}" alt="${p.nick}">`;
+    $('logo').innerHTML = `<img class="logo-img${p.logoKnockout?' knockout':''}" src="${p.logoImg}" alt="${p.nick}">`;
   }else{
     $('logo').innerHTML = `${p.logo[0]}<span>${p.logo[1]}</span>`;
   }

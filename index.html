@@ -313,10 +313,17 @@ nav.menu a.active::after{
   0%,100%{ opacity:.88; filter:drop-shadow(0 0 2px color-mix(in srgb, currentColor 20%, transparent)); }
   50%{ opacity:1; filter:drop-shadow(0 0 6px color-mix(in srgb, currentColor 42%, transparent)); }
 }
-/* assinatura: traço único desenhado por caneta (só stroke, igual o site modelo) */
+/* assinatura: traço único desenhado por caneta em LOOP (escreve, segura, some, reescreve) */
 .jr-sig{ stroke-dasharray:1; stroke-dashoffset:1; }
-.jr-write.go .jr-sig{ animation:jrSig 2.2s cubic-bezier(.6,.02,.25,1) forwards; }
-@keyframes jrSig{ to{ stroke-dashoffset:0; } }
+.jr-write.go .jr-sig{ animation:jrSigLoop 7s ease-in-out infinite; }
+@keyframes jrSigLoop{
+  0%{ stroke-dashoffset:1; opacity:0; }
+  7%{ opacity:1; }
+  42%{ stroke-dashoffset:0; opacity:1; }   /* terminou de escrever */
+  82%{ stroke-dashoffset:0; opacity:1; }   /* segura visível */
+  93%{ stroke-dashoffset:0; opacity:0; }   /* some suave (sem apagar na cara) */
+  100%{ stroke-dashoffset:1; opacity:0; }  /* reseta escondido p/ reescrever */
+}
 /* o traço é DESENHADO por caneta (stroke-dashoffset), suave; preenche depois */
 .jr-ink{ stroke-dasharray:1; stroke-dashoffset:1; fill-opacity:0; }
 .jr-write.go .jr-ink{ animation:jrDraw 2s cubic-bezier(.6,.02,.25,1) forwards; }
@@ -931,8 +938,7 @@ function showJR(){
   jr.style.display='';
   var fontPx = Math.min(82, Math.round(360 / p.draw.length));   // fonte do JR (um pouco maior)
   jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript, p.jrFont, p.drawPath);   // SVG: traço desenhado por caneta
-  drawJR();
-  attachJRSync();
+  drawJR();   // a assinatura tem loop próprio (jrSigLoop); não precisa re-disparar pelo nome
 }
 
 function render(){

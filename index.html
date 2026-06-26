@@ -104,7 +104,7 @@ body.loaded #site{ transform:translateY(0); }
    --bg-zoom < 1 = afasta a imagem (mostra mais, com leve margem escura) */
 .bg-stage{
   position:absolute; top:50%; left:50%;
-  transform:translate(-50%,-50%) scale(var(--bg-zoom, 1));
+  transform:translate(calc(-50% + var(--bg-shift, 0px)), -50%) scale(var(--bg-zoom, 1));
   width:max(100vw, calc(100vh * 1307 / 735));
   height:max(100vh, calc(100vw * 735 / 1307));
 }
@@ -785,7 +785,7 @@ const players = [
     logo:["LM","10"], tagline:"The G.O.A.T.",
     first:"LIONEL", script:"Messi", nick:"Leo", vname:"Lionel Messi",
     code:"ar", country:"Argentina", group:"World Cup 2026 · Group J",
-    c1:"#75aadb", c2:"#5a8fc0", ink:"#0c2233", bg:"imagens/messi.png", bigName:"LIONEL", draw:"Messi", tagline:"O GOAT. <span>Vamos Argentina!</span>", logoImg:"imagens/logo-messi.webp", logoTint:[1,1,1], hideName:true,
+    c1:"#75aadb", c2:"#5a8fc0", ink:"#0c2233", bg:"imagens/messi.png", bgShift:"22vw", bigName:"LIONEL", draw:"Messi", tagline:"O GOAT. <span>Vamos Argentina!</span>", logoImg:"imagens/logo-messi.webp", logoTint:[1,1,1], hideName:true,
     quoteA:"You have to fight to reach your dream.", quoteB:"Sacrifice and work hard for it.",
     nextQuoteA:"Decisions are made with instinct —", nextQuoteB:"never with fear.",
     bio:["Smaller in size.","Bigger than the game.","Champion of the world."],
@@ -911,6 +911,8 @@ function render(){
     bgLayer.classList.remove('on');
     $('bgImg').style.backgroundImage = 'none';
   }
+  var bgStageEl = document.querySelector('.bg-stage');
+  if(bgStageEl) bgStageEl.style.setProperty('--bg-shift', p.bgShift || '0px');
 
   // nome gigante texturizado (só quem tem p.bigName)
   const heroName = $('heroName');

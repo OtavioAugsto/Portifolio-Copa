@@ -303,52 +303,24 @@ nav.menu a.active::after{
   transform:translate(6px,18%);   /* base/direita do R (marca azul) */
   transform-origin:left top;   /* canto que encosta no R */
   z-index:2; pointer-events:none;
-  font-family:'Caveat',cursive; font-weight:700; line-height:1; white-space:nowrap;
   color:var(--gold);   /* cor da seleção (dourado no Neymar via JS) */
-  text-shadow:0 0 18px color-mix(in srgb, currentColor 55%, transparent);
-  /* mascara: escreve da esquerda pra direita sem cortar glifos */
-  -webkit-mask-image:linear-gradient(90deg,#000,#000); mask-image:linear-gradient(90deg,#000,#000);
-  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
-  -webkit-mask-position:left center; mask-position:left center;
-  -webkit-mask-size:0% 100%; mask-size:0% 100%;
+  line-height:1;
 }
-/* revelacao (escrita L->R) + glow com leve respiro/blink (estilo logo CR7) */
-.jr-write.go{ animation:jrReveal var(--jr-total,1s) cubic-bezier(.55,.05,.3,1) forwards, jrGlow 3.4s ease-in-out var(--jr-total,1s) infinite; }
-@keyframes jrReveal{ to{ -webkit-mask-size:130% 100%; mask-size:130% 100%; } }
-@keyframes jrGlow{
-  0%,100%{ opacity:.82; text-shadow:0 0 10px color-mix(in srgb, currentColor 38%, transparent); }
-  50%{ opacity:1; text-shadow:0 0 30px color-mix(in srgb, currentColor 92%, transparent); }
+.jr-svg{ display:block; overflow:visible; }
+/* glow por FILTRO do svg (nunca corta) + leve respiro/blink estilo logo CR7 */
+.jr-write.go .jr-svg{ animation:jrSvgGlow 3.4s ease-in-out infinite; }
+@keyframes jrSvgGlow{
+  0%,100%{ filter:drop-shadow(0 0 6px color-mix(in srgb, currentColor 45%, transparent)); }
+  50%{ filter:drop-shadow(0 0 16px color-mix(in srgb, currentColor 95%, transparent)); }
 }
-/* ponta de caneta brilhante que corre na frente enquanto escreve */
-.jr-write::after{
-  content:""; position:absolute; top:34%; left:0;
-  width:.5em; height:.5em; border-radius:50%;
-  background:radial-gradient(circle, #fff 0%, currentColor 45%, transparent 72%);
-  filter:blur(1px); opacity:0; transform:translate(-50%,-50%); pointer-events:none;
-}
-.jr-write.go::after{ animation:jrPen var(--jr-total,1s) cubic-bezier(.6,.05,.25,1) forwards; }
-@keyframes jrPen{
-  0%{ opacity:0; left:0; }
-  10%{ opacity:1; }
-  90%{ opacity:1; left:100%; }
-  100%{ opacity:0; left:100%; }
-}
-/* letras estaticas: a mascara faz a escrita L->R sem cortar glifos */
-.jr-char{ display:inline-block; opacity:1; }
-/* dourado metalico forte (ouro) com brilho passando - so no Neymar via .jr-gold */
-.jr-write.jr-gold{
-  background-image:
-    linear-gradient(110deg, transparent 38%, rgba(255,255,255,.92) 50%, transparent 62%),
-    linear-gradient(180deg,#fff6cf 0%,#ffe07a 20%,#f0b51f 48%,#fff2b6 68%,#c8860c 100%);
-  background-size:260% 100%, 100% 100%;
-  background-position:210% 0, 0 0;
-  background-repeat:no-repeat, no-repeat;
-  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-}
-.jr-write.jr-gold.go{ animation:jrReveal var(--jr-total,1s) cubic-bezier(.55,.05,.3,1) forwards, jrGlow 3.4s ease-in-out var(--jr-total,1s) infinite, jrSheen 4.8s ease-in-out var(--jr-total,1s) infinite; }
-@keyframes jrSheen{
-  0%{ background-position:210% 0, 0 0; }
-  55%,100%{ background-position:-60% 0, 0 0; }
+/* o traço é DESENHADO por caneta (stroke-dashoffset); preenche depois */
+.jr-ink{ stroke-dasharray:1; stroke-dashoffset:1; fill-opacity:0; }
+.jr-write.go .jr-ink{ animation:jrDraw 1.7s ease-in-out forwards; }
+@keyframes jrDraw{
+  0%{ stroke-dashoffset:1; fill-opacity:0; }
+  55%{ stroke-dashoffset:0; fill-opacity:0; }   /* caneta termina o contorno */
+  74%{ stroke-dashoffset:0; fill-opacity:1; }   /* preenche o ouro */
+  100%{ stroke-dashoffset:0; fill-opacity:1; }
 }
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }
 .group{
@@ -781,14 +753,24 @@ function logoTwoToneSVG(src, l, r, split){   // metade esquerda cor l, direita c
   </svg>`;
 }
 
-function jrCharsHTML(text){
-  var html='';
-  for(var i=0;i<text.length;i++){
-    var ch=text.charAt(i);
-    if(ch===' ') ch='&nbsp;';
-    html+='<span class="jr-char" style="animation-delay:'+(i*0.10).toFixed(2)+'s">'+ch+'</span>';
-  }
-  return html;
+function jrSvgHTML(text, fontPx, gold){
+  var W = Math.round(text.length * fontPx * 0.62 + fontPx * 0.5);
+  var H = Math.round(fontPx * 1.5);
+  var y = Math.round(fontPx * 1.05);
+  var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var grad = gold ? '<defs><linearGradient id="jrGoldGrad" x1="0" y1="0" x2="0" y2="1">'
+      + '<stop offset="0" stop-color="#fff6cf"/><stop offset="0.22" stop-color="#ffe07a"/>'
+      + '<stop offset="0.5" stop-color="#f0b51f"/><stop offset="0.7" stop-color="#fff2b6"/>'
+      + '<stop offset="1" stop-color="#c8860c"/></linearGradient></defs>' : '';
+  var fill   = gold ? 'url(#jrGoldGrad)' : 'currentColor';
+  var stroke = gold ? '#ffe9a8' : 'currentColor';
+  var sw = (fontPx * 0.018 + 0.6).toFixed(2);
+  return '<svg class="jr-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    + grad
+    + '<text class="jr-ink" x="'+Math.round(fontPx*0.15)+'" y="'+y+'" font-family="Caveat, cursive" '
+    + 'font-weight="700" font-size="'+fontPx+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" '
+    + 'stroke-linejoin="round" stroke-linecap="round" pathLength="1">'+safe+'</text>'
+    + '</svg>';
 }
 
 /* ============================================================
@@ -908,15 +890,28 @@ const stage = $('stage');
 /* ============================================================
    RENDER
    ============================================================ */
+function drawJR(){   // (re)dispara a escrita por caneta
+  var jr=document.getElementById('jrWrite');
+  if(!jr || jr.style.display==='none') return;
+  jr.classList.remove('go'); void jr.offsetWidth; jr.classList.add('go');
+}
+function attachJRSync(){   // reescreve o JR a cada "piscada" (glint) do nome grande
+  if(window._jrSync) return;
+  var bn=document.getElementById('bigName'); if(!bn) return;
+  bn.addEventListener('animationiteration', function(e){
+    if(e.animationName==='nameSheen') drawJR();
+  });
+  window._jrSync=true;
+}
 function showJR(){
   var jr=document.getElementById('jrWrite'); if(!jr) return;
   var p=players[current];
   if(!p.draw){ jr.style.display='none'; return; }
   jr.style.display='';
-  jr.innerHTML = jrCharsHTML(p.draw);   // monta as letras (cada uma desenhada em sequência)
-  var total = ((p.draw.length - 1) * 0.10 + 0.42 + 0.05);   // casa com stagger(.1) + dur(.42) da escrita
-  jr.style.setProperty('--jr-total', total.toFixed(2) + 's');   // pen + glow começam depois de escrever
-  jr.classList.remove('go'); void jr.offsetWidth; jr.classList.add('go');   // (re)inicia a escrita à mão
+  var fontPx = Math.min(98, Math.round(420 / p.draw.length));
+  jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript);   // SVG: traço desenhado por caneta
+  drawJR();
+  attachJRSync();
 }
 
 function render(){
@@ -984,10 +979,8 @@ function render(){
   const jr = $('jrWrite');
   if(p.draw){
     jr.style.display = '';
-    jr.classList.toggle('jr-gold', !!p.goldScript);   // ouro metálico só no Neymar
-    jr.style.color = p.goldScript ? '#f1c44e' : '';   // base p/ glow e ponta de caneta; demais usam a cor da seleção
-    jr.style.fontSize = Math.min(98, Math.round(420/p.draw.length)) + 'px';
-    jr.innerHTML = '';   // letras aparecem quando showJR rodar
+    jr.style.color = p.goldScript ? '#f1c44e' : '';   // base do glow (ouro no Neymar; demais usam a cor da seleção)
+    jr.innerHTML = '';   // o SVG é montado quando showJR rodar
     if(document.body.classList.contains('loaded')) setTimeout(showJR, 1100);  // nasce depois do nome
   }else{
     jr.style.display = 'none';

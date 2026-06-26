@@ -306,9 +306,15 @@ nav.menu a.active::after{
   font-family:'Caveat',cursive; font-weight:700; line-height:1; white-space:nowrap;
   color:var(--gold);   /* cor da seleção (dourado no Neymar via JS) */
   text-shadow:0 0 18px color-mix(in srgb, currentColor 55%, transparent);
+  /* mascara: escreve da esquerda pra direita sem cortar glifos */
+  -webkit-mask-image:linear-gradient(90deg,#000,#000); mask-image:linear-gradient(90deg,#000,#000);
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:left center; mask-position:left center;
+  -webkit-mask-size:0% 100%; mask-size:0% 100%;
 }
-/* glow suave + leve respiro/blink (estilo logo CR7), comeca depois de escrever */
-.jr-write.go{ animation:jrGlow 3.4s ease-in-out var(--jr-total,1s) infinite; }
+/* revelacao (escrita L->R) + glow com leve respiro/blink (estilo logo CR7) */
+.jr-write.go{ animation:jrReveal var(--jr-total,1s) cubic-bezier(.55,.05,.3,1) forwards, jrGlow 3.4s ease-in-out var(--jr-total,1s) infinite; }
+@keyframes jrReveal{ to{ -webkit-mask-size:130% 100%; mask-size:130% 100%; } }
 @keyframes jrGlow{
   0%,100%{ opacity:.82; text-shadow:0 0 10px color-mix(in srgb, currentColor 38%, transparent); }
   50%{ opacity:1; text-shadow:0 0 30px color-mix(in srgb, currentColor 92%, transparent); }
@@ -327,14 +333,8 @@ nav.menu a.active::after{
   90%{ opacity:1; left:100%; }
   100%{ opacity:0; left:100%; }
 }
-/* cada letra nasce em sequencia (sobe + aparece) - escrita sem cortar glifos */
-.jr-char{
-  display:inline-block; opacity:0;
-  transform:translateY(.24em) rotate(-5deg);
-  transform-origin:left bottom;
-}
-.jr-write.go .jr-char{ animation:jrWriteIn .5s cubic-bezier(.2,.7,.2,1) forwards; }
-@keyframes jrWriteIn{ to{ opacity:1; transform:translateY(0) rotate(0); } }
+/* letras estaticas: a mascara faz a escrita L->R sem cortar glifos */
+.jr-char{ display:inline-block; opacity:1; }
 /* dourado metalico forte (ouro) com brilho passando - so no Neymar via .jr-gold */
 .jr-write.jr-gold{
   background-image:
@@ -345,7 +345,7 @@ nav.menu a.active::after{
   background-repeat:no-repeat, no-repeat;
   -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
 }
-.jr-write.jr-gold.go{ animation:jrGlow 3.4s ease-in-out var(--jr-total,1s) infinite, jrSheen 4.8s ease-in-out var(--jr-total,1s) infinite; }
+.jr-write.jr-gold.go{ animation:jrReveal var(--jr-total,1s) cubic-bezier(.55,.05,.3,1) forwards, jrGlow 3.4s ease-in-out var(--jr-total,1s) infinite, jrSheen 4.8s ease-in-out var(--jr-total,1s) infinite; }
 @keyframes jrSheen{
   0%{ background-position:210% 0, 0 0; }
   55%,100%{ background-position:-60% 0, 0 0; }

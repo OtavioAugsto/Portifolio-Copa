@@ -133,7 +133,11 @@ header{
 }
 .logo span{ color:var(--gold); }
 .logo-img{ height:44px; width:auto; display:block; filter:drop-shadow(0 3px 8px rgba(0,0,0,.55)); }
-.logo-img.knockout{ filter:invert(1) brightness(1.6); mix-blend-mode:screen; }   /* tira o fundo branco (preto->branco) */
+.logo-img.knockout{ height:54px; filter:invert(1) brightness(1.7); mix-blend-mode:screen; animation:cr7Glow 3.2s ease-in-out infinite; }   /* tira o fundo branco + destaque */
+@keyframes cr7Glow{
+  0%,100%{ filter:invert(1) brightness(1.55) drop-shadow(0 0 4px rgba(255,255,255,.4)); }
+  50%{ filter:invert(1) brightness(2) drop-shadow(0 0 14px rgba(255,255,255,.85)); }
+}
 .sidebar .logo{ position:absolute; top:16px; left:0; right:0; display:flex; justify-content:center; }
 nav.menu{ display:flex; gap:42px; }
 nav.menu a{

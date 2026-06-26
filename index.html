@@ -301,19 +301,25 @@ nav.menu a.active::after{
 .jr-write{
   position:absolute; right:var(--jr-right,0%); bottom:var(--jr-bottom,-10%);
   transform:translateY(55%);
+  transform-origin:left top;   /* canto que encosta no R */
   z-index:2; pointer-events:none;
   font-family:'Caveat',cursive; font-weight:700; line-height:1; white-space:nowrap;
   color:var(--gold);   /* cor da seleção (dourado no Neymar via JS) */
   text-shadow:0 0 18px color-mix(in srgb, currentColor 55%, transparent);
-  animation:jrPulse 3.4s ease-in-out 1.2s infinite;   /* apaga e acende depois de desenhar */
+  /* nasce de cima do R (pequeno e colado) e desce/cresce ate a posicao; depois pulsa */
+  animation:jrFromR 1.05s cubic-bezier(.2,.8,.2,1) both, jrPulse 3.4s ease-in-out 1.8s infinite;
+}
+@keyframes jrFromR{
+  0%{ opacity:0; transform:translate(-75px,-95px) scale(.12); }
+  55%{ opacity:1; }
+  100%{ opacity:1; transform:translateY(55%) scale(1); }
 }
 .jr-char{
   display:inline-block; opacity:0;
-  transform:translate(-26px,-42px) scale(.35) rotate(-12deg);
-  transform-origin:left top;
-  animation:jrChar .55s cubic-bezier(.2,.7,.2,1) forwards;
+  transform:translateY(10px);
+  animation:jrChar .4s ease forwards;
 }
-@keyframes jrChar{ to{ opacity:1; transform:translate(0,0) scale(1) rotate(0); } }
+@keyframes jrChar{ to{ opacity:1; transform:translateY(0); } }
 @keyframes jrPulse{   /* apagando e acendendo (glow + leve opacidade) */
   0%,100%{ opacity:.72; text-shadow:0 0 8px color-mix(in srgb, currentColor 35%, transparent); }
   50%{ opacity:1; text-shadow:0 0 26px color-mix(in srgb, currentColor 85%, transparent); }

@@ -133,10 +133,10 @@ header{
 }
 .logo span{ color:var(--gold); }
 .logo-img{ height:44px; width:auto; display:block; filter:drop-shadow(0 3px 8px rgba(0,0,0,.55)); }
-.logo-img.knockout{ height:54px; filter:invert(1) brightness(1.7); mix-blend-mode:screen; animation:cr7Glow 3.2s ease-in-out infinite; }   /* tira o fundo branco + destaque */
+.logo-cr{ height:54px; animation:cr7Glow 3.2s ease-in-out infinite; }   /* logo recolorida + destaque */
 @keyframes cr7Glow{
-  0%,100%{ filter:invert(1) brightness(1.55) drop-shadow(0 0 5px color-mix(in srgb, var(--gold) 55%, transparent)); }
-  50%{ filter:invert(1) brightness(2) drop-shadow(0 0 16px var(--gold)) drop-shadow(0 0 26px color-mix(in srgb, var(--gold) 70%, transparent)); }
+  0%,100%{ filter:drop-shadow(0 0 5px color-mix(in srgb, var(--gold) 55%, transparent)); }
+  50%{ filter:drop-shadow(0 0 15px var(--gold)) drop-shadow(0 0 26px color-mix(in srgb, var(--gold) 60%, transparent)); }
 }
 .sidebar .logo{ position:absolute; top:16px; left:0; right:0; display:flex; justify-content:center; }
 nav.menu{ display:flex; gap:42px; }
@@ -705,6 +705,15 @@ function signatureSVG(text){
 }
 
 /* "JR." manuscrito que se desenha (efeito de escrita) */
+function logoRecolorSVG(src, rgb){   // preto->cor, branco->transparente
+  return `<svg class="logo-img logo-cr" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs><filter id="logoRecolor" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0 0 0 0 ${rgb[0]}  0 0 0 0 ${rgb[1]}  0 0 0 0 ${rgb[2]}  -0.299 -0.587 -0.114 0 1"/>
+    </filter></defs>
+    <image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet" filter="url(#logoRecolor)"/>
+  </svg>`;
+}
+
 function jrCharsHTML(text){
   var html='';
   for(var i=0;i<text.length;i++){
@@ -740,7 +749,7 @@ const players = [
     logo:["CR","7"], tagline:"The Legend",
     first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
     code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
-    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoKnockout:true,
+    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17],
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
@@ -852,8 +861,10 @@ function render(){
   root.setProperty('--ink', p.ink);
 
   // header / logo
-  if(p.logoImg){
-    $('logo').innerHTML = `<img class="logo-img${p.logoKnockout?' knockout':''}" src="${p.logoImg}" alt="${p.nick}">`;
+  if(p.logoImg && p.logoRGB){
+    $('logo').innerHTML = logoRecolorSVG(p.logoImg, p.logoRGB);
+  }else if(p.logoImg){
+    $('logo').innerHTML = `<img class="logo-img" src="${p.logoImg}" alt="${p.nick}">`;
   }else{
     $('logo').innerHTML = `${p.logo[0]}<span>${p.logo[1]}</span>`;
   }

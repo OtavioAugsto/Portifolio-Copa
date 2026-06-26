@@ -307,6 +307,24 @@ nav.menu a.active::after{
   line-height:1;
 }
 .jr-svg{ display:block; overflow:visible; }
+/* assinatura por IMAGEM: revela da esquerda pra direita (escreve) em loop, igual o modelo */
+.jr-imgsvg{
+  display:block; overflow:visible;
+  -webkit-mask-image:linear-gradient(90deg,#000,#000); mask-image:linear-gradient(90deg,#000,#000);
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:left center; mask-position:left center;
+  -webkit-mask-size:0% 130%; mask-size:0% 130%;
+  filter:drop-shadow(0 0 5px color-mix(in srgb, currentColor 45%, transparent));
+}
+.jr-write.go .jr-imgsvg{ animation:jrImgWrite 7s ease-in-out infinite; }
+@keyframes jrImgWrite{
+  0%{ -webkit-mask-size:0% 130%; mask-size:0% 130%; opacity:0; }
+  6%{ opacity:1; }
+  40%{ -webkit-mask-size:145% 130%; mask-size:145% 130%; opacity:1; }   /* terminou de escrever */
+  82%{ -webkit-mask-size:145% 130%; mask-size:145% 130%; opacity:1; }   /* segura visível */
+  93%{ opacity:0; }
+  100%{ -webkit-mask-size:0% 130%; mask-size:0% 130%; opacity:0; }
+}
 /* liga/desliga suave de opacidade (igual o site modelo) + glow bem leve */
 .jr-write.go .jr-svg{ animation:jrSvgBreath 4.6s ease-in-out infinite; }
 @keyframes jrSvgBreath{
@@ -778,7 +796,7 @@ function jrSvgHTML(text, fontPx, gold, font, pathObj, imgObj){
     var Wi = Math.round(Hi * (+vbi[2]) / (+vbi[3]));
     var col = gold ? [0.945,0.769,0.306] : [1,1,1];
     var dot = imgObj.dot ? '<circle cx="'+imgObj.dot[0]+'" cy="'+imgObj.dot[1]+'" r="'+imgObj.dot[2]+'" fill="currentColor"/>' : '';
-    return '<svg class="jr-svg" width="'+Wi+'" height="'+Hi+'" viewBox="'+imgObj.vb+'" xmlns="http://www.w3.org/2000/svg">'
+    return '<svg class="jr-imgsvg" width="'+Wi+'" height="'+Hi+'" viewBox="'+imgObj.vb+'" xmlns="http://www.w3.org/2000/svg">'
       + '<defs><filter id="jrKey" color-interpolation-filters="sRGB" x="-20%" y="-20%" width="140%" height="140%">'
       + '<feColorMatrix type="matrix" values="0 0 0 0 '+col[0]+' 0 0 0 0 '+col[1]+' 0 0 0 0 '+col[2]+' .34 .34 .34 0 0"/>'
       + '<feComponentTransfer><feFuncA type="linear" slope="5" intercept="-0.55"/></feComponentTransfer>'

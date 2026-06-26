@@ -307,19 +307,19 @@ nav.menu a.active::after{
   line-height:1;
 }
 .jr-svg{ display:block; overflow:visible; }
-/* glow por FILTRO do svg (nunca corta) + leve respiro/blink estilo logo CR7 */
-.jr-write.go .jr-svg{ animation:jrSvgGlow 3.4s ease-in-out infinite; }
-@keyframes jrSvgGlow{
-  0%,100%{ filter:drop-shadow(0 0 2px color-mix(in srgb, currentColor 25%, transparent)); }
-  50%{ filter:drop-shadow(0 0 7px color-mix(in srgb, currentColor 50%, transparent)); }
+/* liga/desliga suave de opacidade (igual o site modelo) + glow bem leve */
+.jr-write.go .jr-svg{ animation:jrSvgBreath 4.6s ease-in-out infinite; }
+@keyframes jrSvgBreath{
+  0%,100%{ opacity:.88; filter:drop-shadow(0 0 2px color-mix(in srgb, currentColor 20%, transparent)); }
+  50%{ opacity:1; filter:drop-shadow(0 0 6px color-mix(in srgb, currentColor 42%, transparent)); }
 }
-/* o traço é DESENHADO por caneta (stroke-dashoffset); preenche depois */
+/* o traço é DESENHADO por caneta (stroke-dashoffset), suave; preenche depois */
 .jr-ink{ stroke-dasharray:1; stroke-dashoffset:1; fill-opacity:0; }
-.jr-write.go .jr-ink{ animation:jrDraw 1.7s ease-in-out forwards; }
+.jr-write.go .jr-ink{ animation:jrDraw 2s cubic-bezier(.6,.02,.25,1) forwards; }
 @keyframes jrDraw{
   0%{ stroke-dashoffset:1; fill-opacity:0; }
-  55%{ stroke-dashoffset:0; fill-opacity:0; }   /* caneta termina o contorno */
-  74%{ stroke-dashoffset:0; fill-opacity:1; }   /* preenche o ouro */
+  60%{ stroke-dashoffset:0; fill-opacity:0; }   /* caneta termina o contorno */
+  80%{ stroke-dashoffset:0; fill-opacity:1; }   /* preenche depois */
   100%{ stroke-dashoffset:0; fill-opacity:1; }
 }
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }

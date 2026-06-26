@@ -133,10 +133,10 @@ header{
 }
 .logo span{ color:var(--gold); }
 .logo-img{ height:44px; width:auto; display:block; filter:drop-shadow(0 3px 8px rgba(0,0,0,.55)); }
-.logo-cr{ height:54px; animation:cr7Glow 3.2s ease-in-out infinite; }   /* logo recolorida + destaque */
-@keyframes cr7Glow{
-  0%,100%{ filter:drop-shadow(0 0 5px color-mix(in srgb, var(--gold) 55%, transparent)); }
-  50%{ filter:drop-shadow(0 0 15px var(--gold)) drop-shadow(0 0 26px color-mix(in srgb, var(--gold) 60%, transparent)); }
+.logo-cr{ height:54px; animation:cr7Blink 2.6s ease-in-out infinite; }   /* logo recolorida, só piscando */
+@keyframes cr7Blink{
+  0%,100%{ opacity:1; }
+  50%{ opacity:.4; }
 }
 .sidebar .logo{ position:absolute; top:16px; left:0; right:0; display:flex; justify-content:center; }
 nav.menu{ display:flex; gap:42px; }
@@ -260,7 +260,7 @@ nav.menu a.active::after{
 .hero-tagline span{ color:var(--gold); }
 .big-name{
   display:block;
-  font-family:'Anton'; font-size:clamp(82px,13.2vw,212px); line-height:.82;
+  font-family:'Anton'; font-size:clamp(82px,13.2vw,212px); line-height:.95; padding-bottom:.06em;
   letter-spacing:1px; text-transform:uppercase;
   background-color:#eef2f6;
   background-image:

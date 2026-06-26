@@ -306,15 +306,36 @@ nav.menu a.active::after{
   font-family:'Caveat',cursive; font-weight:700; line-height:1; white-space:nowrap;
   color:var(--gold);   /* cor da seleção (dourado no Neymar via JS) */
   text-shadow:0 0 18px color-mix(in srgb, currentColor 55%, transparent);
-  /* fixo no canto junto ao R, sem entrada; so o pulso de glow */
-  animation:jrPulse 3.4s ease-in-out infinite;
 }
+/* glow suave continuo, comeca depois de terminar de escrever */
+.jr-write.go{ animation:jrGlow 3.6s ease-in-out var(--jr-total,1s) infinite; }
+@keyframes jrGlow{
+  0%,100%{ text-shadow:0 0 10px color-mix(in srgb, currentColor 38%, transparent); }
+  50%{ text-shadow:0 0 26px color-mix(in srgb, currentColor 88%, transparent); }
+}
+/* ponta de caneta brilhante que corre na frente enquanto escreve */
+.jr-write::after{
+  content:""; position:absolute; top:34%; left:0;
+  width:.5em; height:.5em; border-radius:50%;
+  background:radial-gradient(circle, #fff 0%, currentColor 45%, transparent 72%);
+  filter:blur(1px); opacity:0; transform:translate(-50%,-50%); pointer-events:none;
+}
+.jr-write.go::after{ animation:jrPen var(--jr-total,1s) cubic-bezier(.6,.05,.25,1) forwards; }
+@keyframes jrPen{
+  0%{ opacity:0; left:0; }
+  10%{ opacity:1; }
+  90%{ opacity:1; left:100%; }
+  100%{ opacity:0; left:100%; }
+}
+/* cada letra desenhada da esquerda pra direita (traco) */
 .jr-char{
-  display:inline-block; opacity:1;   /* estatico, sem animacao de entrada */
+  display:inline-block; opacity:1;
+  clip-path:inset(0 100% 0 0); -webkit-clip-path:inset(0 100% 0 0);
 }
-@keyframes jrPulse{   /* apagando e acendendo (glow + leve opacidade) */
-  0%,100%{ opacity:.72; text-shadow:0 0 8px color-mix(in srgb, currentColor 35%, transparent); }
-  50%{ opacity:1; text-shadow:0 0 26px color-mix(in srgb, currentColor 85%, transparent); }
+.jr-write.go .jr-char{ animation:jrDraw .42s ease forwards; }
+@keyframes jrDraw{
+  from{ clip-path:inset(0 100% 0 0); -webkit-clip-path:inset(0 100% 0 0); }
+  to{ clip-path:inset(0 -10% 0 0); -webkit-clip-path:inset(0 -10% 0 0); }
 }
 @media (max-width:1100px){ .jr-write{ display:none !important; } .hero-name{ top:84px; left:18px; } .big-name{ font-size:58px; } .sidebar{ display:none; } .wc-badge{ top:58px; right:12px; } .wc-cup-img{ height:46px; } .wc-word{ font-size:19px; } .wc-year{ font-size:12px; } }
 .group{
@@ -752,7 +773,7 @@ function jrCharsHTML(text){
   for(var i=0;i<text.length;i++){
     var ch=text.charAt(i);
     if(ch===' ') ch='&nbsp;';
-    html+='<span class="jr-char" style="animation-delay:'+(i*0.07).toFixed(2)+'s">'+ch+'</span>';
+    html+='<span class="jr-char" style="animation-delay:'+(i*0.10).toFixed(2)+'s">'+ch+'</span>';
   }
   return html;
 }
@@ -879,8 +900,10 @@ function showJR(){
   var p=players[current];
   if(!p.draw){ jr.style.display='none'; return; }
   jr.style.display='';
-  jr.innerHTML = jrCharsHTML(p.draw);   // letras entram em sequência (stagger, estilo modelo)
-  jr.style.animation='none'; void jr.offsetWidth; jr.style.animation='';   // reinicia o pulso apaga/acende
+  jr.innerHTML = jrCharsHTML(p.draw);   // monta as letras (cada uma desenhada em sequência)
+  var total = ((p.draw.length - 1) * 0.10 + 0.42 + 0.05);   // casa com stagger(.1) + dur(.42) da escrita
+  jr.style.setProperty('--jr-total', total.toFixed(2) + 's');   // pen + glow começam depois de escrever
+  jr.classList.remove('go'); void jr.offsetWidth; jr.classList.add('go');   // (re)inicia a escrita à mão
 }
 
 function render(){

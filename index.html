@@ -300,7 +300,7 @@ nav.menu a.active::after{
 @keyframes nameSheen{ 0%{ background-position:200% 0,0 0,0 0; } 55%,100%{ background-position:-70% 0,0 0,0 0; } }
 .jr-write{
   position:absolute; right:var(--jr-right,0%); bottom:var(--jr-bottom,-10%);
-  transform:translate(-20px,55%);   /* abaixo, entre o A e o R (mais a direita) */
+  transform:translate(14px,55%);   /* abaixo, mais para a direita */
   transform-origin:left top;   /* canto que encosta no R */
   z-index:2; pointer-events:none;
   color:var(--gold);   /* cor da seleção (dourado no Neymar via JS) */
@@ -908,7 +908,7 @@ function showJR(){
   var p=players[current];
   if(!p.draw){ jr.style.display='none'; return; }
   jr.style.display='';
-  var fontPx = Math.min(72, Math.round(320 / p.draw.length));   // fonte do JR menor
+  var fontPx = Math.min(82, Math.round(360 / p.draw.length));   // fonte do JR (um pouco maior)
   jr.innerHTML = jrSvgHTML(p.draw, fontPx, !!p.goldScript);   // SVG: traço desenhado por caneta
   drawJR();
   attachJRSync();

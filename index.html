@@ -802,13 +802,13 @@ function jrSvgHTML(text, fontPx, gold, font, pathObj, imgObj){
     var Wo = Math.round(Ho * (+vo[2]) / (+vo[3]));
     var olw = (imgObj.outline === true) ? 12 : imgObj.outline;   // espessura do contorno
     var d = imgObj.dot;
-    // threshold suave (mantém anti-aliasing das bordas = mais natural)
-    var thr = '<feComponentTransfer result="sh"><feFuncA type="linear" slope="4" intercept="-0.45"/></feComponentTransfer>';
+    // threshold mais inclusivo (mantém os traços finos = contorno não "quebra")
+    var thr = '<feComponentTransfer result="sh"><feFuncA type="linear" slope="3" intercept="-0.22"/></feComponentTransfer>';
     // A: shape preto + contorno branco (borda levemente suavizada)
     var fA = '<filter id="jrA" color-interpolation-filters="sRGB" x="-40%" y="-40%" width="180%" height="180%">'
       + '<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .34 .34 .34 0 0"/>' + thr
       + '<feMorphology in="sh" operator="dilate" radius="'+(olw/2)+'" result="dl"/>'
-      + '<feGaussianBlur in="dl" stdDeviation="0.9" result="dlb"/>'
+      + '<feGaussianBlur in="dl" stdDeviation="0.5" result="dlb"/>'
       + '<feColorMatrix in="dlb" type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" result="ol"/>'
       + '<feMerge><feMergeNode in="ol"/><feMergeNode in="sh"/></feMerge></filter>';
     // ponto pequeno e preto fixo (não pisca, contornozinho branco fino só pra não sumir no escuro)
@@ -879,7 +879,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", sig:"Neymar Jr.", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", jrPos:"translate(-12px,-12%) scaleX(1.32)", drawImg:{src:"imagens/jr-test.jpg", vb:"245 210 320 330", scale:1.55, dot:[535,400,6], outline:10}, drawPath:{vb:"0 0 300 200", sw:6, scale:2.0, d:"M55,70 C90,40 140,38 158,58 M145,50 C150,95 150,130 134,158 C122,178 92,182 80,164 C72,152 84,142 98,150 M175,152 C172,128 173,114 178,100 C182,92 193,90 202,99 M216,146 C222,144 225,149 221,153 C217,157 211,154 213,148"},
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", jrPos:"translate(-68px,-12%) scaleX(1.32)", drawImg:{src:"imagens/jr-test.jpg", vb:"245 210 320 330", scale:1.55, dot:[535,400,6], outline:6}, drawPath:{vb:"0 0 300 200", sw:6, scale:2.0, d:"M55,70 C90,40 140,38 158,58 M145,50 C150,95 150,130 134,158 C122,178 92,182 80,164 C72,152 84,142 98,150 M175,152 C172,128 173,114 178,100 C182,92 193,90 202,99 M216,146 C222,144 225,149 221,153 C217,157 211,154 213,148"},
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],

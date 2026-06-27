@@ -1066,10 +1066,17 @@ function showJR(){
       });
       jr.innerHTML=''; jr.appendChild(svg);
       try{
-        var bb = (g||svg).getBBox(); var pad = sw*0.6;
-        var x=bb.x-pad, y=bb.y-pad, w=bb.width+pad*2, h=bb.height+pad*2;
-        svg.setAttribute('viewBox', x+' '+y+' '+w+' '+h);
-        var H=Math.round(fontPx*(cfg.scale||1.8)); var W=Math.round(H*w/h);
+        var bb = g.getBBox();                 // bbox no espaço local do grupo (antes do transform)
+        var m = g.getCTM();                   // matriz local -> viewport (aplica translate/scale/flip)
+        var cx=[bb.x, bb.x+bb.width], cy=[bb.y, bb.y+bb.height];
+        var xs=[], ys=[];
+        for(var a=0;a<2;a++) for(var b=0;b<2;b++){ xs.push(m.a*cx[a]+m.c*cy[b]+m.e); ys.push(m.b*cx[a]+m.d*cy[b]+m.f); }
+        var minx=Math.min.apply(null,xs), maxx=Math.max.apply(null,xs);
+        var miny=Math.min.apply(null,ys), maxy=Math.max.apply(null,ys);
+        var pad = sw*Math.abs(m.a)*0.7 + 6;   // folga p/ o contorno (stroke já escalado pelo grupo)
+        var vx=minx-pad, vy=miny-pad, vw=(maxx-minx)+pad*2, vh=(maxy-miny)+pad*2;
+        svg.setAttribute('viewBox', vx+' '+vy+' '+vw+' '+vh);
+        var H=Math.round(fontPx*(cfg.scale||1.8)); var W=Math.round(H*vw/vh);
         svg.setAttribute('width',W); svg.setAttribute('height',H);
       }catch(e){}
       drawJR();

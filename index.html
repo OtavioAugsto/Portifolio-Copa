@@ -907,7 +907,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", sig:"Neymar Jr.", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", jrPos:"translate(-20px,-42%)", drawStroke:{scale:0.85, sw:9}, drawPath:{vb:"0 0 300 200", sw:6, scale:2.0, d:"M55,70 C90,40 140,38 158,58 M145,50 C150,95 150,130 134,158 C122,178 92,182 80,164 C72,152 84,142 98,150 M175,152 C172,128 173,114 178,100 C182,92 193,90 202,99 M216,146 C222,144 225,149 221,153 C217,157 211,154 213,148"},
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", jrPos:"translate(-20px,-42%)", drawStrokeFile:{src:"imagens/jr3.svg", scale:1.7, sw:200}, drawPath:{vb:"0 0 300 200", sw:6, scale:2.0, d:"M55,70 C90,40 140,38 158,58 M145,50 C150,95 150,130 134,158 C122,178 92,182 80,164 C72,152 84,142 98,150 M175,152 C172,128 173,114 178,100 C182,92 193,90 202,99 M216,146 C222,144 225,149 221,153 C217,157 211,154 213,148"},
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
@@ -1049,6 +1049,33 @@ function showJR(){
   if(!p.draw){ jr.style.display='none'; return; }
   jr.style.display='';
   var fontPx = Math.min(82, Math.round(360 / p.draw.length));   // fonte do JR (um pouco maior)
+  if(p.drawStrokeFile){   // carrega um .svg e desenha o traço (caneta) com contorno branco
+    var cfg = p.drawStrokeFile;
+    fetch(cfg.src).then(function(r){return r.text();}).then(function(txt){
+      var doc = new DOMParser().parseFromString(txt, 'image/svg+xml');
+      var svg = doc.querySelector('svg'); if(!svg) return;
+      svg.setAttribute('class','jr-strokesvg');
+      svg.removeAttribute('preserveAspectRatio');
+      var g = svg.querySelector('g');
+      var sw = cfg.sw || 200;
+      if(g){ g.setAttribute('fill','#000000'); g.setAttribute('stroke','#ffffff'); g.setAttribute('stroke-width', sw); g.setAttribute('stroke-linejoin','round'); g.setAttribute('stroke-linecap','round'); g.setAttribute('paint-order','stroke'); }
+      var paths = svg.querySelectorAll('path');
+      paths.forEach(function(pth,i){
+        pth.setAttribute('pathLength','1');
+        pth.setAttribute('class', (i < paths.length-1) ? 'jr-stroke jr-s'+(i+1) : 'jr-dot2');
+      });
+      jr.innerHTML=''; jr.appendChild(svg);
+      try{
+        var bb = (g||svg).getBBox(); var pad = sw*0.6;
+        var x=bb.x-pad, y=bb.y-pad, w=bb.width+pad*2, h=bb.height+pad*2;
+        svg.setAttribute('viewBox', x+' '+y+' '+w+' '+h);
+        var H=Math.round(fontPx*(cfg.scale||1.8)); var W=Math.round(H*w/h);
+        svg.setAttribute('width',W); svg.setAttribute('height',H);
+      }catch(e){}
+      drawJR();
+    });
+    return;
+  }
   if(p.drawStroke){   // vetor com traço sendo desenhado (caneta)
     jr.innerHTML = jrStrokeSVG(fontPx, p.drawStroke);
     drawJR();

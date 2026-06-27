@@ -962,7 +962,7 @@ const players = [
     logo:["KM","7"], tagline:"The Phenomenon",
     first:"KYLIAN", script:"Mbappé", nick:"Kylian", vname:"Kylian Mbappé",
     code:"fr", country:"França", group:"World Cup 2026 · Group I",
-    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"imagens/modelo/bg-mbappe.webp", bigName:"MBAPPÉ", draw:"Mbappé", tagline:"A Nova Era. <span>Allez!</span>", logoImg:"imagens/modelo/logo-mbappe.svg", jrPos:"translate(-85px,-48%)", drawStrokeFile:{src:"imagens/sign-kylian.svg", scale:1.0, sw:6, static:true},
+    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"imagens/modelo/bg-mbappe.webp", bigName:"MBAPPÉ", draw:"Mbappé", tagline:"A Nova Era. <span>Allez!</span>", logoImg:"imagens/modelo/logo-mbappe.svg", jrPos:"translate(-85px,-66%)", drawStrokeFile:{src:"imagens/sign-kylian.svg", scale:1.0, sw:6, static:true, bigK:1.5},
     quoteA:"Speed is nothing without control.", quoteB:"I want to make history.",
     nextQuoteA:"Dreams don't work", nextQuoteB:"unless you do.",
     bio:["Born in the suburbs.","Faster than the rest.","Future of the game."],
@@ -1078,6 +1078,20 @@ function showJR(){
         pth.setAttribute('class', (i < paths.length-1) ? 'jr-stroke jr-s'+(i+1) : 'jr-dot2');
       });
       jr.innerHTML=''; jr.appendChild(svg);
+      if(cfg.bigK){   // separa os subtraços e aumenta o mais à esquerda (a letra K)
+        try{
+          var p0 = g.querySelector('path');
+          var subs = p0 ? ((p0.getAttribute('d')||'').match(/M[^M]*/g) || []) : [];
+          if(subs.length > 1){
+            p0.parentNode.removeChild(p0);
+            var made=[];
+            subs.forEach(function(s){ var np=doc.createElementNS('http://www.w3.org/2000/svg','path'); np.setAttribute('d', s.trim()); g.appendChild(np); made.push(np); });
+            var kEl=null, kminx=Infinity;
+            made.forEach(function(np){ try{ var bk=np.getBBox(); if(bk.x<kminx){ kminx=bk.x; kEl=np; } }catch(e){} });
+            if(kEl){ var bk2=kEl.getBBox(); var kcx=bk2.x+bk2.width/2, kcy=bk2.y+bk2.height/2, kf=cfg.bigK; kEl.setAttribute('transform','translate('+kcx+' '+kcy+') scale('+kf+') translate('+(-kcx)+' '+(-kcy)+')'); }
+          }
+        }catch(e){}
+      }
       try{
         var bb = g.getBBox();                 // bbox no espaço local do grupo (antes do transform)
         var m = g.getCTM();                   // matriz local -> viewport (aplica translate/scale/flip)

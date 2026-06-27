@@ -309,11 +309,8 @@ nav.menu a.active::after{
 .jr-svg{ display:block; overflow:visible; }
 /* assinatura CONTORNO: preto dentro + contorno branco, alternando as duas cores em loop */
 .jr-outsvg{ display:block; overflow:visible; }
-.jr-outsvg .jr-layerB{ opacity:0; }
-.jr-write.go .jr-outsvg .jr-layerA{ animation:jrSwapA 7s ease-in-out infinite; }
-.jr-write.go .jr-outsvg .jr-layerB{ animation:jrSwapB 7s ease-in-out infinite; }
-@keyframes jrSwapA{ 0%,42%{ opacity:1; } 58%,92%{ opacity:0; } 100%{ opacity:1; } }
-@keyframes jrSwapB{ 0%,42%{ opacity:0; } 58%,92%{ opacity:1; } 100%{ opacity:0; } }
+/* só o JR pisca (igual a logo do CR7); o ponto fica fixo */
+.jr-write.go .jr-outsvg .jr-blink{ animation:cr7Blink 2.6s ease-in-out infinite; }
 /* assinatura por IMAGEM: revela da esquerda pra direita (escreve) em loop, igual o modelo */
 .jr-imgsvg{
   display:block; overflow:visible;
@@ -814,20 +811,13 @@ function jrSvgHTML(text, fontPx, gold, font, pathObj, imgObj){
       + '<feGaussianBlur in="dl" stdDeviation="0.9" result="dlb"/>'
       + '<feColorMatrix in="dlb" type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" result="ol"/>'
       + '<feMerge><feMergeNode in="ol"/><feMergeNode in="sh"/></feMerge></filter>';
-    // B: shape branco + contorno preto
-    var fB = '<filter id="jrB" color-interpolation-filters="sRGB" x="-40%" y="-40%" width="180%" height="180%">'
-      + '<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .34 .34 .34 0 0"/>' + thr
-      + '<feMorphology in="sh" operator="dilate" radius="'+(olw/2)+'" result="dl"/>'
-      + '<feGaussianBlur in="dl" stdDeviation="0.9" result="dlb"/>'
-      + '<feColorMatrix in="dlb" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="ol"/>'
-      + '<feMerge><feMergeNode in="ol"/><feMergeNode in="sh"/></feMerge></filter>';
-    // ponto pequeno e preto fixo (contornozinho branco fino só pra não sumir no escuro)
+    // ponto pequeno e preto fixo (não pisca, contornozinho branco fino só pra não sumir no escuro)
     var dotC = d ? '<circle cx="'+d[0]+'" cy="'+d[1]+'" r="'+d[2]+'" fill="#000" stroke="#fff" stroke-width="4"/>' : '';
-    var dotA = dotC, dotB = dotC;
+    // JR preto com contorno branco, PISCANDO igual a logo do CR7 (só o JR, o ponto fica fixo)
     return '<svg class="jr-outsvg" width="'+Wo+'" height="'+Ho+'" viewBox="'+imgObj.vb+'" xmlns="http://www.w3.org/2000/svg">'
-      + '<defs>'+fA+fB+'</defs>'
-      + '<g class="jr-layerA"><image href="'+imgObj.src+'" x="0" y="0" width="'+iwo+'" height="'+iho+'" filter="url(#jrA)"/>'+dotA+'</g>'
-      + '<g class="jr-layerB"><image href="'+imgObj.src+'" x="0" y="0" width="'+iwo+'" height="'+iho+'" filter="url(#jrB)"/>'+dotB+'</g>'
+      + '<defs>'+fA+'</defs>'
+      + '<image class="jr-blink" href="'+imgObj.src+'" x="0" y="0" width="'+iwo+'" height="'+iho+'" filter="url(#jrA)"/>'
+      + dotC
       + '</svg>';
   }
 

@@ -308,8 +308,13 @@ nav.menu a.active::after{
 }
 .jr-svg{ display:block; overflow:visible; }
 /* assinatura CONTORNO: preto dentro + contorno branco, alternando as duas cores em loop */
-.jr-outsvg{ display:block; overflow:visible; }
-/* JR estático (sem efeito de piscar) */
+.jr-outsvg{ display:block; overflow:visible; transform-origin:center; }
+/* efeito bem leve: respiro suave (opacidade + leve pulsar) pra não ficar 100% parado */
+.jr-write.go .jr-outsvg{ animation:jrBreathe 5s ease-in-out infinite; }
+@keyframes jrBreathe{
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:.84; transform:scale(1.035); }
+}
 /* assinatura por IMAGEM: revela da esquerda pra direita (escreve) em loop, igual o modelo */
 .jr-imgsvg{
   display:block; overflow:visible;

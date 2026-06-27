@@ -339,8 +339,8 @@ nav.menu a.active::after{
 .jr-write.go .jr-strokesvg.jr-static .jr-dot2{ animation:none; }
 .jr-write.go .jr-strokesvg.jr-static{ animation:jrGoldFade 4.2s ease-in-out infinite; }
 @keyframes jrGoldFade{
-  0%,100%{ filter:drop-shadow(0 0 1px rgba(241,196,78,0)); }
-  50%{ filter:drop-shadow(0 0 9px rgba(241,196,78,.9)) drop-shadow(0 0 20px rgba(241,196,78,.45)); }
+  0%,100%{ filter:drop-shadow(0 0 1px color-mix(in srgb, currentColor 0%, transparent)); }
+  50%{ filter:drop-shadow(0 0 9px color-mix(in srgb, currentColor 90%, transparent)) drop-shadow(0 0 20px color-mix(in srgb, currentColor 45%, transparent)); }
 }
 /* assinatura por IMAGEM: revela da esquerda pra direita (escreve) em loop, igual o modelo */
 .jr-imgsvg{
@@ -934,7 +934,7 @@ const players = [
     logo:["CR","7"], tagline:"The Legend",
     first:"CRISTIANO", script:"Ronaldo", nick:"Cristiano", vname:"Cristiano Ronaldo",
     code:"pt", country:"Portugal", group:"World Cup 2026 · Group K",
-    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17], logoRGB2:[1,1,1], logoSplit:57, softName:true, jrPos:"translate(60px,55%)", jrFont:"'Kaushan Script', cursive",
+    c1:"#e3242b", c2:"#b51d23", ink:"#ffffff", bg:"imagens/cr7.png", bigName:"CRISTIANO", bigSize:"clamp(56px,8.6vw,150px)", draw:"Ronaldo", tagline:"O Último Baile. <span>CR7.</span>", logoImg:"imagens/logo-cr7.webp", logoRGB:[0.89,0.14,0.17], logoRGB2:[1,1,1], logoSplit:57, softName:true, jrPos:"translate(0px,45%)", drawStrokeFile:{src:"imagens/sign-ronaldo.svg", scale:1.0, sw:6, static:true},
     quoteA:"Talent without working hard is nothing.", quoteB:"I live for the moment.",
     nextQuoteA:"Your love makes me strong,", nextQuoteB:"your hate makes me unstoppable.",
     bio:["Born to be unique.","Built on hard work.","Destined to be the best."],
@@ -966,7 +966,7 @@ const players = [
     logo:["KM","7"], tagline:"The Phenomenon",
     first:"KYLIAN", script:"Mbappé", nick:"Kylian", vname:"Kylian Mbappé",
     code:"fr", country:"França", group:"World Cup 2026 · Group I",
-    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"imagens/modelo/bg-mbappe.webp", bigName:"KYLIAN", draw:"Mbappé", tagline:"A Nova Era. <span>Allez!</span>", logoImg:"imagens/modelo/logo-mbappe.svg",
+    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"imagens/modelo/bg-mbappe.webp", bigName:"KYLIAN", draw:"Mbappé", tagline:"A Nova Era. <span>Allez!</span>", logoImg:"imagens/modelo/logo-mbappe.svg", jrPos:"translate(0px,45%)", drawStrokeFile:{src:"imagens/sign-kylian.svg", scale:1.0, sw:6, static:true},
     quoteA:"Speed is nothing without control.", quoteB:"I want to make history.",
     nextQuoteA:"Dreams don't work", nextQuoteB:"unless you do.",
     bio:["Born in the suburbs.","Faster than the rest.","Future of the game."],
@@ -1068,6 +1068,12 @@ function showJR(){
       svg.setAttribute('class','jr-strokesvg' + (cfg.static ? ' jr-static' : ''));
       svg.removeAttribute('preserveAspectRatio');
       var g = svg.querySelector('g');
+      if(!g){   // svg sem grupo: envolve os <path> num <g> pra estilizar/medir
+        g = doc.createElementNS('http://www.w3.org/2000/svg','g');
+        var kids = Array.prototype.slice.call(svg.querySelectorAll('path'));
+        kids.forEach(function(k){ g.appendChild(k); });
+        svg.appendChild(g);
+      }
       var sw = cfg.sw || 200;
       if(g){ g.setAttribute('fill','#000000'); g.setAttribute('stroke','#ffffff'); g.setAttribute('stroke-width', sw); g.setAttribute('stroke-linejoin','round'); g.setAttribute('stroke-linecap','round'); g.setAttribute('paint-order','stroke'); }
       var paths = svg.querySelectorAll('path');

@@ -331,6 +331,17 @@ nav.menu a.active::after{
   100%{ stroke-dashoffset:1; fill-opacity:0; }
 }
 @keyframes jrDotIn{ 0%,52%{ opacity:0; } 62%,86%{ opacity:1; } 96%,100%{ opacity:0; } }
+/* modo ESTÁTICO: JR parado e visível + fade dourado (aura entra e sai) */
+.jr-strokesvg.jr-static .jr-stroke{ stroke-dashoffset:0; fill-opacity:1; }
+.jr-strokesvg.jr-static .jr-dot2{ opacity:1; }
+.jr-write.go .jr-strokesvg.jr-static .jr-s1,
+.jr-write.go .jr-strokesvg.jr-static .jr-s2,
+.jr-write.go .jr-strokesvg.jr-static .jr-dot2{ animation:none; }
+.jr-write.go .jr-strokesvg.jr-static{ animation:jrGoldFade 4.2s ease-in-out infinite; }
+@keyframes jrGoldFade{
+  0%,100%{ filter:drop-shadow(0 0 1px rgba(241,196,78,0)); }
+  50%{ filter:drop-shadow(0 0 9px rgba(241,196,78,.9)) drop-shadow(0 0 20px rgba(241,196,78,.45)); }
+}
 /* assinatura por IMAGEM: revela da esquerda pra direita (escreve) em loop, igual o modelo */
 .jr-imgsvg{
   display:block; overflow:visible;
@@ -907,7 +918,7 @@ const players = [
     logo:["NJ","R"], tagline:"The Magician",
     first:"NEYMAR", script:"Júnior", nick:"Neymar", sig:"Neymar Jr.", vname:"Neymar Júnior",
     code:"br", country:"Brasil", group:"World Cup 2026 · Group C",
-    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", jrPos:"translate(-20px,-8%)", drawStrokeFile:{src:"imagens/jr3.svg", scale:1.7, sw:200}, drawPath:{vb:"0 0 300 200", sw:6, scale:2.0, d:"M55,70 C90,40 140,38 158,58 M145,50 C150,95 150,130 134,158 C122,178 92,182 80,164 C72,152 84,142 98,150 M175,152 C172,128 173,114 178,100 C182,92 193,90 202,99 M216,146 C222,144 225,149 221,153 C217,157 211,154 213,148"},
+    c1:"#ffd200", c2:"#d4af00", ink:"#1a1a1a", bg:"imagens/neymar3.png", draw:"JR.", bigName:"NEYMAR", logoImg:"imagens/modelo/logo-neymar.svg", goldScript:true, tagline:"Rumo ao Hexa. <span>Last Dance.</span>", jrPos:"translate(-20px,-8%)", drawStrokeFile:{src:"imagens/jr3.svg", scale:1.7, sw:200, static:true}, drawPath:{vb:"0 0 300 200", sw:6, scale:2.0, d:"M55,70 C90,40 140,38 158,58 M145,50 C150,95 150,130 134,158 C122,178 92,182 80,164 C72,152 84,142 98,150 M175,152 C172,128 173,114 178,100 C182,92 193,90 202,99 M216,146 C222,144 225,149 221,153 C217,157 211,154 213,148"},
     quoteA:"Without a dream there is no joy.", quoteB:"I play for the love of the game.",
     nextQuoteA:"Pressure is a privilege —", nextQuoteB:"I was born for it.",
     bio:["Born with magic.","Raised by the streets.","Made for the big stage."],
@@ -1054,7 +1065,7 @@ function showJR(){
     fetch(cfg.src).then(function(r){return r.text();}).then(function(txt){
       var doc = new DOMParser().parseFromString(txt, 'image/svg+xml');
       var svg = doc.querySelector('svg'); if(!svg) return;
-      svg.setAttribute('class','jr-strokesvg');
+      svg.setAttribute('class','jr-strokesvg' + (cfg.static ? ' jr-static' : ''));
       svg.removeAttribute('preserveAspectRatio');
       var g = svg.querySelector('g');
       var sw = cfg.sw || 200;

@@ -2575,8 +2575,8 @@
         if (bgStageEl)
           bgStageEl.style.setProperty("--bg-shift", p.bgShift || "0px");
         // overlay escuro da esquerda (atrás do nome) - mais fraco em quem tem fundo claro
-        document.documentElement.style.setProperty("--shL0", p.lightBg ? "0.18" : "0.6");
-        document.documentElement.style.setProperty("--shL1", p.lightBg ? "0.05" : "0.2");
+        document.documentElement.style.setProperty("--shL0", p.lightBg ? "0" : "0.6");
+        document.documentElement.style.setProperty("--shL1", p.lightBg ? "0" : "0.2");
         const cw = $("centerText");
         if (p.centerText) {
           cw.style.display = "flex";

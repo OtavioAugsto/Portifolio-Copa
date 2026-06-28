@@ -2792,8 +2792,17 @@
           bn.style.filter = "drop-shadow(0 1px 1px rgba(0,0,0,.3))";
           bn.classList.remove("born");
           if (document.body.classList.contains("loaded")) {
-            void bn.offsetWidth;
-            revealName(bn); // letras entram em ordem aleatória saindo do blur (igual site modelo)
+            if (entranceDelay > 0) {
+              // esconde o nome enquanto o fundo troca; escreve depois (fundo primeiro)
+              bn.style.transition = "none";
+              bn.style.opacity = "0";
+              setTimeout(function () {
+                revealName(bn);
+              }, entranceDelay);
+            } else {
+              void bn.offsetWidth;
+              revealName(bn); // letras entram em ordem aleatória saindo do blur (igual site modelo)
+            }
           }
           $("heroTagline").innerHTML = p.tagline || "";
         } else {
@@ -2806,9 +2815,9 @@
           jr.style.display = "";
           jr.style.color = p.goldScript ? "#f1c44e" : p.jrColor || ""; // ouro no Neymar; jrColor custom (ex: Cristiano vermelho claro); demais usam a cor da seleção
           jr.style.transform = p.jrPos || ""; // posição custom por jogador (ex: Cristiano mais à direita)
-          jr.innerHTML = ""; // o SVG é montado quando showJR rodar
+          jr.innerHTML = ""; // o SVG é montado quando showJR rodar (fica vazio até lá = some durante a troca do fundo)
           if (document.body.classList.contains("loaded"))
-            setTimeout(showJR, 150); // aparece rápido junto com o conteúdo
+            setTimeout(showJR, entranceDelay > 0 ? entranceDelay : 150); // entra depois do fundo
         } else {
           jr.style.display = "none";
           jr.innerHTML = "";
@@ -2865,22 +2874,30 @@
           // mata tweens anteriores e limpa estilos travados (evita sumir ao passar rápido)
           // (o fundo agora usa a transição "card cresce", não o GSAP)
           gsap.killTweensOf(fxEls);
-          gsap.set(fxEls, { clearProps: "transform,opacity" });
-          gsap.fromTo(
-            fxEls,
-            { y: 26, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.5,
-              stagger: 0.07,
-              ease: "power3.out",
-              delay: 0.05,
-              overwrite: "auto",
-              force3D: true,
-              clearProps: "transform,opacity",
-            }
-          );
+          var runFx = function () {
+            gsap.fromTo(
+              fxEls,
+              { y: 26, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.5,
+                stagger: 0.07,
+                ease: "power3.out",
+                delay: 0.05,
+                overwrite: "auto",
+                force3D: true,
+                clearProps: "transform,opacity",
+              }
+            );
+          };
+          if (entranceDelay > 0) {
+            gsap.set(fxEls, { opacity: 0 }); // esconde durante a troca do fundo; entra depois
+            setTimeout(runFx, entranceDelay);
+          } else {
+            gsap.set(fxEls, { clearProps: "transform,opacity" });
+            runFx();
+          }
         }
       }
 
@@ -2890,6 +2907,9 @@
       let animando = false; // trava: ignora cliques enquanto a transicao roda (igual site modelo)
       const TR_EASE = "cubic-bezier(.76,0,.24,1)";
       const TR_DUR = 900; // ms (mesma duracao do site modelo)
+      // atraso da entrada do CONTEÚDO (nome/assinatura/cards) p/ o FUNDO trocar primeiro (igual site modelo)
+      let entranceDelay = 0;
+      const CONTENT_AFTER_BG = 480;
       let bgBack = null,
         bgMorph = null;
       function ensureMorphEls() {
@@ -2941,9 +2961,12 @@
           void bgMorph.offsetWidth; // reflow
           bgMorph.style.transition = "transform " + TR_DUR + "ms " + TR_EASE;
           bgMorph.style.transform = "translate(0px,0px) scale(1,1)";
-          // troca todo o conteudo + bg-img por baixo (escondido pelas camadas)
+          // troca todo o conteudo + bg-img por baixo (escondido pelas camadas).
+          // entranceDelay faz o conteúdo (nome/assinatura/cards) entrar DEPOIS do fundo (igual site modelo)
           current = alvo;
+          entranceDelay = CONTENT_AFTER_BG;
           render();
+          entranceDelay = 0;
           go._t = setTimeout(() => {
             bgMorph.style.opacity = "0";
             bgBack.style.opacity = "0";
@@ -2965,7 +2988,9 @@
           bgMorph.style.transition = "opacity 480ms ease";
           bgMorph.style.opacity = "1";
           current = alvo;
+          entranceDelay = CONTENT_AFTER_BG;
           render();
+          entranceDelay = 0;
           go._t = setTimeout(() => {
             bgMorph.style.opacity = "0";
             animando = false;

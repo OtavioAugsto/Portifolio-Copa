@@ -12,8 +12,12 @@
       href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@100;200;300&family=Bebas+Neue&family=Caveat:wght@700&family=Kaushan+Script&family=Oswald:wght@200;300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- GSAP (transição entre craques) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- GSAP (transição entre craques) + SplitText (efeito do nome letra a letra, igual site modelo) -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13/dist/SplitText.min.js"></script>
+    <script>
+      if (window.gsap && window.SplitText) gsap.registerPlugin(SplitText);
+    </script>
 
     <style>
       /* ============================================================
@@ -265,7 +269,8 @@
         pointer-events: none;
         overflow: hidden;
         opacity: 0;
-        will-change: top, left, width, height, border-radius, opacity;
+        will-change: transform, opacity;
+        backface-visibility: hidden;
       }
       .bg-back {
         inset: 0;
@@ -657,6 +662,16 @@
         transform: translateY(0);
         clip-path: inset(0 0 0 0);
         -webkit-clip-path: inset(0 0 0 0);
+      }
+      /* letras individuais durante o efeito de entrada (igual site modelo) */
+      .big-name .bn-char {
+        display: inline-block;
+        background: linear-gradient(180deg, #ffffff 0%, #eaf1f8 40%, #b6c4d6 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        will-change: filter, opacity, transform;
       }
       @keyframes nameIn {
         from {
@@ -1515,9 +1530,12 @@
               var s = document.getElementById("site");
               document.body.classList.add("loaded"); // conteúdo sobe
               setTimeout(function () {
-                // NEYMAR nasce depois do site subir
+                // NEYMAR nasce depois do site subir (mesmo efeito letra a letra)
                 var bn = document.getElementById("bigName");
-                if (bn) bn.classList.add("born");
+                if (bn) {
+                  if (typeof revealName === "function") revealName(bn);
+                  else bn.classList.add("born");
+                }
               }, 1050);
               setTimeout(function () {
                 if (typeof showJR === "function") showJR();
@@ -2324,6 +2342,64 @@
       const $ = (id) => document.getElementById(id);
       const stage = $("stage");
 
+      // efeito de entrada do NOME: letras em ordem aleatória saindo do blur (igual site modelo)
+      let _nameSplit = null;
+      let _nameTimer = null;
+      function finishName(bn) {
+        // desfaz o split e devolve o gradiente + sheen originais (visível sempre)
+        clearTimeout(_nameTimer);
+        if (_nameSplit) {
+          try {
+            _nameSplit.revert();
+          } catch (e) {}
+          _nameSplit = null;
+        }
+        // nome visível na hora (sem depender da transição de opacity, que pode
+        // congelar se a aba estiver em 2º plano). O efeito de entrada é o letra-a-letra.
+        bn.style.transition = "none";
+        bn.style.opacity = "1";
+        bn.style.transform = "translateY(0)";
+        bn.style.clipPath = "none";
+        bn.style.webkitClipPath = "none";
+        bn.style.background = "";
+        bn.style.webkitTextFillColor = "";
+        bn.classList.add("born");
+      }
+      function revealName(bn) {
+        // garante que qualquer efeito anterior seja finalizado (nome nunca fica invisível)
+        if (window.gsap) gsap.killTweensOf(".big-name .bn-char");
+        finishName(bn);
+        if (!(window.gsap && window.SplitText)) {
+          bn.classList.add("born");
+          return;
+        }
+        // pai visível e sem pintar o gradiente (quem pinta são as letras)
+        bn.classList.remove("born");
+        bn.style.opacity = "1";
+        bn.style.transform = "none";
+        bn.style.clipPath = "none";
+        bn.style.webkitClipPath = "none";
+        bn.style.background = "none";
+        bn.style.webkitTextFillColor = "transparent";
+        _nameSplit = new SplitText(bn, { type: "chars", charsClass: "bn-char" });
+        gsap.set(_nameSplit.chars, { opacity: 0, filter: "blur(12px)" });
+        gsap.to(_nameSplit.chars, {
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: { each: 0.045, from: "random" },
+          onComplete() {
+            finishName(bn);
+          },
+        });
+        // rede de segurança: se a aba estiver em 2º plano (rAF pausado), restaura o nome
+        clearTimeout(_nameTimer);
+        _nameTimer = setTimeout(function () {
+          finishName(bn);
+        }, 1600);
+      }
+
       /* ============================================================
    RENDER
    ============================================================ */
@@ -2626,7 +2702,7 @@
           bn.classList.remove("born");
           if (document.body.classList.contains("loaded")) {
             void bn.offsetWidth;
-            bn.classList.add("born");
+            revealName(bn); // letras entram em ordem aleatória saindo do blur (igual site modelo)
           }
           $("heroTagline").innerHTML = p.tagline || "";
         } else {
@@ -2694,7 +2770,7 @@
 
         // transição GSAP (cinematográfica) ao trocar de craque
         if (window.gsap && document.body.classList.contains("loaded")) {
-          var fxEls = ["#heroName", "#nextCard", ".explore", ".signature"];
+          var fxEls = ["#nextCard", ".explore", ".signature"]; // #heroName fica de fora: o nome usa o efeito letra a letra
           // mata tweens anteriores e limpa estilos travados (evita sumir ao passar rápido)
           // (o fundo agora usa a transição "card cresce", não o GSAP)
           gsap.killTweensOf(fxEls);
@@ -2753,23 +2829,27 @@
           bgBack.style.transition = "none";
           bgBack.style.backgroundImage = imgUrl(oldBg);
           bgBack.style.opacity = "1";
-          // card do proximo craque cresce da posicao do card ate a tela inteira
+          // card do proximo craque cresce da posicao do card ate a tela inteira.
+          // usa transform/scale (GPU, sem re-rasterizar a imagem) = sem lag
           const r = $("nextPhoto").getBoundingClientRect();
+          const W = window.innerWidth,
+            H = window.innerHeight;
+          const sx = r.width / W,
+            sy = r.height / H;
           bgMorph.style.transition = "none";
           bgMorph.style.backgroundImage = imgUrl(newBg);
-          bgMorph.style.borderRadius = "14px";
-          bgMorph.style.top = r.top + "px";
-          bgMorph.style.left = r.left + "px";
-          bgMorph.style.width = r.width + "px";
-          bgMorph.style.height = r.height + "px";
-          bgMorph.style.opacity = "1";
-          void bgMorph.offsetWidth; // reflow
-          bgMorph.style.transition = "all " + TR_DUR + "ms " + TR_EASE;
           bgMorph.style.top = "0px";
           bgMorph.style.left = "0px";
-          bgMorph.style.width = window.innerWidth + "px";
-          bgMorph.style.height = window.innerHeight + "px";
+          bgMorph.style.width = W + "px";
+          bgMorph.style.height = H + "px";
           bgMorph.style.borderRadius = "0px";
+          bgMorph.style.transformOrigin = "0 0";
+          bgMorph.style.transform =
+            "translate(" + r.left + "px," + r.top + "px) scale(" + sx + "," + sy + ")";
+          bgMorph.style.opacity = "1";
+          void bgMorph.offsetWidth; // reflow
+          bgMorph.style.transition = "transform " + TR_DUR + "ms " + TR_EASE;
+          bgMorph.style.transform = "translate(0px,0px) scale(1,1)";
           // troca todo o conteudo + bg-img por baixo (escondido pelas camadas)
           current = alvo;
           render();
@@ -2783,6 +2863,7 @@
           bgBack.style.opacity = "0";
           bgMorph.style.transition = "none";
           bgMorph.style.backgroundImage = imgUrl(newBg);
+          bgMorph.style.transform = "none";
           bgMorph.style.top = "0px";
           bgMorph.style.left = "0px";
           bgMorph.style.width = window.innerWidth + "px";

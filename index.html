@@ -2680,20 +2680,21 @@
           gsap.set(fxEls, { clearProps: "transform,opacity" });
           gsap.fromTo(
             ".bg-img",
-            { scale: 1.09, opacity: 0.35 },
-            { scale: 1, opacity: 1, duration: 1.15, ease: "power2.out", overwrite: "auto" }
+            { scale: 1.05, opacity: 0.45 },
+            { scale: 1, opacity: 1, duration: 0.7, ease: "power2.out", overwrite: "auto", force3D: true }
           );
           gsap.fromTo(
             fxEls,
-            { y: 34, opacity: 0 },
+            { y: 26, opacity: 0 },
             {
               y: 0,
               opacity: 1,
-              duration: 0.75,
-              stagger: 0.1,
+              duration: 0.5,
+              stagger: 0.07,
               ease: "power3.out",
-              delay: 0.08,
+              delay: 0.05,
               overwrite: "auto",
+              force3D: true,
               clearProps: "transform,opacity",
             }
           );
@@ -2703,9 +2704,18 @@
       /* ============================================================
    NAVEGAÇÃO
    ============================================================ */
+      let animando = false; // trava: ignora cliques enquanto a transicao roda (igual site modelo)
       function go(i) {
-        current = (i + total) % total;
+        if (animando) return;
+        const alvo = (i + total) % total;
+        if (alvo === current) return;
+        animando = true;
+        current = alvo;
         render();
+        // libera assim que a transicao assenta (mantem o site leve, sem empilhar animacoes)
+        setTimeout(() => {
+          animando = false;
+        }, 620);
       }
       $("next").addEventListener("click", () => go(current + 1));
       $("prev").addEventListener("click", () => go(current - 1));

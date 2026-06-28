@@ -240,8 +240,8 @@
         background:
           linear-gradient(
             90deg,
-            rgba(8, 8, 10, 0.6) 0%,
-            rgba(8, 8, 10, 0.2) 32%,
+            rgba(8, 8, 10, var(--shL0, 0.6)) 0%,
+            rgba(8, 8, 10, var(--shL1, 0.2)) 32%,
             rgba(8, 8, 10, 0) 60%,
             rgba(8, 8, 10, 0.05) 100%
           ),
@@ -2111,6 +2111,7 @@
           c2: "#1b4fb8",
           ink: "#ffffff",
           bg: "imagens/mbappe2.png",
+          lightBg: true,
           bigName: "MBAPPÉ",
           draw: "Mbappé",
           tagline: "A Nova Era. <span>Allez!</span>",
@@ -2573,6 +2574,9 @@
         var bgStageEl = document.querySelector(".bg-stage");
         if (bgStageEl)
           bgStageEl.style.setProperty("--bg-shift", p.bgShift || "0px");
+        // overlay escuro da esquerda (atrás do nome) - mais fraco em quem tem fundo claro
+        document.documentElement.style.setProperty("--shL0", p.lightBg ? "0.18" : "0.6");
+        document.documentElement.style.setProperty("--shL1", p.lightBg ? "0.05" : "0.2");
         const cw = $("centerText");
         if (p.centerText) {
           cw.style.display = "flex";

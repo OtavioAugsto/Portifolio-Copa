@@ -2402,9 +2402,13 @@
         bn.classList.add("born");
       }
       function revealName(bn) {
+        // nome correto (já setado pelo render) — guardado ANTES do revert do split anterior,
+        // que senão restauraria o nome do craque anterior (ex: NEYMAR no slide do Cristiano)
+        var txt = bn.textContent;
         // garante que qualquer efeito anterior seja finalizado (nome nunca fica invisível)
         if (window.gsap) gsap.killTweensOf(".big-name .bn-char");
         finishName(bn);
+        bn.textContent = txt; // o revert acima pode ter trazido o nome antigo de volta
         if (!(window.gsap && window.SplitText)) {
           bn.classList.add("born");
           return;

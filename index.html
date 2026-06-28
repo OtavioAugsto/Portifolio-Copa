@@ -666,6 +666,7 @@
       /* letras individuais durante o efeito de entrada (igual site modelo) */
       .big-name .bn-char {
         display: inline-block;
+        opacity: 0; /* nascem invisíveis: o GSAP é quem mostra (sem flash do nome cheio antes) */
         background: linear-gradient(180deg, #ffffff 0%, #eaf1f8 40%, #b6c4d6 100%);
         -webkit-background-clip: text;
         background-clip: text;
@@ -2452,9 +2453,9 @@
         gsap.to(_nameSplit.chars, {
           opacity: 1,
           filter: "blur(0px)",
-          duration: 0.6,
+          duration: 0.45,
           ease: "power2.out",
-          stagger: { each: 0.045, from: "random" },
+          stagger: { each: 0.028, from: "random" },
           onComplete() {
             finishName(bn);
           },
@@ -2923,10 +2924,10 @@
    ============================================================ */
       let animando = false; // trava: ignora cliques enquanto a transicao roda (igual site modelo)
       const TR_EASE = "cubic-bezier(.76,0,.24,1)";
-      const TR_DUR = 900; // ms (mesma duracao do site modelo)
+      const TR_DUR = 620; // ms (fundo cresce) — mais rápido = mais fluido
       // atraso da entrada do CONTEÚDO (nome/assinatura/cards) p/ o FUNDO trocar primeiro (igual site modelo)
       let entranceDelay = 0;
-      const CONTENT_AFTER_BG = 480;
+      const CONTENT_AFTER_BG = 240;
       let bgBack = null,
         bgMorph = null;
       function ensureMorphEls() {
@@ -3002,7 +3003,7 @@
           bgMorph.style.borderRadius = "0px";
           bgMorph.style.opacity = "0";
           void bgMorph.offsetWidth;
-          bgMorph.style.transition = "opacity 480ms ease";
+          bgMorph.style.transition = "opacity 360ms ease";
           bgMorph.style.opacity = "1";
           current = alvo;
           entranceDelay = CONTENT_AFTER_BG;
@@ -3011,7 +3012,7 @@
           go._t = setTimeout(() => {
             bgMorph.style.opacity = "0";
             animando = false;
-          }, 480);
+          }, 360);
         }
       }
       $("next").addEventListener("click", () => go(current + 1));

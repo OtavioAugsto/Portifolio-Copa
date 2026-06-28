@@ -2986,8 +2986,8 @@
           jr.style.transform = p.jrPos || ""; // posição custom por jogador (ex: Cristiano mais à direita)
           jr.innerHTML = ""; // o SVG é montado quando showJR rodar (fica vazio até lá = some durante a troca do fundo)
           if (document.body.classList.contains("loaded"))
-            // assinatura entra DEPOIS das letras do nome (primeiro o nome, depois o sobrenome desenhado)
-            setTimeout(showJR, entranceDelay > 0 ? entranceDelay + 350 : 150);
+            // assinatura entra logo após o nome (mesma onda; ela desenha sozinha por ~1.4s = "depois")
+            setTimeout(showJR, entranceDelay > 0 ? entranceDelay + 150 : 150);
         } else {
           jr.style.display = "none";
           jr.innerHTML = "";
@@ -3078,10 +3078,10 @@
    ============================================================ */
       let animando = false; // trava: ignora cliques enquanto a transicao roda (igual site modelo)
       const TR_EASE = "cubic-bezier(0.76, 0, 0.24, 1)"; // EXATO do site modelo
-      const TR_DUR = 1000; // ms (fundo cresce) — mesma duração do site modelo
-      // atraso da entrada do CONTEÚDO (nome/assinatura/cards) p/ o FUNDO trocar primeiro (igual site modelo)
+      const TR_DUR = 850; // ms (fundo cresce)
+      // atraso da entrada do CONTEÚDO (nome/assinatura/cards) — entrada coesa (não escalonada demais)
       let entranceDelay = 0;
-      const CONTENT_AFTER_BG = 850; // conteúdo entra qdo o fundo está terminando (igual modelo)
+      const CONTENT_AFTER_BG = 430; // nome + cards entram juntos enquanto o fundo cresce
       let bgBack = null,
         bgMorph = null;
       function ensureMorphEls() {
@@ -3201,7 +3201,7 @@
           bgMorph.style.borderRadius = "0px";
           bgMorph.style.opacity = "0";
           void bgMorph.offsetWidth;
-          bgMorph.style.transition = "opacity 700ms ease";
+          bgMorph.style.transition = "opacity 550ms ease";
           bgMorph.style.opacity = "1";
           current = alvo;
           // esconde o conteúdo antigo na hora (barato) e adia o render pesado 1 quadro:
@@ -3218,7 +3218,7 @@
             bgMorph.style.opacity = "0";
             animando = false;
             primeMorph(); // pré-renderiza o próximo
-          }, 700);
+          }, 550);
         }
       }
       $("next").addEventListener("click", () => go(current + 1));

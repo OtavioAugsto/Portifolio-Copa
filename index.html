@@ -2536,6 +2536,18 @@
           if (s) s.classList.add("jr-static");
         }, 1700);
       }
+      // container off-screen (renderizado) só pra medir SVGs de fetch obsoletos sem mexer na tela
+      function jrMeasureHost() {
+        var m = document.getElementById("_jrMeasure");
+        if (!m) {
+          m = document.createElement("div");
+          m.id = "_jrMeasure";
+          m.style.cssText =
+            "position:fixed;left:-99999px;top:0;opacity:0;pointer-events:none;";
+          document.body.appendChild(m);
+        }
+        return m;
+      }
       function showJR() {
         var jr = document.getElementById("jrWrite");
         if (!jr) return;
@@ -2618,8 +2630,10 @@
                   );
                 }
               });
-              jr.innerHTML = "";
-              jr.appendChild(svg);
+              var stale = current !== sigIdx; // craque mudou durante o fetch
+              var host = stale ? jrMeasureHost() : jr;
+              if (!stale) jr.innerHTML = "";
+              host.appendChild(svg);
               if (cfg.bigK) {
                 // separa os subtraços e aumenta o mais à esquerda (a letra K)
                 try {
@@ -2704,6 +2718,11 @@
                 svg.setAttribute("height", H);
               } catch (e) {}
               _jrCache[sigIdx] = svg.outerHTML; // guarda pronta pras próximas trocas (sem lag)
+              if (stale) {
+                // craque mudou durante o fetch: só cacheia, NÃO mexe na tela atual (evita o "reset")
+                if (svg.parentNode) svg.parentNode.removeChild(svg);
+                return;
+              }
               drawJR();
               jrSafetyStroke(jr);
             });
@@ -2846,7 +2865,8 @@
           jr.style.transform = p.jrPos || ""; // posição custom por jogador (ex: Cristiano mais à direita)
           jr.innerHTML = ""; // o SVG é montado quando showJR rodar (fica vazio até lá = some durante a troca do fundo)
           if (document.body.classList.contains("loaded"))
-            setTimeout(showJR, entranceDelay > 0 ? entranceDelay : 150); // entra depois do fundo
+            // assinatura entra DEPOIS das letras do nome (primeiro o nome, depois o sobrenome desenhado)
+            setTimeout(showJR, entranceDelay > 0 ? entranceDelay + 350 : 150);
         } else {
           jr.style.display = "none";
           jr.innerHTML = "";

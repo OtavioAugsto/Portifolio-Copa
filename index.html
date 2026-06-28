@@ -284,8 +284,10 @@
       }
       .logo-cr {
         height: 54px;
+      } /* logo recolorida */
+      #logo {
         animation: cr7Blink 2.6s ease-in-out infinite;
-      } /* logo recolorida, só piscando */
+      } /* piscar em todas as logos (texto ou imagem) */
       @keyframes cr7Blink {
         0%,
         100% {
@@ -1958,6 +1960,7 @@
           draw: "JR.",
           bigName: "NEYMAR",
           logoImg: "imagens/modelo/logo-neymar.svg",
+          logoTint: [1, 0.824, 0],
           goldScript: true,
           tagline: "Rumo ao Hexa. <span>Last Dance.</span>",
           jrPos: "translate(-14px,calc(12% + 6px))",
@@ -2113,6 +2116,7 @@
           drawLogo: "imagens/sign-kylian3.png",
           drawLogoScale: 2.5,
           logoImg: "imagens/modelo/logo-mbappe.svg",
+          logoTint: [0.169, 0.482, 1],
           quoteA: "Speed is nothing without control.",
           quoteB: "I want to make history.",
           nextQuoteA: "Dreams don't work",

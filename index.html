@@ -2393,6 +2393,19 @@
       // efeito de entrada do NOME: letras em ordem aleatória saindo do blur (igual site modelo)
       let _nameSplit = null;
       let _nameTimer = null;
+      let _nameRevealTimer = null;
+      // cancela QUALQUER animação/cleanup pendente do nome (evita callback atrasado trocar o texto)
+      function cancelNameFx() {
+        clearTimeout(_nameRevealTimer);
+        clearTimeout(_nameTimer);
+        if (window.gsap) gsap.killTweensOf(".big-name .bn-char");
+        if (_nameSplit) {
+          try {
+            _nameSplit.revert();
+          } catch (e) {}
+          _nameSplit = null;
+        }
+      }
       function finishName(bn) {
         // desfaz o split e devolve o gradiente + sheen originais (visível sempre)
         clearTimeout(_nameTimer);
@@ -2786,6 +2799,9 @@
         if (p.bigName && !p.hideName) {
           heroName.style.display = "";
           const bn = $("bigName");
+          // limpa o efeito do nome ANTERIOR antes de definir o novo texto
+          // (senão um revert atrasado do SplitText antigo restaura o nome errado)
+          cancelNameFx();
           bn.textContent = p.bigName;
           bn.style.fontSize = p.bigSize || "";
           // sombra do nome leve em todos (sem a mancha preta pesada atrás)
@@ -2796,7 +2812,7 @@
               // esconde o nome enquanto o fundo troca; escreve depois (fundo primeiro)
               bn.style.transition = "none";
               bn.style.opacity = "0";
-              setTimeout(function () {
+              _nameRevealTimer = setTimeout(function () {
                 revealName(bn);
               }, entranceDelay);
             } else {

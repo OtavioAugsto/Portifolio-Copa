@@ -1573,6 +1573,7 @@
               document.body.classList.add("loaded"); // conteúdo sobe
               setTimeout(function () {
                 // NEYMAR nasce depois do site subir (mesmo efeito letra a letra)
+                if (window._introCancelled) return; // usuário já navegou: não mexe
                 var bn = document.getElementById("bigName");
                 if (bn) {
                   if (typeof revealName === "function") revealName(bn);
@@ -1580,9 +1581,11 @@
                 }
               }, 1050);
               setTimeout(function () {
+                if (window._introCancelled) return; // evita re-rodar o efeito no craque já trocado
                 if (typeof showJR === "function") showJR();
               }, 2100); // JR nasce depois do NEYMAR
               setTimeout(function () {
+                if (window._introCancelled) return;
                 var nk = document.getElementById("nick");
                 if (nk) nk.classList.add("write");
               }, 2500); // assinatura escreve por último
@@ -2992,6 +2995,7 @@
         const alvo = (i + total) % total;
         if (alvo === current) return;
         animando = true;
+        window._introCancelled = true; // cancela os efeitos atrasados do preloader (não re-rodam no craque trocado)
         const forward = alvo === (current + 1) % total;
         const oldBg = players[current] && players[current].bg;
         const newBg = players[alvo] && players[alvo].bg;

@@ -2065,7 +2065,7 @@
           logoRGB2: [1, 1, 1],
           logoSplit: 57,
           softName: true,
-          jrPos: "translate(-19px,-12%)",
+          jrPos: "translate(-29px,-55%)",
           drawStrokeFile: {
             src: "imagens/sign-ronaldo.svg",
             scale: 0.7,
@@ -2132,7 +2132,7 @@
           bigName: "MBAPPÉ",
           draw: "Mbappé",
           tagline: "A Nova Era. <span>Allez!</span>",
-          jrPos: "translate(-10px,12%)",
+          jrPos: "translate(0px,12%)",
           drawLogo: "imagens/sign-kylian3.png",
           drawLogoScale: 2.5,
           logoImg: "imagens/modelo/logo-mbappe.svg",
@@ -2196,9 +2196,9 @@
           bigName: "LAMINE",
           draw: "Yamal",
           tagline: "O Prodígio. <span>La Roja.</span>",
-          jrPos: "translate(-3px,calc(12% + 6px))",
+          jrPos: "translate(4px,calc(12% + 6px))",
           drawLogo: "imagens/sign-yamal2.png",
-          drawLogoScale: 2.5,
+          drawLogoScale: 2.2,
           quoteA: "Football is about enjoying yourself.",
           quoteB: "Age is just a number.",
           nextQuoteA: "I play without fear —",
@@ -2256,6 +2256,7 @@
           c2: "#c2c7d0",
           ink: "#14161c",
           bg: "imagens/jude.png",
+          sheen: true,
           quoteA: "Hard work beats talent",
           quoteB: "when talent doesn't work hard.",
           nextQuoteA: "Born to lead,",
@@ -2610,6 +2611,8 @@
           bn.style.filter = p.softName
             ? "drop-shadow(0 1px 0 rgba(255,255,255,.4)) drop-shadow(0 2px 7px rgba(0,0,0,.3))"
             : "";
+          // sheen (reflexo) só em quem tiver p.sheen
+          bn.style.animation = p.sheen ? "nameSheen 5s ease-in-out 1.6s infinite" : "none";
           bn.classList.remove("born");
           if (document.body.classList.contains("loaded")) {
             void bn.offsetWidth;

@@ -101,6 +101,33 @@
         flex-direction: column;
         align-items: center;
         gap: 24px;
+        position: relative;
+        z-index: 1;
+      }
+      /* brilho grande e difuso ao fundo (pulsa) */
+      .pre-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 340px;
+        height: 340px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: var(--gold);
+        filter: blur(120px);
+        opacity: 0.18;
+        z-index: 0;
+        pointer-events: none;
+      }
+      /* mensagens dinâmicas do loader */
+      .pre-sub {
+        font-family: "Barlow Condensed", "Oswald", sans-serif;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.55);
+        margin-top: -6px;
       }
       /* lockup igual ao emblema: WORLD / taça / CUP / 2026 */
       .pre-lockup {
@@ -1537,6 +1564,7 @@
   <body>
     <!-- PRELOADER (tela de carregamento) -->
     <div class="preloader" id="preloader">
+      <div class="pre-glow" id="preGlow"></div>
       <div class="pre-inner">
         <div class="pre-lockup">
           <span class="pre-word">WORLD</span>
@@ -1552,6 +1580,7 @@
           <span class="pre-word">CUP</span>
           <span class="pre-year">2026</span>
         </div>
+        <div class="pre-sub" id="preSub">Conectando ao torneio...</div>
         <div class="pre-pct" id="prePct">0%</div>
       </div>
     </div>
@@ -1559,82 +1588,174 @@
       (function () {
         var pre = document.getElementById("preloader"),
           pct = document.getElementById("prePct"),
+          sub = document.getElementById("preSub"),
           fill = document.getElementById("preCupFill");
-        var n = 0;
-        var t = setInterval(function () {
-          n += Math.floor(Math.random() * 7) + 3;
-          if (n >= 100) {
-            n = 100;
-            clearInterval(t);
-            setTimeout(function () {
-              var s = document.getElementById("site");
-              document.body.classList.add("loaded"); // conteúdo sobe
-              setTimeout(function () {
-                // NEYMAR nasce depois do site subir (mesmo efeito letra a letra)
-                if (window._introCancelled) return; // usuário já navegou: não mexe
-                var bn = document.getElementById("bigName");
-                if (bn) {
-                  if (typeof revealName === "function") revealName(bn);
-                  else bn.classList.add("born");
-                }
-              }, 1050);
-              setTimeout(function () {
-                if (window._introCancelled) return; // evita re-rodar o efeito no craque já trocado
-                if (typeof showJR === "function") showJR();
-              }, 2100); // JR nasce depois do NEYMAR
-              setTimeout(function () {
-                if (window._introCancelled) return;
-                var nk = document.getElementById("nick");
-                if (nk) nk.classList.add("write");
-              }, 2500); // assinatura escreve por último
-              setTimeout(function () {
-                // pré-renderiza a imagem do próximo craque (1ª troca já cresce lisa)
-                if (typeof primeMorph === "function") primeMorph();
-              }, 1500);
-              if (s)
-                s.addEventListener("transitionend", function (e) {
-                  if (e.propertyName === "transform")
-                    s.style.transform = "none";
-                });
-              // o lockup (WORLD/taça/CUP/2026) voa pro emblema, batendo no mesmo formato
-              var flyer = document.querySelector(".pre-lockup");
-              var target = document.querySelector(".wc-badge");
-              if (flyer && target) {
-                var f = flyer.getBoundingClientRect(),
-                  tr = target.getBoundingClientRect();
-                var sc = tr.height / f.height;
-                var dx = tr.left + tr.width / 2 - (f.left + f.width / 2);
-                var dy = tr.top + tr.height / 2 - (f.top + f.height / 2);
-                flyer.style.position = "fixed";
-                flyer.style.left = f.left + "px";
-                flyer.style.top = f.top + "px";
-                flyer.style.margin = "0";
-                flyer.style.zIndex = "10000";
-                flyer.style.transformOrigin = "center center";
-                flyer.style.transition =
-                  "transform 1.05s cubic-bezier(.6,0,.2,1), opacity .35s ease .9s";
-                document.body.appendChild(flyer);
-                void flyer.offsetWidth;
-                flyer.style.transform =
-                  "translate(" + dx + "px," + dy + "px) scale(" + sc + ")";
-                flyer.style.opacity = "0";
-                setTimeout(function () {
-                  if (flyer.parentNode) flyer.parentNode.removeChild(flyer);
-                }, 1400);
-                setTimeout(function () {
-                  target.classList.add("show");
-                }, 1150); // emblema aparece no pouso
-              } else {
-                var b = document.querySelector(".wc-badge");
-                if (b) b.classList.add("show");
-              }
-              pre.classList.add("done"); // tela de loading some
-            }, 400);
+        var G = window.gsap;
+
+        // ── ENTRADA (stagger) — segue o código enviado ──
+        if (G) {
+          var words = document.querySelectorAll(".pre-lockup .pre-word"); // [WORLD, CUP]
+          G.from(words[0], { y: 60, opacity: 0, duration: 1, ease: "power4.out" });
+          G.from(".pre-cup-wrap", {
+            scale: 0.5,
+            opacity: 0,
+            duration: 1.2,
+            ease: "power3.out",
+          });
+          if (words[1])
+            G.from(words[1], { y: 40, opacity: 0, delay: 0.2, duration: 1 });
+          G.from(".pre-year", {
+            scale: 0.5,
+            opacity: 0,
+            delay: 0.4,
+            duration: 1,
+            ease: "back.out(2)",
+          });
+          G.from(".pre-sub", { opacity: 0, delay: 0.5, duration: 1 });
+          G.from(".pre-pct", { opacity: 0, delay: 0.5, duration: 1 });
+          // taça flutuando
+          G.to(".pre-cup-wrap", {
+            y: -10,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+          // glow de fundo pulsando
+          G.to("#preGlow", {
+            scale: 1.5,
+            opacity: 0.34,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+
+        // ── MENSAGENS DINÂMICAS ──
+        var messages = [
+          "Conectando ao torneio...",
+          "Carregando craques...",
+          "Preparando estádios...",
+          "Entrando em campo...",
+        ];
+        var msgIndex = 0;
+        function nextMsg() {
+          msgIndex++;
+          if (sub && messages[msgIndex]) sub.textContent = messages[msgIndex];
+        }
+
+        // ── PROGRESSO 0→100 (a taça preenche junto) ──
+        var progress = { v: 0 };
+        function setProg() {
+          var p = progress.v;
+          if (pct) pct.textContent = Math.round(p) + "%";
+          if (fill) {
+            fill.style.clipPath = "inset(" + (100 - p) + "% 0 0 0)";
+            fill.style.webkitClipPath = "inset(" + (100 - p) + "% 0 0 0)";
           }
-          pct.textContent = n + "%";
-          fill.style.clipPath = "inset(" + (100 - n) + "% 0 0 0)";
-          fill.style.webkitClipPath = "inset(" + (100 - n) + "% 0 0 0)";
-        }, 85);
+          if (p > 25 && msgIndex === 0) nextMsg();
+          if (p > 55 && msgIndex === 1) nextMsg();
+          if (p > 82 && msgIndex === 2) nextMsg();
+        }
+        if (G) {
+          G.to(progress, {
+            v: 100,
+            duration: 3.2,
+            ease: "power1.out",
+            onUpdate: setProg,
+            onComplete: endAnimation,
+          });
+        } else {
+          var n = 0;
+          var t = setInterval(function () {
+            n += 5;
+            progress.v = Math.min(100, n);
+            setProg();
+            if (n >= 100) {
+              clearInterval(t);
+              endAnimation();
+            }
+          }, 60);
+        }
+
+        // rede de segurança: se a aba estiver em 2º plano no load (rAF/GSAP congela),
+        // força o site a aparecer e esconde o loader sem depender do GSAP
+        setTimeout(function () {
+          if (_ended) return;
+          _ended = true;
+          revealSite();
+          pre.classList.add("done");
+          pre.style.opacity = "0";
+          pre.style.display = "none";
+        }, 6000);
+
+        // ── FINAL CINEMATOGRÁFICO + revela o site ──
+        var _ended = false;
+        function endAnimation() {
+          if (_ended) return; // não roda duas vezes
+          _ended = true;
+          revealSite(); // o site sobe por baixo enquanto o loader some
+          if (G) {
+            G.killTweensOf(".pre-cup-wrap"); // para o flutuar antes do crescimento final
+            G.killTweensOf("#preGlow");
+            G.timeline()
+              .to(".pre-pct", { scale: 1.4, opacity: 0, duration: 0.4 })
+              .to(".pre-sub", { opacity: 0, duration: 0.3 }, "<")
+              .to(
+                ".pre-cup-wrap",
+                { scale: 1.25, duration: 0.55, ease: "power2.out" },
+                "-=0.15",
+              )
+              .to("#preGlow", { scale: 1.8, opacity: 0.42, duration: 0.55 }, "<")
+              .to(
+                "#preloader",
+                {
+                  opacity: 0,
+                  duration: 0.7,
+                  onComplete: function () {
+                    pre.classList.add("done");
+                    pre.style.display = "none";
+                  },
+                },
+                "-=0.1",
+              );
+          } else {
+            pre.classList.add("done");
+            pre.style.display = "none";
+          }
+        }
+
+        function revealSite() {
+          var s = document.getElementById("site");
+          document.body.classList.add("loaded"); // conteúdo sobe
+          setTimeout(function () {
+            if (window._introCancelled) return; // usuário já navegou: não mexe
+            var bn = document.getElementById("bigName");
+            if (bn) {
+              if (typeof revealName === "function") revealName(bn);
+              else bn.classList.add("born");
+            }
+          }, 750);
+          setTimeout(function () {
+            if (window._introCancelled) return;
+            if (typeof showJR === "function") showJR();
+          }, 1150);
+          setTimeout(function () {
+            if (window._introCancelled) return;
+            var nk = document.getElementById("nick");
+            if (nk) nk.classList.add("write");
+          }, 1350);
+          setTimeout(function () {
+            if (typeof primeMorph === "function") primeMorph();
+          }, 1000);
+          if (s)
+            s.addEventListener("transitionend", function (e) {
+              if (e.propertyName === "transform") s.style.transform = "none";
+            });
+          var b = document.querySelector(".wc-badge");
+          if (b) b.classList.add("show"); // emblema do canto aparece
+        }
       })();
     </script>
 

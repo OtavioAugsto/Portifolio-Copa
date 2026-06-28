@@ -2593,8 +2593,10 @@
           const bn = $("bigName");
           bn.textContent = p.bigName;
           bn.style.fontSize = p.bigSize || "";
-          // sombra mais leve em quem tem fundo claro (ex: Cristiano) p/ tirar a mancha preta
-          bn.style.filter = p.softName
+          // sombra do nome: lightBg = quase sem sombra (sem mancha preta atrás); softName = leve; resto = padrão
+          bn.style.filter = p.lightBg
+            ? "drop-shadow(0 1px 1px rgba(0,0,0,.28))"
+            : p.softName
             ? "drop-shadow(0 1px 0 rgba(255,255,255,.4)) drop-shadow(0 2px 7px rgba(0,0,0,.3))"
             : "";
           bn.classList.remove("born");

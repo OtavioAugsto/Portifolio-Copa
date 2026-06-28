@@ -2459,9 +2459,9 @@
         gsap.to(_nameSplit.chars, {
           opacity: 1,
           filter: "blur(0px)",
-          duration: 0.6,
+          duration: 0.8,
           ease: "power2.out",
-          stagger: { each: 0.04, from: "random" },
+          stagger: { each: 0.05, from: "random" },
           onComplete() {
             finishName(bn);
           },
@@ -2935,11 +2935,11 @@
    NAVEGAÇÃO
    ============================================================ */
       let animando = false; // trava: ignora cliques enquanto a transicao roda (igual site modelo)
-      const TR_EASE = "cubic-bezier(0.16, 1, 0.3, 1)"; // easeOutExpo: rápido no início = snappy (não começa devagar)
-      const TR_DUR = 820; // ms (fundo cresce) — mais cinematográfico (liso, sem jank)
+      const TR_EASE = "cubic-bezier(0.76, 0, 0.24, 1)"; // EXATO do site modelo
+      const TR_DUR = 1000; // ms (fundo cresce) — mesma duração do site modelo
       // atraso da entrada do CONTEÚDO (nome/assinatura/cards) p/ o FUNDO trocar primeiro (igual site modelo)
       let entranceDelay = 0;
-      const CONTENT_AFTER_BG = 300;
+      const CONTENT_AFTER_BG = 850; // conteúdo entra qdo o fundo está terminando (igual modelo)
       let bgBack = null,
         bgMorph = null;
       function ensureMorphEls() {
@@ -3058,7 +3058,7 @@
           bgMorph.style.borderRadius = "0px";
           bgMorph.style.opacity = "0";
           void bgMorph.offsetWidth;
-          bgMorph.style.transition = "opacity 500ms ease";
+          bgMorph.style.transition = "opacity 700ms ease";
           bgMorph.style.opacity = "1";
           current = alvo;
           // esconde o conteúdo antigo na hora (barato) e adia o render pesado 1 quadro:
@@ -3075,7 +3075,7 @@
             bgMorph.style.opacity = "0";
             animando = false;
             primeMorph(); // pré-renderiza o próximo
-          }, 500);
+          }, 700);
         }
       }
       $("next").addEventListener("click", () => go(current + 1));

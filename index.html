@@ -1585,6 +1585,10 @@
                 var nk = document.getElementById("nick");
                 if (nk) nk.classList.add("write");
               }, 2500); // assinatura escreve por último
+              setTimeout(function () {
+                // pré-renderiza a imagem do próximo craque (1ª troca já cresce lisa)
+                if (typeof primeMorph === "function") primeMorph();
+              }, 1500);
               if (s)
                 s.addEventListener("transitionend", function (e) {
                   if (e.propertyName === "transform")
@@ -2930,11 +2934,11 @@
    NAVEGAÇÃO
    ============================================================ */
       let animando = false; // trava: ignora cliques enquanto a transicao roda (igual site modelo)
-      const TR_EASE = "cubic-bezier(.76,0,.24,1)";
-      const TR_DUR = 620; // ms (fundo cresce) — mais rápido = mais fluido
+      const TR_EASE = "cubic-bezier(0.16, 1, 0.3, 1)"; // easeOutExpo: rápido no início = snappy (não começa devagar)
+      const TR_DUR = 520; // ms (fundo cresce) — rápido e fluido
       // atraso da entrada do CONTEÚDO (nome/assinatura/cards) p/ o FUNDO trocar primeiro (igual site modelo)
       let entranceDelay = 0;
-      const CONTENT_AFTER_BG = 240;
+      const CONTENT_AFTER_BG = 140;
       let bgBack = null,
         bgMorph = null;
       function ensureMorphEls() {
@@ -2948,6 +2952,39 @@
         host.appendChild(bgMorph);
       }
       const imgUrl = (u) => (u ? `url('${u}')` : "none");
+
+      // PRÉ-RENDERIZA a imagem do PRÓXIMO craque na posição do card (igual a miniatura do site modelo):
+      // fica rasterizada na GPU ANTES do clique, então o crescimento é liso, sem engasgo no clique.
+      function primeMorph() {
+        ensureMorphEls();
+        var npl = players[(current + 1) % total];
+        var nb = npl && npl.bg;
+        var npEl = $("nextPhoto");
+        if (!nb || !npEl) {
+          bgMorph.style.opacity = "0";
+          bgMorph._primedFor = -1;
+          return;
+        }
+        var r = npEl.getBoundingClientRect();
+        if (!r.width) {
+          bgMorph._primedFor = -1;
+          return;
+        } // card ainda não posicionado
+        var W = window.innerWidth,
+          H = window.innerHeight;
+        bgMorph.style.transition = "none";
+        bgMorph.style.backgroundImage = imgUrl(nb);
+        bgMorph.style.top = "0px";
+        bgMorph.style.left = "0px";
+        bgMorph.style.width = W + "px";
+        bgMorph.style.height = H + "px";
+        bgMorph.style.borderRadius = "0px";
+        bgMorph.style.transformOrigin = "0 0";
+        bgMorph.style.transform =
+          "translate(" + r.left + "px," + r.top + "px) scale(" + r.width / W + "," + r.height / H + ")";
+        bgMorph.style.opacity = "0.01"; // rasterizado mas invisível = pronto pra crescer liso
+        bgMorph._primedFor = (current + 1) % total;
+      }
 
       function go(i) {
         if (animando) return;
@@ -2965,23 +3002,25 @@
           bgBack.style.transition = "none";
           bgBack.style.backgroundImage = imgUrl(oldBg);
           bgBack.style.opacity = "1";
-          // card do proximo craque cresce da posicao do card ate a tela inteira.
-          // usa transform/scale (GPU, sem re-rasterizar a imagem) = sem lag
-          const r = $("nextPhoto").getBoundingClientRect();
-          const W = window.innerWidth,
-            H = window.innerHeight;
-          const sx = r.width / W,
-            sy = r.height / H;
-          bgMorph.style.transition = "none";
-          bgMorph.style.backgroundImage = imgUrl(newBg);
-          bgMorph.style.top = "0px";
-          bgMorph.style.left = "0px";
-          bgMorph.style.width = W + "px";
-          bgMorph.style.height = H + "px";
-          bgMorph.style.borderRadius = "0px";
-          bgMorph.style.transformOrigin = "0 0";
-          bgMorph.style.transform =
-            "translate(" + r.left + "px," + r.top + "px) scale(" + sx + "," + sy + ")";
+          // o morph já está PRÉ-RENDERIZADO na posição do card (primeMorph). Se por algum
+          // motivo não estiver pro alvo certo, monta na hora (fallback).
+          if (bgMorph._primedFor !== alvo) {
+            const r = $("nextPhoto").getBoundingClientRect();
+            const W = window.innerWidth,
+              H = window.innerHeight;
+            bgMorph.style.transition = "none";
+            bgMorph.style.backgroundImage = imgUrl(newBg);
+            bgMorph.style.top = "0px";
+            bgMorph.style.left = "0px";
+            bgMorph.style.width = W + "px";
+            bgMorph.style.height = H + "px";
+            bgMorph.style.borderRadius = "0px";
+            bgMorph.style.transformOrigin = "0 0";
+            bgMorph.style.transform =
+              "translate(" + r.left + "px," + r.top + "px) scale(" + r.width / W + "," + r.height / H + ")";
+          } else {
+            bgMorph.style.transition = "none"; // parte do estado pré-renderizado (no card)
+          }
           bgMorph.style.opacity = "1";
           void bgMorph.offsetWidth; // reflow
           bgMorph.style.transition = "transform " + TR_DUR + "ms " + TR_EASE;
@@ -3003,6 +3042,7 @@
             bgMorph.style.opacity = "0";
             bgBack.style.opacity = "0";
             animando = false;
+            primeMorph(); // pré-renderiza o próximo (pra o próximo clique ser liso)
           }, TR_DUR);
         } else {
           // voltar / sem imagem: crossfade rapido
@@ -3033,6 +3073,7 @@
           go._t = setTimeout(() => {
             bgMorph.style.opacity = "0";
             animando = false;
+            primeMorph(); // pré-renderiza o próximo
           }, 360);
         }
       }

@@ -2673,14 +2673,29 @@
 
         // transição GSAP (cinematográfica) ao trocar de craque
         if (window.gsap && document.body.classList.contains("loaded")) {
+          var fxEls = ["#heroName", "#nextCard", ".explore", ".signature"];
+          // mata tweens anteriores e limpa estilos travados (evita sumir ao passar rápido)
+          gsap.killTweensOf(".bg-img");
+          gsap.killTweensOf(fxEls);
+          gsap.set(fxEls, { clearProps: "transform,opacity" });
           gsap.fromTo(
             ".bg-img",
             { scale: 1.09, opacity: 0.35 },
             { scale: 1, opacity: 1, duration: 1.15, ease: "power2.out", overwrite: "auto" }
           );
-          gsap.from(
-            ["#heroName", "#nextCard", ".explore", ".signature"],
-            { y: 34, opacity: 0, duration: 0.75, stagger: 0.1, ease: "power3.out", delay: 0.08, overwrite: "auto" }
+          gsap.fromTo(
+            fxEls,
+            { y: 34, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.75,
+              stagger: 0.1,
+              ease: "power3.out",
+              delay: 0.08,
+              overwrite: "auto",
+              clearProps: "transform,opacity",
+            }
           );
         }
       }

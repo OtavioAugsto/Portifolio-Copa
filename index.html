@@ -338,26 +338,8 @@ nav.menu a.active::after{
 .jr-write.go .jr-strokesvg.jr-static .jr-s2,
 .jr-write.go .jr-strokesvg.jr-static .jr-dot2{ animation:none; }
 /* sem fade/glow: JR totalmente estático */
-/* assinatura por IMAGEM: revela da esquerda pra direita (escreve) em loop, igual o modelo */
-.jr-imgsvg{
-  display:block; overflow:visible;
-  /* borda suave na ponta = tinta fluindo enquanto escreve */
-  -webkit-mask-image:linear-gradient(90deg,#000 62%, rgba(0,0,0,0) 100%);
-  mask-image:linear-gradient(90deg,#000 62%, rgba(0,0,0,0) 100%);
-  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
-  -webkit-mask-position:left center; mask-position:left center;
-  -webkit-mask-size:0% 130%; mask-size:0% 130%;
-  filter:drop-shadow(0 0 5px color-mix(in srgb, currentColor 45%, transparent));
-}
-.jr-write.go .jr-imgsvg{ animation:jrImgWrite 7s ease-in-out infinite; }
-@keyframes jrImgWrite{
-  0%{ -webkit-mask-size:0% 130%; mask-size:0% 130%; opacity:0; }
-  6%{ opacity:1; }
-  46%{ -webkit-mask-size:165% 130%; mask-size:165% 130%; opacity:1; }   /* terminou de escrever */
-  82%{ -webkit-mask-size:165% 130%; mask-size:165% 130%; opacity:1; }   /* segura visível */
-  93%{ opacity:0; }
-  100%{ -webkit-mask-size:0% 130%; mask-size:0% 130%; opacity:0; }
-}
+/* assinatura por IMAGEM: estática, sem efeito nenhum */
+.jr-imgsvg{ display:block; overflow:visible; }
 /* liga/desliga suave de opacidade (igual o site modelo) + glow bem leve */
 .jr-write.go .jr-svg{ animation:jrSvgBreath 4.6s ease-in-out infinite; }
 @keyframes jrSvgBreath{
@@ -866,8 +848,8 @@ function jrSvgHTML(text, fontPx, gold, font, pathObj, imgObj){
     var dot = imgObj.dot ? '<circle cx="'+imgObj.dot[0]+'" cy="'+imgObj.dot[1]+'" r="'+imgObj.dot[2]+'" fill="currentColor"/>' : '';
     return '<svg class="jr-imgsvg" width="'+Wi+'" height="'+Hi+'" viewBox="'+imgObj.vb+'" xmlns="http://www.w3.org/2000/svg">'
       + '<defs><filter id="jrKey" color-interpolation-filters="sRGB" x="-20%" y="-20%" width="140%" height="140%">'
-      + '<feColorMatrix type="matrix" values="0 0 0 0 '+col[0]+' 0 0 0 0 '+col[1]+' 0 0 0 0 '+col[2]+' .34 .34 .34 0 0"/>'
-      + '<feComponentTransfer><feFuncA type="linear" slope="5" intercept="-0.55"/></feComponentTransfer>'
+      + '<feColorMatrix type="matrix" values="0 0 0 0 '+col[0]+' 0 0 0 0 '+col[1]+' 0 0 0 0 '+col[2]+' '+(imgObj.invert?'-.34 -.34 -.34 0 1':'.34 .34 .34 0 0')+'"/>'
+      + '<feComponentTransfer><feFuncA type="linear" slope="6" intercept="-1.1"/></feComponentTransfer>'
       + '</filter></defs>'
       + '<image href="'+imgObj.src+'" x="0" y="0" width="'+iw+'" height="'+ih+'" filter="url(#jrKey)"/>'
       + dot
@@ -962,7 +944,7 @@ const players = [
     logo:["KM","7"], tagline:"The Phenomenon",
     first:"KYLIAN", script:"Mbappé", nick:"Kylian", vname:"Kylian Mbappé",
     code:"fr", country:"França", group:"World Cup 2026 · Group I",
-    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"imagens/modelo/bg-mbappe.webp", bigName:"MBAPPÉ", draw:"Mbappé", tagline:"A Nova Era. <span>Allez!</span>", logoImg:"imagens/modelo/logo-mbappe.svg", jrPos:"translate(-45px,-30%)", drawImg:{src:"imagens/sign-kylian2.png", iw:1536, ih:1024, vb:"0 0 1536 1024", scale:2.0, outline:18, invert:true},
+    c1:"#2a6df0", c2:"#1b4fb8", ink:"#ffffff", bg:"imagens/modelo/bg-mbappe.webp", bigName:"MBAPPÉ", draw:"Mbappé", tagline:"A Nova Era. <span>Allez!</span>", logoImg:"imagens/modelo/logo-mbappe.svg", jrPos:"translate(-45px,-30%)", drawImg:{src:"imagens/sign-kylian2.png", iw:1536, ih:1024, vb:"0 0 1536 1024", scale:2.0, invert:true},
     quoteA:"Speed is nothing without control.", quoteB:"I want to make history.",
     nextQuoteA:"Dreams don't work", nextQuoteB:"unless you do.",
     bio:["Born in the suburbs.","Faster than the rest.","Future of the game."],
@@ -978,7 +960,7 @@ const players = [
     logo:["LY","10"], tagline:"The Prodigy",
     first:"LAMINE", script:"Yamal", nick:"Lamine", vname:"Lamine Yamal",
     code:"es", country:"Espanha", group:"World Cup 2026 · Group H",
-    c1:"#e23636", c2:"#b32626", ink:"#ffffff", bg:"imagens/yamal5.png", bigName:"LAMINE", draw:"Yamal", tagline:"O Prodígio. <span>La Roja.</span>", jrPos:"translate(-20px,15%)", drawImg:{src:"imagens/sign-yamal.png", iw:1536, ih:1024, vb:"0 0 1536 1024", scale:2.0, outline:18, invert:true},
+    c1:"#e23636", c2:"#b32626", ink:"#ffffff", bg:"imagens/yamal5.png", bigName:"LAMINE", draw:"Yamal", tagline:"O Prodígio. <span>La Roja.</span>", jrPos:"translate(-20px,15%)", drawImg:{src:"imagens/sign-yamal.png", iw:1536, ih:1024, vb:"0 0 1536 1024", scale:2.0, invert:true},
     quoteA:"Football is about enjoying yourself.", quoteB:"Age is just a number.",
     nextQuoteA:"I play without fear —", nextQuoteB:"that's my superpower.",
     bio:["A kid with no fear.","Magic in his feet.","Born to break records."],

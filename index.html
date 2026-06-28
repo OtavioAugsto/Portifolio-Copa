@@ -2459,9 +2459,9 @@
         gsap.to(_nameSplit.chars, {
           opacity: 1,
           filter: "blur(0px)",
-          duration: 0.45,
+          duration: 0.6,
           ease: "power2.out",
-          stagger: { each: 0.028, from: "random" },
+          stagger: { each: 0.04, from: "random" },
           onComplete() {
             finishName(bn);
           },
@@ -2936,10 +2936,10 @@
    ============================================================ */
       let animando = false; // trava: ignora cliques enquanto a transicao roda (igual site modelo)
       const TR_EASE = "cubic-bezier(0.16, 1, 0.3, 1)"; // easeOutExpo: rápido no início = snappy (não começa devagar)
-      const TR_DUR = 520; // ms (fundo cresce) — rápido e fluido
+      const TR_DUR = 820; // ms (fundo cresce) — mais cinematográfico (liso, sem jank)
       // atraso da entrada do CONTEÚDO (nome/assinatura/cards) p/ o FUNDO trocar primeiro (igual site modelo)
       let entranceDelay = 0;
-      const CONTENT_AFTER_BG = 140;
+      const CONTENT_AFTER_BG = 300;
       let bgBack = null,
         bgMorph = null;
       function ensureMorphEls() {
@@ -3058,7 +3058,7 @@
           bgMorph.style.borderRadius = "0px";
           bgMorph.style.opacity = "0";
           void bgMorph.offsetWidth;
-          bgMorph.style.transition = "opacity 360ms ease";
+          bgMorph.style.transition = "opacity 500ms ease";
           bgMorph.style.opacity = "1";
           current = alvo;
           // esconde o conteúdo antigo na hora (barato) e adia o render pesado 1 quadro:
@@ -3075,7 +3075,7 @@
             bgMorph.style.opacity = "0";
             animando = false;
             primeMorph(); // pré-renderiza o próximo
-          }, 360);
+          }, 500);
         }
       }
       $("next").addEventListener("click", () => go(current + 1));

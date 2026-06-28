@@ -107,7 +107,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 5px;
+        gap: 16px;
       }
       .pre-word {
         font-family: "Bebas Neue", "Anton", sans-serif;
@@ -132,22 +132,20 @@
         width: max-content;
         margin: 4px 0;
       }
-      /* fundo arredondado com borda e brilho atrás da taça */
+      /* aura suave (oval) atrás da taça — sem borda/caixa retangular */
       .pre-cup-wrap::before {
         content: "";
         position: absolute;
-        inset: -14px -34px;
+        inset: -34px -64px;
         z-index: 0;
-        border-radius: 26px;
+        border-radius: 50%;
         background: radial-gradient(
-          58% 60% at 50% 45%,
-          color-mix(in srgb, var(--gold) 24%, transparent),
+          50% 56% at 50% 50%,
+          color-mix(in srgb, var(--gold) 34%, transparent) 0%,
+          color-mix(in srgb, var(--gold) 12%, transparent) 46%,
           transparent 72%
         );
-        border: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
-        box-shadow:
-          0 0 44px -6px color-mix(in srgb, var(--gold) 30%, transparent),
-          inset 0 0 30px -10px color-mix(in srgb, var(--gold) 40%, transparent);
+        filter: blur(8px);
       }
       .pre-cup {
         height: 128px;

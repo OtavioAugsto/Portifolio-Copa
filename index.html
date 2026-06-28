@@ -2620,7 +2620,7 @@
           jr.style.transform = p.jrPos || ""; // posição custom por jogador (ex: Cristiano mais à direita)
           jr.innerHTML = ""; // o SVG é montado quando showJR rodar
           if (document.body.classList.contains("loaded"))
-            setTimeout(showJR, 1100); // nasce depois do nome
+            setTimeout(showJR, 150); // aparece rápido junto com o conteúdo
         } else {
           jr.style.display = "none";
           jr.innerHTML = "";

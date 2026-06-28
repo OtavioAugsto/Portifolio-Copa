@@ -2386,6 +2386,7 @@
       let current = 0; // começa no Neymar (índice 0)
       const total = players.length;
       const dropped = {}; // fotos arrastadas em runtime, por índice
+      const _htmlCache = {}; // HTML pesado por jogador (logo/nick/fixtures) já montado = render leve na troca
       const flag = (c) => `https://flagcdn.com/${c}.svg`;
 
       const $ = (id) => document.getElementById(id);
@@ -2741,30 +2742,34 @@
         root.setProperty("--gold-soft", p.c2);
         root.setProperty("--ink", p.ink);
 
-        // header / logo
-        if (p.logoImg && p.logoTint) {
-          $("logo").innerHTML = logoTintSVG(p.logoImg, p.logoTint);
-        } else if (p.logoImg && p.logoRGB && p.logoRGB2) {
-          $("logo").innerHTML = logoTwoToneSVG(
-            p.logoImg,
-            p.logoRGB,
-            p.logoRGB2,
-            p.logoSplit || 57,
-          );
-        } else if (p.logoImg && p.logoRGB) {
-          $("logo").innerHTML = logoRecolorSVG(p.logoImg, p.logoRGB);
-        } else if (p.logoImg) {
-          $("logo").innerHTML =
-            `<img class="logo-img" src="${p.logoImg}" alt="${p.nick}">`;
-        } else {
-          $("logo").innerHTML = `${p.logo[0]}<span>${p.logo[1]}</span>`;
+        // header / logo (cacheado por jogador — recolor SVG é pesado pra refazer toda troca)
+        var rc = _htmlCache[current] || (_htmlCache[current] = {});
+        if (rc.logo == null) {
+          if (p.logoImg && p.logoTint) {
+            rc.logo = logoTintSVG(p.logoImg, p.logoTint);
+          } else if (p.logoImg && p.logoRGB && p.logoRGB2) {
+            rc.logo = logoTwoToneSVG(
+              p.logoImg,
+              p.logoRGB,
+              p.logoRGB2,
+              p.logoSplit || 57,
+            );
+          } else if (p.logoImg && p.logoRGB) {
+            rc.logo = logoRecolorSVG(p.logoImg, p.logoRGB);
+          } else if (p.logoImg) {
+            rc.logo = `<img class="logo-img" src="${p.logoImg}" alt="${p.nick}">`;
+          } else {
+            rc.logo = `${p.logo[0]}<span>${p.logo[1]}</span>`;
+          }
         }
+        $("logo").innerHTML = rc.logo;
 
         // esquerda
         $("vName").textContent = p.vname;
         const nk = $("nick");
         nk.classList.remove("write");
-        nk.innerHTML = signatureSVG(p.sig || p.nick);
+        if (rc.nick == null) rc.nick = signatureSVG(p.sig || p.nick);
+        nk.innerHTML = rc.nick;
         if (document.body.classList.contains("loaded"))
           setTimeout(function () {
             nk.classList.add("write");
@@ -2861,16 +2866,18 @@
 
         // barra inferior
         $("indexNum").textContent = String(current + 1).padStart(2, "0");
-        $("fixtures").innerHTML = p.fixtures
-          .map(
-            (f) => `
+        if (rc.fix == null)
+          rc.fix = p.fixtures
+            .map(
+              (f) => `
     <div class="fixture">
       <img src="${flag(f.code)}" alt="${f.opp}">
       <div class="fx-team"><b>${f.opp}</b><small>${f.date} · ${f.venue}</small></div>
       <div class="fx-score ${f.ft ? "" : "up"}">${f.res}${f.ft ? '<span class="ft">FT</span>' : ""}</div>
     </div>`,
-          )
-          .join("");
+            )
+            .join("");
+        $("fixtures").innerHTML = rc.fix;
 
         // card próximo jogador
         const npImg = dropped[(current + 1) % total] || next.photo || next.bg;
@@ -2982,9 +2989,16 @@
           // troca todo o conteudo + bg-img por baixo (escondido pelas camadas).
           // entranceDelay faz o conteúdo (nome/assinatura/cards) entrar DEPOIS do fundo (igual site modelo)
           current = alvo;
-          entranceDelay = CONTENT_AFTER_BG;
-          render();
-          entranceDelay = 0;
+          // esconde o conteúdo antigo na hora (barato) e adia o render pesado 1 quadro:
+          // o clique responde na hora e o fundo cresce liso, sem travar na reconstrução
+          $("bigName").style.transition = "none";
+          $("bigName").style.opacity = "0";
+          $("jrWrite").innerHTML = "";
+          setTimeout(function () {
+            entranceDelay = CONTENT_AFTER_BG;
+            render();
+            entranceDelay = 0;
+          }, 0);
           go._t = setTimeout(() => {
             bgMorph.style.opacity = "0";
             bgBack.style.opacity = "0";
@@ -3006,9 +3020,16 @@
           bgMorph.style.transition = "opacity 360ms ease";
           bgMorph.style.opacity = "1";
           current = alvo;
-          entranceDelay = CONTENT_AFTER_BG;
-          render();
-          entranceDelay = 0;
+          // esconde o conteúdo antigo na hora (barato) e adia o render pesado 1 quadro:
+          // o clique responde na hora e o fundo cresce liso, sem travar na reconstrução
+          $("bigName").style.transition = "none";
+          $("bigName").style.opacity = "0";
+          $("jrWrite").innerHTML = "";
+          setTimeout(function () {
+            entranceDelay = CONTENT_AFTER_BG;
+            render();
+            entranceDelay = 0;
+          }, 0);
           go._t = setTimeout(() => {
             bgMorph.style.opacity = "0";
             animando = false;

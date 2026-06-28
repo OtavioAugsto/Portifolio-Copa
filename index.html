@@ -678,21 +678,8 @@
         display: block;
         overflow: visible;
         transform-origin: center;
-      }
-      /* efeito bem leve: respiro suave (opacidade + leve pulsar) pra não ficar 100% parado */
-      .jr-write.go .jr-outsvg {
-        animation: jrBreathe 5s ease-in-out infinite;
-      }
-      @keyframes jrBreathe {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.84;
-          transform: scale(1.035);
-        }
+        /* estático + sombra preta (igual as outras assinaturas) */
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65));
       }
       /* ── modo VETOR: traço sendo desenhado (caneta) depois preenche, em loop ── */
       .jr-strokesvg {
@@ -2052,8 +2039,15 @@
           logoSplit: 57,
           softName: true,
           jrPos: "translate(0px,12%)",
-          drawLogo: "imagens/sign-ronaldo2.png",
-          drawLogoScale: 2.4,
+          drawImg: {
+            src: "imagens/sign-ronaldo3.png",
+            iw: 909,
+            ih: 276,
+            vb: "0 0 909 276",
+            scale: 0.9,
+            outline: 16,
+            alpha: true,
+          },
           quoteA: "Talent without working hard is nothing.",
           quoteB: "I live for the moment.",
           nextQuoteA: "Your love makes me strong,",

@@ -741,15 +741,55 @@
       .jr-dot2 {
         opacity: 0;
       }
+      /* escrita UMA vez ao entrar (igual site modelo): a caneta desenha e fica */
       .jr-write.go .jr-s1 {
-        animation: jrLogoDraw 6.5s ease-in-out infinite;
+        animation: jrDrawOnce 1.15s ease-in-out forwards;
       }
       .jr-write.go .jr-s2 {
-        animation: jrLogoDraw 6.5s ease-in-out infinite;
-        animation-delay: 0.6s;
+        animation: jrDrawOnce 1.15s ease-in-out 0.28s forwards;
       }
       .jr-write.go .jr-dot2 {
-        animation: jrDotIn 6.5s ease-in-out infinite;
+        animation: jrDotOnce 0.5s ease 0.95s forwards;
+      }
+      @keyframes jrDrawOnce {
+        0% {
+          stroke-dashoffset: 1;
+          fill-opacity: 0;
+        }
+        65% {
+          stroke-dashoffset: 0;
+          fill-opacity: 0;
+        }
+        100% {
+          stroke-dashoffset: 0;
+          fill-opacity: 1;
+        }
+      }
+      @keyframes jrDotOnce {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      /* escrita por REVELAÇÃO (assinaturas em imagem): risca da esquerda → direita */
+      .jr-write.jr-wipe {
+        clip-path: inset(0 100% 0 0);
+        -webkit-clip-path: inset(0 100% 0 0);
+      }
+      .jr-write.jr-wipe.go {
+        animation: jrWipe 1s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+      }
+      @keyframes jrWipe {
+        from {
+          clip-path: inset(0 100% 0 0);
+          -webkit-clip-path: inset(0 100% 0 0);
+        }
+        to {
+          clip-path: inset(0 0 0 0);
+          -webkit-clip-path: inset(0 0 0 0);
+        }
       }
       @keyframes jrLogoDraw {
         0% {
@@ -2009,7 +2049,6 @@
             src: "imagens/jr3.svg",
             scale: 1.7,
             sw: 200,
-            static: true,
           },
           drawPath: {
             vb: "0 0 300 200",
@@ -2462,6 +2501,18 @@
           return;
         }
         jr.style.display = "";
+        // assinaturas em IMAGEM (Ronaldo/Kylian/Yamal/Jude) revelam escrevendo (esq→dir);
+        // Neymar é SVG de linha = desenho de caneta real (sem wipe)
+        var isImgSig = !!(p.drawLogo || p.drawImg);
+        jr.classList.toggle("jr-wipe", isImgSig);
+        clearTimeout(window._jrSafety);
+        if (isImgSig) {
+          // rede de segurança: se a aba estiver em 2º plano (animação congelada),
+          // remove o clip pra assinatura nunca ficar invisível
+          window._jrSafety = setTimeout(function () {
+            jr.classList.remove("jr-wipe");
+          }, 1500);
+        }
         var fontPx = Math.min(82, Math.round(360 / p.draw.length)); // fonte do JR (um pouco maior)
         if (p.drawStrokeFile) {
           // carrega um .svg e desenha o traço (caneta) com contorno branco
@@ -2594,6 +2645,12 @@
                 svg.setAttribute("height", H);
               } catch (e) {}
               drawJR();
+              // rede de segurança: se a aba estiver em 2º plano (caneta congelada),
+              // mostra a assinatura preenchida pra nunca ficar invisível
+              clearTimeout(window._jrSafety);
+              window._jrSafety = setTimeout(function () {
+                svg.classList.add("jr-static");
+              }, 1700);
             });
           return;
         }
@@ -2612,6 +2669,7 @@
             '" style="height:' +
             hL +
             'px;display:block;" alt="">';
+          drawJR(); // dispara a revelação "escrevendo" (esq→dir)
           return;
         }
         jr.innerHTML = jrSvgHTML(

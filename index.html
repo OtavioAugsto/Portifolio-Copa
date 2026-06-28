@@ -2505,6 +2505,15 @@
           "</g></svg>"
         );
       }
+      var _jrCache = {}; // assinatura já montada por jogador (evita re-fetch/parse/getBBox a cada troca = sem lag)
+      function jrSafetyStroke(jr) {
+        // rede de segurança: se a aba ficar em 2º plano (caneta congelada), mostra preenchida
+        clearTimeout(window._jrSafety);
+        window._jrSafety = setTimeout(function () {
+          var s = jr.querySelector(".jr-strokesvg");
+          if (s) s.classList.add("jr-static");
+        }, 1700);
+      }
       function showJR() {
         var jr = document.getElementById("jrWrite");
         if (!jr) return;
@@ -2530,6 +2539,14 @@
         if (p.drawStrokeFile) {
           // carrega um .svg e desenha o traço (caneta) com contorno branco
           var cfg = p.drawStrokeFile;
+          var sigIdx = current; // índice fixo (current pode mudar durante o fetch)
+          // CACHE: já montou essa assinatura antes? injeta na hora (sem fetch/parse/getBBox)
+          if (_jrCache[sigIdx]) {
+            jr.innerHTML = _jrCache[sigIdx];
+            drawJR();
+            jrSafetyStroke(jr);
+            return;
+          }
           fetch(cfg.src)
             .then(function (r) {
               return r.text();
@@ -2664,13 +2681,9 @@
                 svg.setAttribute("width", W);
                 svg.setAttribute("height", H);
               } catch (e) {}
+              _jrCache[sigIdx] = svg.outerHTML; // guarda pronta pras próximas trocas (sem lag)
               drawJR();
-              // rede de segurança: se a aba estiver em 2º plano (caneta congelada),
-              // mostra a assinatura preenchida pra nunca ficar invisível
-              clearTimeout(window._jrSafety);
-              window._jrSafety = setTimeout(function () {
-                svg.classList.add("jr-static");
-              }, 1700);
+              jrSafetyStroke(jr);
             });
           return;
         }
@@ -3004,6 +3017,20 @@
       photo.addEventListener("drop", (e) => loadFile(e.dataTransfer.files[0]));
 
       render();
+
+      // pré-decodifica os fundos (e fotos do card) pra a troca não dar hitch ao trocar de craque
+      (function preloadMedia() {
+        var urls = [];
+        players.forEach(function (pl) {
+          if (pl.bg) urls.push(pl.bg);
+          if (pl.photo) urls.push(pl.photo);
+        });
+        urls.forEach(function (u) {
+          var im = new Image();
+          im.src = u;
+          if (im.decode) im.decode().catch(function () {});
+        });
+      })();
     </script>
   </body>
 </html>

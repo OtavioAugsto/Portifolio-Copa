@@ -255,6 +255,27 @@
           );
       }
 
+      /* camadas da transição "card cresce até a tela" (igual ao site modelo) */
+      .bg-back,
+      .bg-morph {
+        position: fixed;
+        background-size: cover;
+        background-position: center;
+        filter: brightness(1.18) contrast(1.03) saturate(0.86);
+        pointer-events: none;
+        overflow: hidden;
+        opacity: 0;
+        will-change: top, left, width, height, border-radius, opacity;
+      }
+      .bg-back {
+        inset: 0;
+        z-index: 3;
+      }
+      .bg-morph {
+        z-index: 4;
+        border-radius: 14px;
+      }
+
       /* ============================================================
    HEADER / NAV
    ============================================================ */
@@ -2675,14 +2696,9 @@
         if (window.gsap && document.body.classList.contains("loaded")) {
           var fxEls = ["#heroName", "#nextCard", ".explore", ".signature"];
           // mata tweens anteriores e limpa estilos travados (evita sumir ao passar rápido)
-          gsap.killTweensOf(".bg-img");
+          // (o fundo agora usa a transição "card cresce", não o GSAP)
           gsap.killTweensOf(fxEls);
           gsap.set(fxEls, { clearProps: "transform,opacity" });
-          gsap.fromTo(
-            ".bg-img",
-            { scale: 1.05, opacity: 0.45 },
-            { scale: 1, opacity: 1, duration: 0.7, ease: "power2.out", overwrite: "auto", force3D: true }
-          );
           gsap.fromTo(
             fxEls,
             { y: 26, opacity: 0 },
@@ -2705,17 +2721,84 @@
    NAVEGAÇÃO
    ============================================================ */
       let animando = false; // trava: ignora cliques enquanto a transicao roda (igual site modelo)
+      const TR_EASE = "cubic-bezier(.76,0,.24,1)";
+      const TR_DUR = 900; // ms (mesma duracao do site modelo)
+      let bgBack = null,
+        bgMorph = null;
+      function ensureMorphEls() {
+        if (bgMorph) return;
+        bgBack = document.createElement("div");
+        bgBack.className = "bg-back";
+        bgMorph = document.createElement("div");
+        bgMorph.className = "bg-morph";
+        const host = $("site") || document.body;
+        host.appendChild(bgBack);
+        host.appendChild(bgMorph);
+      }
+      const imgUrl = (u) => (u ? `url('${u}')` : "none");
+
       function go(i) {
         if (animando) return;
         const alvo = (i + total) % total;
         if (alvo === current) return;
         animando = true;
-        current = alvo;
-        render();
-        // libera assim que a transicao assenta (mantem o site leve, sem empilhar animacoes)
-        setTimeout(() => {
-          animando = false;
-        }, 620);
+        const forward = alvo === (current + 1) % total;
+        const oldBg = players[current] && players[current].bg;
+        const newBg = players[alvo] && players[alvo].bg;
+        ensureMorphEls();
+        clearTimeout(go._t);
+
+        if (forward && newBg && oldBg) {
+          // backdrop = imagem atual (fica parada enquanto o card cresce)
+          bgBack.style.transition = "none";
+          bgBack.style.backgroundImage = imgUrl(oldBg);
+          bgBack.style.opacity = "1";
+          // card do proximo craque cresce da posicao do card ate a tela inteira
+          const r = $("nextPhoto").getBoundingClientRect();
+          bgMorph.style.transition = "none";
+          bgMorph.style.backgroundImage = imgUrl(newBg);
+          bgMorph.style.borderRadius = "14px";
+          bgMorph.style.top = r.top + "px";
+          bgMorph.style.left = r.left + "px";
+          bgMorph.style.width = r.width + "px";
+          bgMorph.style.height = r.height + "px";
+          bgMorph.style.opacity = "1";
+          void bgMorph.offsetWidth; // reflow
+          bgMorph.style.transition = "all " + TR_DUR + "ms " + TR_EASE;
+          bgMorph.style.top = "0px";
+          bgMorph.style.left = "0px";
+          bgMorph.style.width = window.innerWidth + "px";
+          bgMorph.style.height = window.innerHeight + "px";
+          bgMorph.style.borderRadius = "0px";
+          // troca todo o conteudo + bg-img por baixo (escondido pelas camadas)
+          current = alvo;
+          render();
+          go._t = setTimeout(() => {
+            bgMorph.style.opacity = "0";
+            bgBack.style.opacity = "0";
+            animando = false;
+          }, TR_DUR);
+        } else {
+          // voltar / sem imagem: crossfade rapido
+          bgBack.style.opacity = "0";
+          bgMorph.style.transition = "none";
+          bgMorph.style.backgroundImage = imgUrl(newBg);
+          bgMorph.style.top = "0px";
+          bgMorph.style.left = "0px";
+          bgMorph.style.width = window.innerWidth + "px";
+          bgMorph.style.height = window.innerHeight + "px";
+          bgMorph.style.borderRadius = "0px";
+          bgMorph.style.opacity = "0";
+          void bgMorph.offsetWidth;
+          bgMorph.style.transition = "opacity 480ms ease";
+          bgMorph.style.opacity = "1";
+          current = alvo;
+          render();
+          go._t = setTimeout(() => {
+            bgMorph.style.opacity = "0";
+            animando = false;
+          }, 480);
+        }
       }
       $("next").addEventListener("click", () => go(current + 1));
       $("prev").addEventListener("click", () => go(current - 1));

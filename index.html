@@ -2427,19 +2427,20 @@
         bn.classList.add("born");
       }
       function revealName(bn) {
-        // nome correto (já setado pelo render) — guardado ANTES do revert do split anterior,
+        // nome correto (já setado pelo render) — guardado ANTES de limpar o split anterior,
         // que senão restauraria o nome do craque anterior (ex: NEYMAR no slide do Cristiano)
         var txt = bn.textContent;
-        // garante que qualquer efeito anterior seja finalizado (nome nunca fica invisível)
-        if (window.gsap) gsap.killTweensOf(".big-name .bn-char");
-        finishName(bn);
-        bn.textContent = txt; // o revert acima pode ter trazido o nome antigo de volta
+        // limpa o efeito anterior SEM mostrar o nome cheio (evita o "flash" / duplo)
+        cancelNameFx();
+        bn.textContent = txt;
         if (!(window.gsap && window.SplitText)) {
-          bn.classList.add("born");
+          finishName(bn);
           return;
         }
-        // pai visível e sem pintar o gradiente (quem pinta são as letras)
+        // vai DIRETO pro estado do efeito: pai sem pintar o gradiente + letras escondidas
+        // (nada de nome cheio antes — sem flash)
         bn.classList.remove("born");
+        bn.style.transition = "none";
         bn.style.opacity = "1";
         bn.style.transform = "none";
         bn.style.clipPath = "none";

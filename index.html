@@ -238,7 +238,8 @@
         inset: 0;
         background-size: cover;
         background-position: center;
-        filter: brightness(1.18) contrast(1.03) saturate(0.86);
+        /* filtro (brightness/contrast/saturate) agora está ASSADO nas imagens .jpg
+           — sem filter no CSS = camada pura GPU, sem re-rasterizar ao animar = sem jank */
       }
       .bg-shade {
         position: absolute;
@@ -265,7 +266,7 @@
         position: fixed;
         background-size: cover;
         background-position: center;
-        filter: brightness(1.18) contrast(1.03) saturate(0.86);
+        /* sem filter (assado nas imagens) = animação de transform pura GPU, sem jank */
         pointer-events: none;
         overflow: hidden;
         opacity: 0;
@@ -2042,7 +2043,7 @@
           c1: "#ffd200",
           c2: "#d4af00",
           ink: "#1a1a1a",
-          bg: "imagens/neymar3.png",
+          bg: "imagens/neymar3.jpg",
           draw: "JR.",
           bigName: "NEYMAR",
           logoImg: "imagens/modelo/logo-neymar.svg",
@@ -2117,7 +2118,7 @@
           c1: "#e3242b",
           c2: "#b51d23",
           ink: "#ffffff",
-          bg: "imagens/cr7-6.png",
+          bg: "imagens/cr7-6.jpg",
           bigName: "CRISTIANO",
           draw: "Ronaldo",
           tagline: "O Último Baile. <span>CR7.</span>",
@@ -2189,7 +2190,7 @@
           c1: "#2b7bff",
           c2: "#1656e6",
           ink: "#ffffff",
-          bg: "imagens/mbappe2.png",
+          bg: "imagens/mbappe2.jpg",
           lightBg: true,
           bigName: "MBAPPÉ",
           draw: "Mbappé",
@@ -2259,7 +2260,7 @@
           c1: "#e23636",
           c2: "#b32626",
           ink: "#ffffff",
-          bg: "imagens/yamal5.png",
+          bg: "imagens/yamal5.jpg",
           bigName: "LAMINE",
           draw: "Yamal",
           tagline: "O Prodígio. <span>La Roja.</span>",
@@ -2326,7 +2327,7 @@
           c1: "#ffffff",
           c2: "#c2c7d0",
           ink: "#14161c",
-          bg: "imagens/jude.png",
+          bg: "imagens/jude.jpg",
           sheen: true,
           bigName: "BELLINGHAM",
           bigSize: "clamp(48px,8.2vw,146px)",
@@ -2454,7 +2455,7 @@
         bn.style.background = "none";
         bn.style.webkitTextFillColor = "transparent";
         _nameSplit = new SplitText(bn, { type: "chars", charsClass: "bn-char" });
-        gsap.set(_nameSplit.chars, { opacity: 0, filter: "blur(12px)" });
+        gsap.set(_nameSplit.chars, { opacity: 0, filter: "blur(6px)" });
         gsap.to(_nameSplit.chars, {
           opacity: 1,
           filter: "blur(0px)",

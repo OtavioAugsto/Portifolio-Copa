@@ -2122,14 +2122,11 @@
           logoSplit: 57,
           softName: true,
           jrPos: "translate(0px,calc(12% - 36px))",
-          drawImg: {
-            src: "imagens/sign-ronaldo5.png",
-            iw: 1536,
-            ih: 1024,
-            vb: "120 320 1300 400",
-            scale: 1.1,
-            outline: 10,
-            alpha: true,
+          drawStrokeFile: {
+            src: "imagens/sign-ronaldo6.svg",
+            scale: 1.2,
+            sw: 200,
+            noDot: true,
           },
           quoteA: "Talent without working hard is nothing.",
           quoteB: "I live for the moment.",
@@ -2554,10 +2551,17 @@
               var paths = svg.querySelectorAll("path");
               paths.forEach(function (pth, i) {
                 pth.setAttribute("pathLength", "1");
-                pth.setAttribute(
-                  "class",
-                  i < paths.length - 1 ? "jr-stroke jr-s" + (i + 1) : "jr-dot2",
-                );
+                if (cfg.noDot) {
+                  // assinatura sem "ponto" (ex: Ronaldo): todo path é traço que se desenha
+                  pth.setAttribute("class", "jr-stroke jr-s" + Math.min(i + 1, 2));
+                } else {
+                  pth.setAttribute(
+                    "class",
+                    i < paths.length - 1
+                      ? "jr-stroke jr-s" + (i + 1)
+                      : "jr-dot2",
+                  );
+                }
               });
               jr.innerHTML = "";
               jr.appendChild(svg);

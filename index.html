@@ -145,7 +145,23 @@
         width: max-content;
         margin: 4px 0;
       }
-      /* (aura própria da taça removida — usamos só o .pre-glow central) */
+      /* fundo arredondado com borda e brilho atrás da taça (versão original) */
+      .pre-cup-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -14px -34px;
+        z-index: 0;
+        border-radius: 26px;
+        background: radial-gradient(
+          58% 60% at 50% 45%,
+          color-mix(in srgb, var(--gold) 24%, transparent),
+          transparent 72%
+        );
+        border: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
+        box-shadow:
+          0 0 44px -6px color-mix(in srgb, var(--gold) 30%, transparent),
+          inset 0 0 30px -10px color-mix(in srgb, var(--gold) 40%, transparent);
+      }
       .pre-cup {
         height: 128px;
         width: auto;

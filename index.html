@@ -1111,9 +1111,6 @@
         }
       }
       @media (max-width: 1100px) {
-        .jr-write {
-          display: none !important;
-        }
         .hero-name {
           top: 84px;
           left: 18px;
@@ -1121,6 +1118,13 @@
         }
         .big-name {
           font-size: clamp(40px, 13vw, 58px);
+        }
+        /* assinatura (JR) menor e encaixada no canto do nome (neutraliza o transform do desktop) */
+        .jr-write {
+          right: 4px !important;
+          bottom: -4px !important;
+          transform: scale(0.45) !important;
+          transform-origin: right bottom !important;
         }
         .sidebar {
           display: none !important;
@@ -1705,6 +1709,10 @@
           display: none;
         }
         .fixtures {
+          display: none;
+        }
+        /* deixa só o card "Próximo Craque" (remove o botão duplicado) */
+        .explore {
           display: none;
         }
       }

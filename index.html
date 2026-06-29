@@ -3248,7 +3248,9 @@
         ensureMorphEls();
         clearTimeout(go._t);
 
-        if (forward && newBg && oldBg) {
+        if (newBg && oldBg) {
+          // mesmo efeito (card cresce) tanto pra AVANÇAR quanto pra VOLTAR.
+          // no voltar o morph não está pré-renderizado pro alvo → cai no fallback abaixo.
           // backdrop = imagem atual (fica parada enquanto o card cresce)
           bgBack.style.transition = "none";
           bgBack.style.backgroundImage = imgUrl(oldBg);

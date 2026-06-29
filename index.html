@@ -91,8 +91,24 @@
       }
       .preloader.pl-out {
         opacity: 0;
-        filter: blur(10px);
+        transform: scale(1.03); /* leve zoom na saída (GPU, barato) */
         pointer-events: none;
+      }
+      .preloader {
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      /* na saída, para TODAS as animações do loader (libera a GPU pra hero entrar lisa) */
+      .preloader.pl-finishing .pl-particle,
+      .preloader.pl-finishing .pl-ring,
+      .preloader.pl-finishing .pl-halo,
+      .preloader.pl-finishing .pl-scan::before {
+        animation: none !important;
+      }
+      .preloader.pl-finishing .pl-particles {
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
       .preloader.done {
         opacity: 0;

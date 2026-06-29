@@ -1123,7 +1123,7 @@
         .jr-write {
           right: 4px !important;
           bottom: -4px !important;
-          transform: scale(0.45) !important;
+          transform: scale(0.33) !important;
           transform-origin: right bottom !important;
         }
         .sidebar {
@@ -1693,10 +1693,9 @@
         .motto {
           display: none;
         }
+        /* esconde o card do quote — no mobile usamos o botão com a bandeira */
         .next-card {
-          width: 100%;
-          max-width: 340px;
-          margin: 0 auto;
+          display: none;
         }
         .signature {
           position: static;
@@ -1711,9 +1710,9 @@
         .fixtures {
           display: none;
         }
-        /* deixa só o card "Próximo Craque" (remove o botão duplicado) */
+        /* botão "Próximo Craque" com a bandeira do país (no lugar do card) */
         .explore {
-          display: none;
+          margin-top: 10px;
         }
         /* FOTO: o fundo (landscape) ocupa a tela e mostra o JOGADOR (direita), sem cortar nele */
         .bg-stage {
@@ -1727,12 +1726,6 @@
         .bg-back,
         .bg-morph {
           background-position: 72% center !important;
-        }
-        /* card "Próximo Craque" na VERTICAL (foto em cima, texto/setas embaixo) */
-        .next-card {
-          flex-direction: column;
-          align-items: stretch;
-          text-align: left;
         }
       }
 

@@ -1668,37 +1668,69 @@
           pre.style.display = "none";
         }, 6000);
 
-        // ── FINAL CINEMATOGRÁFICO + revela o site ──
+        // ── FINAL: o lockup (WORLD/taça/CUP/2026) voa pro emblema do canto ──
         var _ended = false;
         function endAnimation() {
           if (_ended) return; // não roda duas vezes
           _ended = true;
           revealSite(); // o site sobe por baixo enquanto o loader some
+
+          // limpa transforms do GSAP na taça pra o lockup voar limpo
           if (G) {
-            G.killTweensOf(".pre-cup-wrap"); // para o flutuar antes do crescimento final
-            G.timeline()
-              .to(".pre-pct", { scale: 1.4, opacity: 0, duration: 0.4 })
-              .to(".pre-sub", { opacity: 0, duration: 0.3 }, "<")
-              .to(
-                ".pre-cup-wrap",
-                { scale: 1.25, duration: 0.55, ease: "power2.out" },
-                "-=0.15",
-              )
-              .to(
-                "#preloader",
-                {
-                  opacity: 0,
-                  duration: 0.7,
-                  onComplete: function () {
-                    pre.classList.add("done");
-                    pre.style.display = "none";
-                  },
-                },
-                "-=0.1",
-              );
+            G.killTweensOf(".pre-cup-wrap");
+            G.killTweensOf(".pre-lockup");
+            G.set(".pre-cup-wrap", { clearProps: "transform" });
+            G.to(".pre-pct", { scale: 1.3, opacity: 0, duration: 0.35 });
+            G.to(".pre-sub", { opacity: 0, duration: 0.3 });
+          }
+
+          // voa o lockup pro emblema, batendo no mesmo formato
+          var flyer = document.querySelector(".pre-lockup");
+          var target = document.querySelector(".wc-badge");
+          if (flyer && target) {
+            var f = flyer.getBoundingClientRect(),
+              tr = target.getBoundingClientRect();
+            var sc = tr.height / f.height;
+            var dx = tr.left + tr.width / 2 - (f.left + f.width / 2);
+            var dy = tr.top + tr.height / 2 - (f.top + f.height / 2);
+            flyer.style.position = "fixed";
+            flyer.style.left = f.left + "px";
+            flyer.style.top = f.top + "px";
+            flyer.style.margin = "0";
+            flyer.style.zIndex = "10000";
+            flyer.style.transformOrigin = "center center";
+            flyer.style.transition =
+              "transform 1.05s cubic-bezier(.6,0,.2,1), opacity .35s ease .9s";
+            document.body.appendChild(flyer);
+            void flyer.offsetWidth;
+            flyer.style.transform =
+              "translate(" + dx + "px," + dy + "px) scale(" + sc + ")";
+            flyer.style.opacity = "0";
+            setTimeout(function () {
+              if (flyer.parentNode) flyer.parentNode.removeChild(flyer);
+            }, 1400);
+            setTimeout(function () {
+              target.classList.add("show"); // emblema aparece no pouso
+            }, 1150);
           } else {
+            var b = document.querySelector(".wc-badge");
+            if (b) b.classList.add("show");
+          }
+
+          // fundo preto do loader some (o flyer já está no body, voando)
+          var doHide = function () {
             pre.classList.add("done");
             pre.style.display = "none";
+          };
+          if (G) {
+            G.to("#preloader", {
+              opacity: 0,
+              duration: 0.6,
+              delay: 0.55,
+              onComplete: doHide,
+            });
+          } else {
+            setTimeout(doHide, 1400);
           }
         }
 
@@ -1729,8 +1761,7 @@
             s.addEventListener("transitionend", function (e) {
               if (e.propertyName === "transform") s.style.transform = "none";
             });
-          var b = document.querySelector(".wc-badge");
-          if (b) b.classList.add("show"); // emblema do canto aparece
+          // (o emblema do canto aparece no pouso do voo, em endAnimation)
         }
       })();
     </script>

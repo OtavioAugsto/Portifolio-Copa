@@ -104,18 +104,22 @@
         position: relative;
         z-index: 1;
       }
-      /* brilho grande e difuso ao fundo (pulsa) */
+      /* brilho central — sutil e circular (não enche a tela) */
       .pre-glow {
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 340px;
-        height: 340px;
+        width: 230px;
+        height: 230px;
         transform: translate(-50%, -50%);
         border-radius: 50%;
-        background: var(--gold);
-        filter: blur(120px);
-        opacity: 0.18;
+        background: radial-gradient(
+          circle,
+          color-mix(in srgb, var(--gold) 55%, transparent) 0%,
+          transparent 70%
+        );
+        filter: blur(46px);
+        opacity: 0.55;
         z-index: 0;
         pointer-events: none;
       }
@@ -159,20 +163,19 @@
         width: max-content;
         margin: 4px 0;
       }
-      /* aura suave (oval) atrás da taça — sem borda/caixa retangular */
+      /* aura suave e simétrica (circular) atrás da taça */
       .pre-cup-wrap::before {
         content: "";
         position: absolute;
-        inset: -34px -64px;
+        inset: -40px;
         z-index: 0;
         border-radius: 50%;
         background: radial-gradient(
-          50% 56% at 50% 50%,
-          color-mix(in srgb, var(--gold) 34%, transparent) 0%,
-          color-mix(in srgb, var(--gold) 12%, transparent) 46%,
-          transparent 72%
+          circle at 50% 50%,
+          color-mix(in srgb, var(--gold) 22%, transparent) 0%,
+          transparent 68%
         );
-        filter: blur(8px);
+        filter: blur(6px);
       }
       .pre-cup {
         height: 128px;
@@ -1621,11 +1624,11 @@
             yoyo: true,
             ease: "sine.inOut",
           });
-          // glow de fundo pulsando
+          // glow de fundo pulsando (bem sutil)
           G.to("#preGlow", {
-            scale: 1.5,
-            opacity: 0.34,
-            duration: 2,
+            scale: 1.12,
+            opacity: 0.72,
+            duration: 2.2,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",

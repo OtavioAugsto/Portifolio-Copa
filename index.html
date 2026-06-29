@@ -104,24 +104,7 @@
         position: relative;
         z-index: 1;
       }
-      /* brilho central — único, suave e circular (gradiente macio, sem blur) */
-      .pre-glow {
-        position: absolute;
-        top: 46%;
-        left: 50%;
-        width: 460px;
-        height: 460px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        background: radial-gradient(
-          circle,
-          rgba(216, 179, 92, 0.26) 0%,
-          rgba(216, 179, 92, 0.1) 32%,
-          transparent 62%
-        );
-        z-index: 0;
-        pointer-events: none;
-      }
+      /* (glow central removido — só a taça no fundo preto) */
       /* mensagens dinâmicas do loader */
       .pre-sub {
         font-family: "Barlow Condensed", "Oswald", sans-serif;
@@ -1553,7 +1536,6 @@
   <body>
     <!-- PRELOADER (tela de carregamento) -->
     <div class="preloader" id="preloader">
-      <div class="pre-glow" id="preGlow"></div>
       <div class="pre-inner">
         <div class="pre-lockup">
           <span class="pre-word">WORLD</span>
@@ -1606,14 +1588,6 @@
           G.to(".pre-cup-wrap", {
             y: -10,
             duration: 2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          });
-          // glow respira de leve (bem sutil)
-          G.to("#preGlow", {
-            scale: 1.08,
-            duration: 2.4,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
@@ -1686,7 +1660,6 @@
           revealSite(); // o site sobe por baixo enquanto o loader some
           if (G) {
             G.killTweensOf(".pre-cup-wrap"); // para o flutuar antes do crescimento final
-            G.killTweensOf("#preGlow");
             G.timeline()
               .to(".pre-pct", { scale: 1.4, opacity: 0, duration: 0.4 })
               .to(".pre-sub", { opacity: 0, duration: 0.3 }, "<")
@@ -1695,7 +1668,6 @@
                 { scale: 1.25, duration: 0.55, ease: "power2.out" },
                 "-=0.15",
               )
-              .to("#preGlow", { scale: 1.8, opacity: 0.42, duration: 0.55 }, "<")
               .to(
                 "#preloader",
                 {

@@ -1689,12 +1689,26 @@
           font-size: clamp(0.8rem, 3.6vw, 1.15rem);
           letter-spacing: 3px;
         }
-        /* assinaturas ficam IGUAIS ao desktop no mobile (mesmo tamanho e
-           posição inline por craque). SÓ o Kylian precisa de ajuste: no mobile
-           ele fica fora do nome, então reposiciono só ele. !important pq o
-           transform (jrPos) é setado inline por JS. */
-        .jr-write[data-craque="kylian"] {
-          transform: translate(-2px, calc(12% - 12px)) !important;
+        /* assinaturas: no mobile o nome encolhe (~169px → ~50px) mas a
+           assinatura tem tamanho FIXO em px, então ela ficava desproporcional
+           (grande demais). Reduzo pela MESMA razão que o nome encolhe (~0.34),
+           o que preserva a proporção de cada craque (Neymar grande, Kylian
+           pequeno = igual ao desktop). Zero o transform do wrapper (jrPos é do
+           desktop e vaza no layout mobile) e ancoro o SVG no canto inferior-
+           direito do nome. !important só no wrapper pq o jrPos é inline por JS.
+           Jude tem o nome menor no desktop, então escala um pouco maior. */
+        .jr-write {
+          transform: none !important;
+        }
+        .jr-write svg,
+        .jr-write img {
+          transform: scale(0.34);
+          transform-origin: right bottom;
+        }
+        .jr-write[data-craque="jude"] svg,
+        .jr-write[data-craque="jude"] img {
+          transform: scale(0.5);
+          transform-origin: right bottom;
         }
         /* emblema do canto proporcional */
         .wc-badge {

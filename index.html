@@ -1689,19 +1689,12 @@
           font-size: clamp(0.8rem, 3.6vw, 1.15rem);
           letter-spacing: 3px;
         }
-        /* assinatura: tamanho UNIFORME pra todos os craques (cada um tem base
-           diferente, então normalizo pela altura em vez de escalar) e ancorada
-           no canto direito do nome. !important: o transform (jrPos) e o
-           width/height do SVG são setados inline por JS. */
-        .jr-write {
-          right: 6px !important;
-          bottom: 2px !important;
-          transform: none !important;
-        }
-        .jr-write svg,
-        .jr-write img {
-          height: 42px !important;
-          width: auto !important;
+        /* assinaturas ficam IGUAIS ao desktop no mobile (mesmo tamanho e
+           posição inline por craque). SÓ o Kylian precisa de ajuste: no mobile
+           ele fica fora do nome, então reposiciono só ele. !important pq o
+           transform (jrPos) é setado inline por JS. */
+        .jr-write[data-craque="kylian"] {
+          transform: translate(-2px, calc(12% - 12px)) !important;
         }
         /* emblema do canto proporcional */
         .wc-badge {
@@ -3210,6 +3203,7 @@
           jr.style.display = "";
           jr.style.color = p.goldScript ? "#f1c44e" : p.jrColor || ""; // ouro no Neymar; jrColor custom (ex: Cristiano vermelho claro); demais usam a cor da seleção
           jr.style.transform = p.jrPos || ""; // posição custom por jogador (ex: Cristiano mais à direita)
+          jr.dataset.craque = (p.first || "").toLowerCase(); // hook p/ CSS por craque (ex: ajuste do Kylian no mobile)
           jr.innerHTML = ""; // o SVG é montado quando showJR rodar (fica vazio até lá = some durante a troca do fundo)
           if (document.body.classList.contains("loaded"))
             // assinatura entra logo após o nome (mesma onda; ela desenha sozinha por ~1.4s = "depois")

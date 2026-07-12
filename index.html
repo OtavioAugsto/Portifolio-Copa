@@ -1689,13 +1689,19 @@
           font-size: clamp(0.8rem, 3.6vw, 1.15rem);
           letter-spacing: 3px;
         }
-        /* assinatura proporcional, encaixada no canto do nome
-           (!important: o transform é setado inline por JS via jrPos) */
+        /* assinatura: tamanho UNIFORME pra todos os craques (cada um tem base
+           diferente, então normalizo pela altura em vez de escalar) e ancorada
+           no canto direito do nome. !important: o transform (jrPos) e o
+           width/height do SVG são setados inline por JS. */
         .jr-write {
-          right: 4px;
-          bottom: -4px;
-          transform: scale(0.33) !important;
-          transform-origin: right bottom !important;
+          right: 6px !important;
+          bottom: 2px !important;
+          transform: none !important;
+        }
+        .jr-write svg,
+        .jr-write img {
+          height: 42px !important;
+          width: auto !important;
         }
         /* emblema do canto proporcional */
         .wc-badge {
